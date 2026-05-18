@@ -1,0 +1,19 @@
+<svg viewBox="0 0 40 40" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="20" y1="0" x2="20" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#FFFDE7"/>
+      <stop offset="25%"  stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#78350F" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- 4-pointed sparkle star matching the logo shape -->
+  <path d="M20,1 L23.5,16.5 L39,20 L23.5,23.5 L20,39 L16.5,23.5 L1,20 L16.5,16.5 Z"
+        fill="url(#g)" filter="url(#glow)"/>
+</svg>

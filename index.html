@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collection Barq</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Tajawal', 'system-ui', 'sans-serif'] }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 flex-wrap">
+
+      <!-- Logo + Title -->
+      <div class="flex items-center gap-2 shrink-0">
+        <img src="assets/logo.svg" class="site-logo-img" alt="logo" />
+        <h1 class="site-title" dir="ltr">Collection Barq</h1>
+      </div>
+
+      <!-- Nav -->
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+        <a href="#quick-links" class="nav-link" data-i18n="navQuickLinks">روابط سريعة</a>
+        <button id="leadersNavBtn" class="nav-link nav-link-btn" data-i18n="navLeaders">الليدرز</button>
+        <button id="orgChartNavBtn" class="nav-link nav-link-btn" data-i18n="navOrgChart">الهيكل التنظيمي</button>
+        <button id="escalationNavBtn" class="nav-link nav-link-btn" data-i18n="navEscalation">دليل التصعيد</button>
+      </nav>
+
+      <!-- Mobile hamburger -->
+      <button id="mobileMenuBtn" class="md:hidden nav-link nav-link-btn ms-auto" aria-label="القائمة">
+        <i class="fa-solid fa-bars" id="mobileMenuIcon"></i>
+      </button>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-2 ms-2 md:ms-auto">
+        <!-- Presence Widget -->
+        <div id="presenceWidget" class="presence-widget hidden">
+          <div class="presence-item">
+            <span class="presence-dot online"></span>
+            <span id="onlineNum">0</span>
+            <div class="presence-tooltip" id="onlineTooltip"></div>
+          </div>
+          <div class="presence-item">
+            <span class="presence-dot idle"></span>
+            <span id="idleNum">0</span>
+            <div class="presence-tooltip" id="idleTooltip"></div>
+          </div>
+        </div>
+
+        <!-- Language Toggle -->
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="ar">ع</button>
+          <button class="lang-btn"        data-lang="en">EN</button>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="theme-btn" title="تبديل الوضع">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile nav dropdown -->
+  <div id="mobileMenu" class="mobile-menu-panel hidden md:hidden">
+    <a href="#quick-links" class="mobile-nav-link" data-i18n="navQuickLinks" onclick="closeMobileMenu()">روابط سريعة</a>
+    <button class="mobile-nav-link" data-i18n="navLeaders"     onclick="document.getElementById('leadersNavBtn').click();closeMobileMenu()">الليدرز</button>
+    <button class="mobile-nav-link" data-i18n="navOrgChart"    onclick="document.getElementById('orgChartNavBtn').click();closeMobileMenu()">الهيكل التنظيمي</button>
+    <button class="mobile-nav-link" data-i18n="navEscalation"  onclick="document.getElementById('escalationNavBtn').click();closeMobileMenu()">دليل التصعيد</button>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-12">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero-section rounded-2xl p-7 md:p-10">
+      <h2 class="hero-title" data-i18n="heroTitle">أهلاً بك في Collection Barq</h2>
+      <p class="hero-desc mt-2 max-w-2xl" data-i18n="heroDesc">
+        Collection Barq هو مرجعك الشامل لقادة الشركة — يجمع كل ما تحتاجه في مكان واحد، من معلومات التواصل المباشر وروابط التصعيد، إلى الهيكل التنظيمي ودليل حل المشكلات خطوة بخطوة. لأن الوصول السريع للشخص الصح يصنع الفرق.
+      </p>
+    </section>
+
+    <!-- ============ QUICK LINKS ============ -->
+    <section id="quick-links">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fa-solid fa-bolt"></i>
+          <span data-i18n="quickLinksLabel">روابط سريعة</span>
+        </h3>
+        <span class="section-subtitle" data-i18n="quickLinksSubtitle">الأنظمة المهمة في الشركة</span>
+      </div>
+      <div id="quickLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- ============ PDF FILES ============ -->
+    <section id="pdf-links">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span data-i18n="pdfLabel">ملفات PDF</span>
+        </h3>
+      </div>
+      <div id="pdfGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- ============ ESCALATION QUICK LINKS ============ -->
+    <section id="escalation-quick-links">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span data-i18n="escalationQuickLabel">روابط التصعيد</span>
+        </h3>
+      </div>
+      <div id="escalationQuickGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- ============ ADDITIONAL LINKS ============ -->
+    <section id="additional-links">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i class="fa-solid fa-link"></i>
+          <span>روابط إضافية</span>
+        </h3>
+      </div>
+      <div id="additionalLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <span data-i18n="footerText">Collection Barq · مرجع داخلي للاستخدام ضمن الشركة فقط</span>
+  </footer>
+
+  <!-- ============ LEADERS MODAL ============ -->
+  <div id="leadersModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
+    <div class="modal-box w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 class="modal-title flex items-center gap-2">
+          <i class="fa-solid fa-user-group" style="color:#FBBF24"></i>
+          <span data-i18n="leadersLabel">الليدرز</span>
+          <span id="leadersCount" class="text-sm font-normal" style="color:#71717a"></span>
+        </h4>
+        <button id="leadersModalClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <div class="relative flex-1" style="min-width:200px">
+            <input id="searchInput" type="search"
+              data-i18n-placeholder="searchPlaceholder"
+              placeholder="ابحث باسم الليدر أو المنصب أو القسم..."
+              class="search-input" style="width:100%" />
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          </div>
+        </div>
+        <div id="departmentFilters" class="flex flex-wrap gap-2 mb-4"></div>
+        <div id="leadersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <div id="noResults" class="hidden text-center py-12" style="color:#71717a">
+          <i class="fa-solid fa-magnifying-glass text-3xl mb-3" style="color:#d4d4d8;display:block;margin-bottom:.75rem"></i>
+          <p data-i18n="noResultsText">لا توجد نتائج مطابقة، جرّب كلمة أخرى.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ORG CHART MODAL ============ -->
+  <div id="orgChartModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
+    <div class="modal-box w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 class="modal-title flex items-center gap-2">
+          <i class="fa-solid fa-sitemap" style="color:#FBBF24"></i>
+          <span data-i18n="orgChartLabel">الهيكل التنظيمي</span>
+        </h4>
+        <button id="orgChartClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5">
+        <div class="org-chart-box" style="padding:1rem">
+          <div id="orgChart" class="mermaid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PDF FORM MODAL ============ -->
+  <div id="pdfFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.78)">
+    <div class="modal-box w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 id="pdfFormTitle" class="modal-title"></h4>
+        <button id="pdfFormClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="pdfFormEl" class="p-5" onsubmit="return false;">
+        <div id="pdfFormFields" class="space-y-4"></div>
+        <button id="pdfFormSubmit" type="submit" class="pf-submit-btn mt-6">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          تنزيل PDF مملوء
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ PDF MAPPER MODAL ============ -->
+  <div id="pdfMapperModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-2" style="background:rgba(0,0,0,.88)">
+    <div class="modal-box w-full max-w-4xl" style="max-height:95vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h4 class="modal-title flex items-center gap-2">
+          <i class="fa-solid fa-crosshairs" style="color:#FBBF24"></i>
+          حدد مكان كل حقل على النموذج
+        </h4>
+        <button id="pdfMapperClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="display:flex;gap:12px;padding:14px;overflow:hidden;flex:1">
+        <!-- field list -->
+        <div id="mapperFields" style="width:190px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto"></div>
+        <!-- pdf canvas -->
+        <div style="flex:1;overflow:auto;border:1.5px solid #27272a;border-radius:.75rem;position:relative;background:#fff">
+          <canvas id="mapperCanvas" style="display:block;cursor:crosshair"></canvas>
+          <div id="mapperDots" style="position:absolute;inset:0;pointer-events:none"></div>
+        </div>
+      </div>
+      <div style="padding:0 14px 14px;display:flex;justify-content:flex-end;gap:8px">
+        <button id="mapperSave" class="escalation-btn" style="width:auto;padding:.6rem 1.5rem">
+          <i class="fa-solid fa-floppy-disk"></i> حفظ المواضع
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ESCALATION MODAL ============ -->
+  <div id="escalationModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
+    <div class="modal-box w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 class="modal-title flex items-center gap-2">
+          <i class="fa-solid fa-list-check" style="color:#FBBF24"></i>
+          <span data-i18n="escalationLabel">دليل التصعيد بالخطوات</span>
+        </h4>
+        <button id="escalationModalClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5">
+        <div id="escalationList" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL ============ -->
+  <div id="leaderModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.72)">
+    <div class="modal-box max-w-lg w-full max-h-[85vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 id="modalTitle" class="modal-title"></h4>
+        <button id="modalClose" class="modal-close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modalBody" class="p-5"></div>
+    </div>
+  </div>
+
+  <!-- ============ NAME MODAL ============ -->
+  <div id="nameModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4" style="background:rgba(0,0,0,.88)">
+    <div class="modal-box max-w-xs w-full" style="padding:2rem;text-align:center">
+      <i class="fa-solid fa-circle-user" style="color:#FBBF24;font-size:2.5rem;display:block;margin-bottom:1rem"></i>
+      <h3 class="modal-title" style="margin-bottom:.4rem">مرحباً!</h3>
+      <p style="color:#71717a;font-size:.875rem;margin-bottom:1.25rem">أدخل اسمك ليظهر للآخرين كمتصل</p>
+      <input id="nameInput" type="text" placeholder="اسمك..." class="search-input" style="width:100%;margin-bottom:.75rem" />
+      <button id="nameSubmit" class="escalation-btn" style="width:100%;margin-bottom:.5rem">دخول</button>
+      <button id="nameSkip" style="background:none;border:none;color:#71717a;font-size:.8rem;cursor:pointer;font-family:inherit">تخطي</button>
+    </div>
+  </div>
+
+  <script>
+    window.onerror = function(msg, src, line, col, err) {
+      var d = document.getElementById('_jsErr');
+      if (!d) { d = document.createElement('div'); d.id = '_jsErr'; d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#ef4444;color:#fff;padding:8px 12px;font-size:13px;font-family:monospace;direction:ltr'; document.body.appendChild(d); }
+      d.textContent = (msg || '') + ' | ' + (src || '').split('/').pop() + ':' + line;
+      return false;
+    };
+  </script>
+  <script src="js/auth.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/presence.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+  <script src="js/pdf-forms.js"></script>
+  <script>
+    (function(){
+      const btn  = document.getElementById('mobileMenuBtn');
+      const menu = document.getElementById('mobileMenu');
+      const icon = document.getElementById('mobileMenuIcon');
+      btn.addEventListener('click', () => {
+        const open = menu.classList.toggle('hidden');
+        icon.className = open ? 'fa-solid fa-bars' : 'fa-solid fa-xmark';
+      });
+      window.closeMobileMenu = function() {
+        menu.classList.add('hidden');
+        icon.className = 'fa-solid fa-bars';
+      };
+      // close when scrolling
+      window.addEventListener('scroll', closeMobileMenu, { passive: true });
+    })();
+  </script>
+</body>
+</html>

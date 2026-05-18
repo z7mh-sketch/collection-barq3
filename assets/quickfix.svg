@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="topGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64B5F6"/>
+      <stop offset="100%" stop-color="#1E88E5"/>
+    </linearGradient>
+    <linearGradient id="botGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1565C0"/>
+      <stop offset="100%" stop-color="#1A237E"/>
+    </linearGradient>
+  </defs>
+  <!-- Upper-right piece -->
+  <path d="M50 8 L88 38 L88 58 L68 58 L68 42 L50 28 L32 42 L32 28 Z" fill="url(#topGrad)"/>
+  <!-- Lower-left piece -->
+  <path d="M50 92 L12 62 L12 42 L32 42 L32 58 L50 72 L68 58 L68 72 Z" fill="url(#botGrad)"/>
+</svg>

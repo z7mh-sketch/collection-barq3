@@ -1,0 +1,11 @@
+[[headers]]
+  for = "/pdfs/*"
+  [headers.values]
+    Content-Disposition = "inline"
+    Content-Type = "application/pdf"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
