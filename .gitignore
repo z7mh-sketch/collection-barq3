@@ -1,0 +1,6 @@
+﻿cloudflared.exe
+server.ps1
+setup-autostart.ps1
+start.bat
+start-with-tunnel.bat
+.claude/
