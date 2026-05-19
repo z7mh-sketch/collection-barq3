@@ -808,6 +808,25 @@ textarea.pf-ctrl { resize: vertical; }
 .dark .modal-section-title { color: #52525b; }
 .dark mark.search-hit { background: #854d0e; color: #fef9c3; }
 
+/* ========== Violation Form ========== */
+.vf-label { display:block; font-size:.8rem; font-weight:700; margin-bottom:.4rem; color:#FBBF24; letter-spacing:.03em; }
+.vf-violations { border:1.5px solid #3f3f46; border-radius:.6rem; padding:.85rem .75rem; display:flex; flex-direction:column; gap:.65rem; }
+.vf-vrow { display:flex; align-items:center; gap:.45rem; }
+.vf-vrow-wrap { flex-wrap:wrap; }
+.vf-chk { width:16px; height:16px; accent-color:#FBBF24; flex-shrink:0; cursor:pointer; }
+.vf-chk-label { font-size:.82rem; cursor:pointer; flex-shrink:0; }
+.vf-date-inline { width:140px !important; min-width:110px !important; }
+.vf-num { width:68px !important; }
+.vf-select { width:auto !important; padding-inline-end:.5rem !important; }
+.vf-txt { font-size:.82rem; flex-shrink:0; }
+
+/* Print — hide everything except the violation print area */
+@media print {
+  body > *:not(#vfPrintArea) { display:none !important; }
+  #vfPrintArea { display:block !important; }
+}
+#vfPrintArea { display:none; }
+
 /* ========== Scrollbar ========== */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }

@@ -151,6 +151,78 @@
     <span data-i18n="footerText">Collection Barq · مرجع داخلي للاستخدام ضمن الشركة فقط</span>
   </footer>
 
+  <!-- ============ VIOLATION FORM MODAL ============ -->
+  <div id="violationFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.82)">
+    <div class="modal-box w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 class="modal-title" id="vfModalTitle">نموذج مخالفة موظف</h4>
+        <button onclick="closeViolationForm()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5" id="vfFormBody">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div><label class="vf-label" id="vfLblDate">تاريخ المخالفة</label><input type="date" id="vfDate" class="search-input" style="width:100%" /></div>
+          <div><label class="vf-label" id="vfLblEmpName">اسم الموظف</label><input type="text" id="vfEmpName" class="search-input" style="width:100%" /></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div><label class="vf-label" id="vfLblJobTitle">المسمى الوظيفي</label><input type="text" id="vfJobTitle" class="search-input" style="width:100%" /></div>
+          <div><label class="vf-label" id="vfLblHRID">الرقم الوظيفي HRID</label><input type="text" id="vfHRID" class="search-input" style="width:100%" /></div>
+        </div>
+        <div class="mb-4">
+          <label class="vf-label" id="vfLblVType">نوع المخالفة</label>
+          <div class="vf-violations">
+            <div class="vf-vrow">
+              <input type="checkbox" id="vfChkLate" class="vf-chk" />
+              <label for="vfChkLate" class="vf-chk-label" id="vfLblLate">مخالفة التأخير في الحضور لمقر العمل بتاريخ:</label>
+              <input type="date" id="vfLatDate" class="search-input vf-date-inline" />
+            </div>
+            <div class="vf-vrow vf-vrow-wrap">
+              <input type="checkbox" id="vfChkEarly" class="vf-chk" />
+              <label for="vfChkEarly" class="vf-chk-label" id="vfLblEarlyLeave">مخالفة مغادرة مقر العمل بتاريخ:</label>
+              <input type="date" id="vfEarlyDate" class="search-input vf-date-inline" />
+              <span class="vf-txt" id="vfLblForDuration">ولمدة</span>
+              <input type="number" id="vfEarlyDur" min="1" class="search-input vf-num" />
+              <select id="vfEarlyUnit" class="search-input vf-select">
+                <option id="vfOptMinutes">دقيقة</option>
+                <option id="vfOptHour">ساعة</option>
+              </select>
+            </div>
+            <div class="vf-vrow vf-vrow-wrap">
+              <input type="checkbox" id="vfChkAbsent" class="vf-chk" />
+              <label for="vfChkAbsent" class="vf-chk-label" id="vfLblAbsence">مخالفة الغياب عن العمل ولمدة</label>
+              <input type="number" id="vfAbsentDays" min="1" class="search-input vf-num" />
+              <span class="vf-txt" id="vfLblDays">يوم بتاريخ:</span>
+              <input type="date" id="vfAbsentDate" class="search-input vf-date-inline" />
+            </div>
+            <div class="vf-vrow">
+              <input type="checkbox" id="vfChkOther" class="vf-chk" />
+              <label for="vfChkOther" class="vf-chk-label" id="vfLblOther">أخرى:</label>
+              <input type="text" id="vfOtherText" class="search-input" style="flex:1;min-width:100px" />
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="vf-label" id="vfLblConsequence">وقد ترتب على ذلك</label>
+          <textarea id="vfConsequence" class="search-input" style="width:100%;height:80px;resize:vertical"></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="vf-label" id="vfLblSig">توقيع المشرف / المدير المباشر</label>
+          <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap;align-items:center">
+            <button type="button" id="vfBtnDraw" onclick="vfSetSigMode('draw')" class="contact-btn" style="border-color:#FBBF24"><span id="vfBtnDrawLbl">رسم</span></button>
+            <button type="button" id="vfBtnType" onclick="vfSetSigMode('type')" class="contact-btn"><span id="vfBtnTypeLbl">كتابة</span></button>
+            <button type="button" onclick="vfClearSig()" class="contact-btn" style="margin-inline-start:auto"><i class="fa-solid fa-eraser"></i> <span id="vfBtnClearLbl">مسح</span></button>
+          </div>
+          <canvas id="vfSigCanvas" width="600" height="130" style="width:100%;height:130px;border:1.5px solid #3f3f46;border-radius:.5rem;background:#fff;touch-action:none;cursor:crosshair;display:block"></canvas>
+          <input type="text" id="vfSigText" class="search-input" style="width:100%;display:none;font-size:1.4rem;font-style:italic;font-family:Georgia,serif" />
+        </div>
+        <div style="display:flex;gap:.75rem;justify-content:flex-end;padding-top:.5rem">
+          <button type="button" onclick="closeViolationForm()" class="contact-btn" id="vfBtnCancel">إلغاء</button>
+          <button type="button" onclick="vfPrint()" class="escalation-btn"><i class="fa-solid fa-print"></i> <span id="vfBtnPrintLbl">طباعة / تحميل</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="vfPrintArea"></div>
+
   <!-- ============ LEADERS MODAL ============ -->
   <div id="leadersModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
     <div class="modal-box w-full max-w-6xl max-h-[90vh] overflow-y-auto">

@@ -1,415 +1,514 @@
-(function () {
-  'use strict';
+// ======================== Violation Form ========================
 
-  // ─── تعريف النماذج ───────────────────────────────────────
-  const FORMS = {
-    '/pdfs/violation.pdf': {
-      title: 'نموذج المخالفة',
-      icon:  'fa-triangle-exclamation',
-      fields: [
-        { name: 'emp_name',   label: 'اسم الموظف',         type: 'text',     req: true  },
-        { name: 'emp_id',     label: 'رقم الموظف',          type: 'text'                },
-        { name: 'dept',       label: 'القسم',               type: 'text',     req: true  },
-        { name: 'job_title',  label: 'المسمى الوظيفي',     type: 'text'                },
-        { name: 'vio_date',   label: 'تاريخ المخالفة',     type: 'date',     req: true  },
-        { name: 'vio_type',   label: 'نوع المخالفة',       type: 'select',
-          opts: ['تأخر متكرر','غياب بدون إذن','مخالفة سياسة الشركة','سلوك غير لائق','أخرى'] },
-        { name: 'vio_desc',   label: 'وصف المخالفة',       type: 'textarea', req: true  },
-        { name: 'action',     label: 'الإجراء التأديبي',   type: 'textarea'            },
-        { name: 'supervisor', label: 'المسؤول المباشر',    type: 'text'                },
-      ]
-    },
-    '/pdfs/resignation.pdf': {
-      title: 'نموذج الاستقالة',
-      icon:  'fa-right-from-bracket',
-      fields: [
-        { name: 'emp_name',  label: 'اسم الموظف',       type: 'text', req: true },
-        { name: 'emp_id',    label: 'رقم الموظف',        type: 'text'           },
-        { name: 'dept',      label: 'القسم',              type: 'text', req: true },
-        { name: 'job_title', label: 'المسمى الوظيفي',   type: 'text'           },
-        { name: 'res_date',  label: 'تاريخ الاستقالة',  type: 'date', req: true },
-        { name: 'last_day',  label: 'آخر يوم عمل',      type: 'date'           },
-        { name: 'reason',    label: 'سبب الاستقالة',    type: 'textarea'       },
-      ]
-    },
-    '/pdfs/leave-request.pdf': {
-      title: 'نموذج طلب إجازة',
-      icon:  'fa-calendar-days',
-      fields: [
-        { name: 'emp_name',   label: 'اسم الموظف',    type: 'text',   req: true },
-        { name: 'emp_id',     label: 'رقم الموظف',     type: 'text'             },
-        { name: 'dept',       label: 'القسم',           type: 'text',   req: true },
-        { name: 'leave_type', label: 'نوع الإجازة',   type: 'select',
-          opts: ['سنوية','مرضية','طارئة','دراسية','أخرى'] },
-        { name: 'from_date',  label: 'من تاريخ',       type: 'date',   req: true },
-        { name: 'to_date',    label: 'إلى تاريخ',      type: 'date',   req: true },
-        { name: 'days',       label: 'عدد الأيام',     type: 'number'           },
-        { name: 'notes',      label: 'ملاحظات',        type: 'textarea'         },
-      ]
+// ── تحكم: true = يلصق البيانات في الـ PDF الحقيقي، false = يطبع فورم HTML ──
+const VF_PDF_FILL = false;
+
+const VF_PDF_URL     = '/pdfs/violation.pdf';
+const VF_COORDS_KEY  = 'barq_vf_coords_v1';
+
+// ── حقول الفورم وترتيبها للإلصاق ──
+const VF_FIELDS = [
+  'vf_date', 'vf_emp_name', 'vf_job_title', 'vf_hrid',
+  'vf_late_date', 'vf_early_date', 'vf_early_dur',
+  'vf_absent_days', 'vf_absent_date', 'vf_other_text', 'vf_consequence'
+];
+
+const VF = {
+  ar: {
+    title:       'نموذج مخالفة موظف',
+    date:        'تاريخ المخالفة',
+    empName:     'اسم الموظف',
+    jobTitle:    'المسمى الوظيفي',
+    hrid:        'الرقم الوظيفي',
+    vType:       'نوع المخالفة',
+    late:        'مخالفة التأخير في الحضور لمقر العمل بتاريخ:',
+    earlyLeave:  'مخالفة مغادرة مقر العمل بتاريخ:',
+    forDur:      'ولمدة',
+    minutes:     'دقيقة',
+    hour:        'ساعة',
+    absence:     'مخالفة الغياب عن العمل ولمدة',
+    days:        'يوم بتاريخ:',
+    other:       'أخرى:',
+    consequence: 'وقد ترتب على ذلك',
+    sig:         'توقيع المشرف / المدير المباشر',
+    draw:        'رسم',
+    type:        'كتابة',
+    clear:       'مسح',
+    print:       'طباعة / تحميل',
+    cancel:      'إلغاء',
+    sigPH:       'اكتب اسمك هنا...',
+    setCoords:   'تحديد مواضع الحقول على النموذج',
+    fieldLabels: {
+      vf_date:        'تاريخ المخالفة',
+      vf_emp_name:    'اسم الموظف',
+      vf_job_title:   'المسمى الوظيفي',
+      vf_hrid:        'الرقم الوظيفي',
+      vf_late_date:   'تاريخ التأخير',
+      vf_early_date:  'تاريخ المغادرة',
+      vf_early_dur:   'مدة المغادرة',
+      vf_absent_days: 'عدد أيام الغياب',
+      vf_absent_date: 'تاريخ الغياب',
+      vf_other_text:  'نص أخرى',
+      vf_consequence: 'وقد ترتب على ذلك',
     }
+  },
+  en: {
+    title:       'Employee Violation Form',
+    date:        'Violation Date',
+    empName:     'Employee Name',
+    jobTitle:    'Job Title',
+    hrid:        'HRID',
+    vType:       'Violation Type',
+    late:        'Late attendance to workplace on:',
+    earlyLeave:  'Early departure from workplace on:',
+    forDur:      'for',
+    minutes:     'minutes',
+    hour:        'hour(s)',
+    absence:     'Absence from work for',
+    days:        'day(s) on:',
+    other:       'Other:',
+    consequence: 'Accordingly',
+    sig:         'Supervisor / Direct Manager Signature',
+    draw:        'Draw',
+    type:        'Type',
+    clear:       'Clear',
+    print:       'Print / Download',
+    cancel:      'Cancel',
+    sigPH:       'Type your name here...',
+    setCoords:   'Set field positions on the form',
+    fieldLabels: {
+      vf_date:        'Violation Date',
+      vf_emp_name:    'Employee Name',
+      vf_job_title:   'Job Title',
+      vf_hrid:        'HRID',
+      vf_late_date:   'Late Date',
+      vf_early_date:  'Early Leave Date',
+      vf_early_dur:   'Duration',
+      vf_absent_days: 'Absence Days',
+      vf_absent_date: 'Absence Date',
+      vf_other_text:  'Other Text',
+      vf_consequence: 'Accordingly',
+    }
+  }
+};
+
+function _vfLang() { return (typeof currentLang !== 'undefined') ? currentLang : 'ar'; }
+function _vfL(k)   { return VF[_vfLang()]?.[k] || VF.ar[k] || k; }
+
+let _vfSigMode = 'draw';
+let _vfDrawing = false;
+let _vfLX = 0, _vfLY = 0;
+
+// ─────────────────────────────────────────────
+//  فتح / إغلاق الفورم
+// ─────────────────────────────────────────────
+function openViolationForm() {
+  _vfApplyLabels();
+  const today = new Date().toISOString().split('T')[0];
+  ['vfDate','vfLatDate','vfEarlyDate','vfAbsentDate'].forEach(id => {
+    document.getElementById(id).value = today;
+  });
+  // زر مواضع الحقول — يظهر فقط إذا VF_PDF_FILL مفعّل
+  const coordBtn = document.getElementById('vfCoordBtn');
+  if (coordBtn) coordBtn.style.display = VF_PDF_FILL ? 'inline-flex' : 'none';
+
+  document.getElementById('violationFormModal').classList.remove('hidden');
+  _vfInitCanvas();
+}
+
+function closeViolationForm() {
+  document.getElementById('violationFormModal').classList.add('hidden');
+}
+
+// ─────────────────────────────────────────────
+//  تحديث النصوص حسب اللغة
+// ─────────────────────────────────────────────
+function _vfApplyLabels() {
+  const isAr = _vfLang() === 'ar';
+  document.getElementById('vfFormBody').setAttribute('dir', isAr ? 'rtl' : 'ltr');
+
+  const s = (id, k) => { const el = document.getElementById(id); if (el) el.textContent = _vfL(k); };
+  const p = (id, k) => { const el = document.getElementById(id); if (el) el.placeholder = _vfL(k); };
+
+  s('vfModalTitle',    'title');
+  s('vfLblDate',       'date');
+  s('vfLblEmpName',    'empName');
+  s('vfLblJobTitle',   'jobTitle');
+  s('vfLblHRID',       'hrid');
+  s('vfLblVType',      'vType');
+  s('vfLblLate',       'late');
+  s('vfLblEarlyLeave', 'earlyLeave');
+  s('vfLblForDuration','forDur');
+  s('vfOptMinutes',    'minutes');
+  s('vfOptHour',       'hour');
+  s('vfLblAbsence',    'absence');
+  s('vfLblDays',       'days');
+  s('vfLblOther',      'other');
+  s('vfLblConsequence','consequence');
+  s('vfLblSig',        'sig');
+  s('vfBtnDrawLbl',    'draw');
+  s('vfBtnTypeLbl',    'type');
+  s('vfBtnClearLbl',   'clear');
+  s('vfBtnCancel',     'cancel');
+  s('vfBtnPrintLbl',   'print');
+  p('vfSigText',       'sigPH');
+}
+
+// ─────────────────────────────────────────────
+//  لوحة التوقيع
+// ─────────────────────────────────────────────
+function _vfInitCanvas() {
+  const orig = document.getElementById('vfSigCanvas');
+  const c = orig.cloneNode(true);
+  orig.parentNode.replaceChild(c, orig);
+  const ctx = c.getContext('2d');
+  ctx.strokeStyle = '#111'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  function pos(e) {
+    const r = c.getBoundingClientRect();
+    const sx = c.width / r.width, sy = c.height / r.height;
+    const src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - r.left) * sx, y: (src.clientY - r.top) * sy };
+  }
+  function start(e) { _vfDrawing = true; const p = pos(e); _vfLX = p.x; _vfLY = p.y; }
+  function move(e) {
+    if (!_vfDrawing) return;
+    if (e.cancelable) e.preventDefault();
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(_vfLX, _vfLY); ctx.lineTo(p.x, p.y); ctx.stroke();
+    _vfLX = p.x; _vfLY = p.y;
+  }
+  function stop() { _vfDrawing = false; }
+
+  c.addEventListener('mousedown',  start);
+  c.addEventListener('mousemove',  move);
+  c.addEventListener('mouseup',    stop);
+  c.addEventListener('mouseleave', stop);
+  c.addEventListener('touchstart', start, { passive: true });
+  c.addEventListener('touchmove',  move,  { passive: false });
+  c.addEventListener('touchend',   stop);
+}
+
+function vfSetSigMode(mode) {
+  _vfSigMode = mode;
+  const canvas = document.getElementById('vfSigCanvas');
+  const input  = document.getElementById('vfSigText');
+  const dBtn   = document.getElementById('vfBtnDraw');
+  const tBtn   = document.getElementById('vfBtnType');
+  if (mode === 'draw') {
+    canvas.style.display = 'block'; input.style.display = 'none';
+    dBtn.style.borderColor = '#FBBF24'; tBtn.style.borderColor = '';
+  } else {
+    canvas.style.display = 'none'; input.style.display = 'block';
+    tBtn.style.borderColor = '#FBBF24'; dBtn.style.borderColor = '';
+  }
+}
+
+function vfClearSig() {
+  const c = document.getElementById('vfSigCanvas');
+  c.getContext('2d').clearRect(0, 0, c.width, c.height);
+  document.getElementById('vfSigText').value = '';
+}
+
+function _vfSigUrl() {
+  if (_vfSigMode === 'type') {
+    const name = document.getElementById('vfSigText').value.trim();
+    if (!name) return null;
+    const c = document.createElement('canvas'); c.width = 500; c.height = 110;
+    const ctx = c.getContext('2d');
+    ctx.font = 'italic 38px Georgia, serif';
+    ctx.fillStyle = '#111'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(name, 250, 55);
+    return c.toDataURL();
+  }
+  const c = document.getElementById('vfSigCanvas');
+  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  if (!Array.from(d).some(v => v !== 0)) return null;
+  return c.toDataURL();
+}
+
+// ─────────────────────────────────────────────
+//  جمع بيانات الفورم
+// ─────────────────────────────────────────────
+function _vfCollectData() {
+  const g = id => document.getElementById(id);
+  const v = id => g(id).value;
+  const unit = () => g('vfEarlyUnit').options[g('vfEarlyUnit').selectedIndex].textContent;
+  return {
+    vf_date:        v('vfDate'),
+    vf_emp_name:    v('vfEmpName'),
+    vf_job_title:   v('vfJobTitle'),
+    vf_hrid:        v('vfHRID'),
+    chk_late:       g('vfChkLate').checked,
+    vf_late_date:   v('vfLatDate'),
+    chk_early:      g('vfChkEarly').checked,
+    vf_early_date:  v('vfEarlyDate'),
+    vf_early_dur:   v('vfEarlyDur') + ' ' + unit(),
+    chk_absent:     g('vfChkAbsent').checked,
+    vf_absent_days: v('vfAbsentDays'),
+    vf_absent_date: v('vfAbsentDate'),
+    chk_other:      g('vfChkOther').checked,
+    vf_other_text:  v('vfOtherText'),
+    vf_consequence: v('vfConsequence'),
   };
+}
 
-  const COORDS_KEY = 'barq_pdf_coords_v1';
-  let _url  = '';
-  let _data = {};
+// ─────────────────────────────────────────────
+//  الإخراج: طباعة HTML (مفعّل الحين)
+// ─────────────────────────────────────────────
+function _vfPrintHtml(data) {
+  const lang = _vfLang();
+  const L    = VF[lang];
+  const isAr = lang === 'ar';
 
-  // ─── تحميل / حفظ الإحداثيات ─────────────────────────────
-  function loadCoords(url) {
-    try { return JSON.parse(localStorage.getItem(COORDS_KEY) || '{}')[url] || {}; }
-    catch { return {}; }
-  }
-  function saveCoords(url, coords) {
-    const all = JSON.parse(localStorage.getItem(COORDS_KEY) || '{}');
-    all[url] = coords;
-    localStorage.setItem(COORDS_KEY, JSON.stringify(all));
-  }
+  const rows = [];
+  if (data.chk_late)
+    rows.push(`&#9745; ${L.late} ${data.vf_late_date}`);
+  if (data.chk_early)
+    rows.push(`&#9745; ${L.earlyLeave} ${data.vf_early_date} &mdash; ${L.forDur} ${data.vf_early_dur}`);
+  if (data.chk_absent)
+    rows.push(`&#9745; ${L.absence} ${data.vf_absent_days||'&mdash;'} ${L.days} ${data.vf_absent_date}`);
+  if (data.chk_other)
+    rows.push(`&#9745; ${L.other} ${data.vf_other_text}`);
 
-  // ─── فتح نموذج التعبئة ───────────────────────────────────
-  function openForm(pdfUrl) {
-    _url = pdfUrl;
-    const def = FORMS[pdfUrl];
-    if (!def) return;
+  const violHtml = rows.length
+    ? rows.map(r => `<div class="vi">${r}</div>`).join('')
+    : `<div class="vi muted">${isAr ? '(لم يتم تحديد نوع)' : '(none selected)'}</div>`;
 
-    document.getElementById('pdfFormTitle').innerHTML =
-      `<i class="fa-solid ${def.icon}" style="color:#FBBF24;margin-left:.5rem"></i>${def.title}`;
+  const sigUrl  = _vfSigUrl();
+  const sigHtml = sigUrl
+    ? `<img src="${sigUrl}" style="max-width:260px;max-height:90px;border:1px solid #ccc;border-radius:4px;display:block">`
+    : `<div style="border-bottom:2px solid #000;width:260px;height:70px"></div>`;
 
-    document.getElementById('pdfFormFields').innerHTML = def.fields.map(f => {
-      let ctrl = '';
-      if (f.type === 'select') {
-        ctrl = `<select class="pf-ctrl" name="${f.name}">${f.opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
-      } else if (f.type === 'textarea') {
-        ctrl = `<textarea class="pf-ctrl" name="${f.name}" rows="3"></textarea>`;
-      } else {
-        ctrl = `<input class="pf-ctrl" type="${f.type||'text'}" name="${f.name}" ${f.req?'required':''} />`;
-      }
-      return `<div class="pf-row">
-        <label class="pf-label">${f.label}${f.req?' <span style="color:#FBBF24">*</span>':''}</label>${ctrl}
-      </div>`;
-    }).join('');
-
-    // احتساب أيام الإجازة
-    if (pdfUrl.includes('leave')) {
-      const fromEl = document.querySelector('[name="from_date"]');
-      const toEl   = document.querySelector('[name="to_date"]');
-      const daysEl = document.querySelector('[name="days"]');
-      function calcDays() {
-        if (fromEl.value && toEl.value) {
-          const d = (new Date(toEl.value) - new Date(fromEl.value)) / 86400000;
-          if (d >= 0) daysEl.value = d + 1;
-        }
-      }
-      fromEl.addEventListener('change', calcDays);
-      toEl.addEventListener('change', calcDays);
-    }
-
-    // زر تحديد المواضع
-    let mapBtn = document.getElementById('pdfMapBtn');
-    if (!mapBtn) {
-      mapBtn = document.createElement('button');
-      mapBtn.id   = 'pdfMapBtn';
-      mapBtn.type = 'button';
-      mapBtn.className = 'pf-submit-btn mt-2';
-      mapBtn.style.background = '#27272a';
-      mapBtn.style.color = '#a1a1aa';
-      mapBtn.innerHTML = '<i class="fa-solid fa-crosshairs"></i> تحديد مواضع الحقول على النموذج';
-      mapBtn.onclick = () => { collectData(); openMapper(); };
-      document.getElementById('pdfFormEl').appendChild(mapBtn);
-    }
-
-    document.getElementById('pdfFormModal').classList.remove('hidden');
-    document.querySelector('#pdfFormFields .pf-ctrl')?.focus();
-  }
-
-  // ─── جمع البيانات من النموذج ─────────────────────────────
-  function collectData() {
-    _data = {};
-    document.querySelectorAll('#pdfFormFields [name]').forEach(el => { _data[el.name] = el.value; });
-  }
-
-  // ─── إرسال النموذج ───────────────────────────────────────
-  async function submitForm(e) {
-    e.preventDefault();
-    collectData();
-    document.getElementById('pdfFormModal').classList.add('hidden');
-
-    const def    = FORMS[_url];
-    const coords = loadCoords(_url);
-    const hasCoords = Object.keys(coords).length > 0;
-
-    if (hasCoords) {
-      // الرسم على الـ PDF الأصلي
-      await drawOnPdf(_url, def, _data, coords);
-    } else {
-      // لا توجد إحداثيات — اعرض نموذج HTML جاهز للطباعة
-      _printHtml(def, _data);
-    }
-  }
-
-  // ─── رسم النص على الـ PDF ────────────────────────────────
-  async function drawOnPdf(pdfUrl, def, data, coords) {
-    // 1. رسم الـ PDF على canvas باستخدام PDF.js
-    const canvas = await _renderPdfPage(pdfUrl, 2);
-    const ctx    = canvas.getContext('2d');
-    const scale  = 2;
-
-    ctx.font      = `bold ${13 * scale}px Tajawal, Arial`;
-    ctx.fillStyle = '#1a1a1a';
-    ctx.direction = 'rtl';
-    ctx.textAlign = 'right';
-
-    def.fields.forEach(f => {
-      const pos = coords[f.name];
-      const val = data[f.name];
-      if (!pos || !val) return;
-      // textarea: اكسر السطر
-      if (f.type === 'textarea') {
-        const lines = val.split('\n');
-        lines.forEach((ln, i) => {
-          ctx.fillText(ln, pos.x * scale, (pos.y + i * 18) * scale);
-        });
-      } else {
-        ctx.fillText(val, pos.x * scale, pos.y * scale);
-      }
-    });
-
-    // 2. حوّل canvas لـ PNG ثم لـ PDF
-    const imgDataUrl = canvas.toDataURL('image/png');
-    const imgBytes   = _dataUrlToBytes(imgDataUrl);
-    const { PDFDocument } = PDFLib;
-    const pdfDoc = await PDFDocument.create();
-    const page   = pdfDoc.addPage([canvas.width / scale, canvas.height / scale]);
-    const img    = await pdfDoc.embedPng(imgBytes);
-    page.drawImage(img, { x: 0, y: 0, width: page.getWidth(), height: page.getHeight() });
-
-    const bytes = await pdfDoc.save();
-    _download(bytes, def.title + '.pdf');
-  }
-
-  // ─── مساعد: رسم صفحة الـ PDF ─────────────────────────────
-  async function _renderPdfPage(url, scale) {
-    const lib = window.pdfjsLib;
-    lib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    const pdfBytes = await fetch(url).then(r => r.arrayBuffer());
-    const pdf      = await lib.getDocument({ data: pdfBytes }).promise;
-    const page     = await pdf.getPage(1);
-    const vp       = page.getViewport({ scale });
-    const canvas   = document.createElement('canvas');
-    canvas.width   = vp.width;
-    canvas.height  = vp.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-    return canvas;
-  }
-
-  function _dataUrlToBytes(dataUrl) {
-    const base64 = dataUrl.split(',')[1];
-    const bin    = atob(base64);
-    const bytes  = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return bytes;
-  }
-
-  function _download(bytes, filename) {
-    const a = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' })),
-      download: filename
-    });
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 6000);
-  }
-
-  // ─── الـ Mapper: تحديد مواضع الحقول ─────────────────────
-  let _mapCanvas    = null;
-  let _mapCoords    = {};
-  let _mapFieldIdx  = 0;
-  let _mapDef       = null;
-  let _mapScale     = 1.5;
-
-  async function openMapper() {
-    _mapDef    = FORMS[_url];
-    _mapCoords = { ...loadCoords(_url) };
-    _mapFieldIdx = 0;
-
-    document.getElementById('pdfMapperModal').classList.remove('hidden');
-
-    // ارسم الـ PDF
-    const canvas    = await _renderPdfPage(_url, _mapScale);
-    _mapCanvas      = canvas;
-    const display   = document.getElementById('mapperCanvas');
-    display.width   = canvas.width;
-    display.height  = canvas.height;
-    display.getContext('2d').drawImage(canvas, 0, 0);
-
-    _buildMapperFields();
-    _renderMapDots();
-  }
-
-  function _buildMapperFields() {
-    const container = document.getElementById('mapperFields');
-    container.innerHTML = _mapDef.fields.map((f, i) => {
-      const hasPos = !!_mapCoords[f.name];
-      return `<div id="mf_${i}" class="mapper-field-btn" data-i="${i}"
-        style="padding:.55rem .75rem;border-radius:.6rem;border:1.5px solid ${hasPos?'#FBBF24':'#3f3f46'};
-               background:${hasPos?'rgba(251,191,36,.1)':'#111'};color:${hasPos?'#FBBF24':'#a1a1aa'};
-               font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:right;
-               transition:all .15s">
-        ${hasPos?'<i class="fa-solid fa-check" style="margin-left:.35rem"></i>':''} ${f.label}
-      </div>`;
-    }).join('');
-
-    // click → يحدد هذا الحقل كـ "نشط"
-    container.querySelectorAll('.mapper-field-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _mapFieldIdx = +btn.dataset.i;
-        _buildMapperFields();
-        const active = document.getElementById(`mf_${_mapFieldIdx}`);
-        if (active) active.style.boxShadow = '0 0 0 2px #FBBF24';
-      });
-    });
-
-    // تفعيل الأول غير المحدد
-    const firstEmpty = _mapDef.fields.findIndex(f => !_mapCoords[f.name]);
-    _mapFieldIdx = firstEmpty >= 0 ? firstEmpty : 0;
-    const active = document.getElementById(`mf_${_mapFieldIdx}`);
-    if (active) active.style.boxShadow = '0 0 0 2px #FBBF24';
-  }
-
-  function _renderMapDots() {
-    const dots = document.getElementById('mapperDots');
-    dots.innerHTML = '';
-    _mapDef.fields.forEach(f => {
-      const pos = _mapCoords[f.name];
-      if (!pos) return;
-      const dot = document.createElement('div');
-      dot.style.cssText = `position:absolute;left:${pos.x * _mapScale - 5}px;top:${pos.y * _mapScale - 5}px;
-        width:10px;height:10px;border-radius:50%;background:#FBBF24;
-        box-shadow:0 0 0 3px rgba(251,191,36,.3);pointer-events:none`;
-      const lbl = document.createElement('span');
-      lbl.style.cssText = 'position:absolute;top:-18px;right:0;font-size:10px;color:#FBBF24;white-space:nowrap;font-weight:700;';
-      lbl.textContent = f.label;
-      dot.appendChild(lbl);
-      dots.appendChild(dot);
-    });
-  }
-
-  // ─── النقر على الـ canvas لتحديد موضع ───────────────────
-  function _initMapperClick() {
-    const display = document.getElementById('mapperCanvas');
-    display.addEventListener('click', e => {
-      const rect = display.getBoundingClientRect();
-      // إحداثيات بالنسبة لصفحة الـ PDF (بدون scale)
-      const x = Math.round((e.clientX - rect.left) / (_mapScale * (rect.width  / display.width)));
-      const y = Math.round((e.clientY - rect.top)  / (_mapScale * (rect.height / display.height)));
-
-      const field = _mapDef.fields[_mapFieldIdx];
-      _mapCoords[field.name] = { x, y };
-
-      // انتقل للحقل التالي تلقائياً
-      if (_mapFieldIdx < _mapDef.fields.length - 1) _mapFieldIdx++;
-
-      _buildMapperFields();
-      _renderMapDots();
-    });
-  }
-
-  // ─── طباعة HTML احتياطي ──────────────────────────────────
-  function _printHtml(def, data) {
-    const today = new Date().toLocaleDateString('ar-SA-u-nu-latn', { year:'numeric', month:'long', day:'numeric' });
-    const fieldsHtml = def.fields.map(f => {
-      const val = data[f.name] || '';
-      const full = f.type === 'textarea';
-      return `<div class="field-box${full?' full':''}">
-        <div class="field-label">${f.label}</div>
-        <div class="field-value">${val||'&nbsp;'}</div>
-      </div>`;
-    }).join('');
-
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar">
-<head><meta charset="UTF-8"><title>${def.title}</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  const html = `<!DOCTYPE html>
+<html dir="${isAr?'rtl':'ltr'}" lang="${lang}">
+<head><meta charset="UTF-8"><title>${L.title}</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Tajawal',sans-serif;background:#fff;color:#111;direction:rtl}
-  .page{max-width:794px;margin:0 auto;padding:36px 44px;min-height:1123px;display:flex;flex-direction:column;gap:24px}
-  .hdr{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #000;padding-bottom:14px}
-  .hdr-title{font-size:22px;font-weight:800;color:#000}
-  .hdr-sub{font-size:12px;color:#555;margin-top:4px}
-  .hdr-logo{font-size:13px;font-weight:700;color:#555;text-align:left;direction:ltr}
-  .badge{display:inline-block;background:#000;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;margin-top:6px;direction:ltr}
-  .meta{display:flex;gap:12px;background:#f8f8f8;border:1px solid #e0e0e0;border-radius:8px;padding:10px 16px}
-  .meta-item{flex:1;display:flex;flex-direction:column;gap:2px}
-  .meta-key{font-size:11px;color:#777;font-weight:600}
-  .meta-val{font-size:13px;font-weight:700;color:#111}
-  .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .field-box{border:1.5px solid #d0d0d0;border-radius:7px;padding:10px 14px;background:#fafafa;display:flex;flex-direction:column;gap:5px}
-  .field-box.full{grid-column:1/-1}
-  .field-label{font-size:11px;font-weight:700;color:#777}
-  .field-value{font-size:14px;font-weight:500;color:#111;min-height:22px;border-bottom:1.5px solid #333;padding-bottom:3px}
-  .sec{font-size:13px;font-weight:800;color:#fff;background:#000;padding:5px 14px;border-radius:5px}
-  .sigs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:auto;padding-top:20px;border-top:2px solid #eee}
-  .sig{text-align:center}
-  .sig-line{border-top:1.5px solid #333;margin:44px auto 8px;width:120px}
-  .sig-name{font-size:12px;font-weight:700;color:#333}
-  @media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}.no-print{display:none}}
-  .print-btn{display:block;margin:0 auto;padding:10px 32px;background:#000;color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#111;padding:36px;font-size:13px}
+h1{font-size:18px;font-weight:700;text-align:center;margin-bottom:20px;border-bottom:2.5px solid #000;padding-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;margin-bottom:18px}
+.fld label{font-size:11px;color:#666;display:block;margin-bottom:3px}
+.fld .val{border-bottom:1px solid #999;padding:3px 2px;min-height:24px;font-weight:600}
+.sec{font-weight:700;font-size:12px;margin:16px 0 7px;border-bottom:1px solid #ddd;padding-bottom:3px}
+.vi{padding:5px 3px;font-size:13px;line-height:1.6}
+.muted{color:#aaa}
+.csq-val{border:1px solid #aaa;border-radius:4px;padding:8px;min-height:55px;white-space:pre-wrap}
+.sig-wrap{margin-top:28px}
+.sig-lbl{font-size:11px;color:#666;margin-bottom:6px}
+@media print{body{padding:18px}}
 </style></head>
 <body>
-<div class="page">
-  <div class="hdr">
-    <div><div class="hdr-title">${def.title}</div><div class="hdr-sub">نموذج رسمي — للاستخدام الداخلي فقط</div></div>
-    <div class="hdr-logo">Collection Barq<div class="badge">INTERNAL</div></div>
-  </div>
-  <div class="meta">
-    <div class="meta-item"><div class="meta-key">تاريخ التعبئة</div><div class="meta-val">${today}</div></div>
-    <div class="meta-item"><div class="meta-key">نوع النموذج</div><div class="meta-val">${def.title}</div></div>
-    <div class="meta-item"><div class="meta-key">الحالة</div><div class="meta-val">بانتظار الموافقة</div></div>
-  </div>
-  <div class="sec">بيانات النموذج</div>
-  <div class="fields">${fieldsHtml}</div>
-  <div class="sigs">
-    <div class="sig"><div class="sig-line"></div><div class="sig-name">توقيع الموظف</div></div>
-    <div class="sig"><div class="sig-line"></div><div class="sig-name">المسؤول المباشر</div></div>
-    <div class="sig"><div class="sig-line"></div><div class="sig-name">الموارد البشرية</div></div>
-  </div>
+<h1>${L.title}</h1>
+<div class="g2">
+  <div class="fld"><label>${L.date}</label><div class="val">${data.vf_date||'&mdash;'}</div></div>
+  <div class="fld"><label>${L.empName}</label><div class="val">${data.vf_emp_name||'&mdash;'}</div></div>
+  <div class="fld"><label>${L.jobTitle}</label><div class="val">${data.vf_job_title||'&mdash;'}</div></div>
+  <div class="fld"><label>${L.hrid}</label><div class="val">${data.vf_hrid||'&mdash;'}</div></div>
 </div>
-<br><div class="no-print" style="text-align:center;padding-bottom:24px">
-  <button class="print-btn" onclick="window.print()">طباعة / حفظ PDF</button>
-</div>
-<script>setTimeout(()=>window.print(),700);<\/script>
-</body></html>`);
-    win.document.close();
+<div class="sec">${L.vType}</div>
+${violHtml}
+<div class="sec">${L.consequence}</div>
+<div class="csq-val">${data.vf_consequence||''}</div>
+<div class="sig-wrap"><div class="sig-lbl">${L.sig}:</div>${sigHtml}</div>
+</body></html>`;
+
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none';
+  document.body.appendChild(iframe);
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(html);
+  iframe.contentDocument.close();
+  iframe.onload = () => {
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    setTimeout(() => document.body.removeChild(iframe), 1500);
+  };
+}
+
+// ─────────────────────────────────────────────
+//  الإخراج: إلصاق في الـ PDF الحقيقي (مطفي الحين — VF_PDF_FILL = false)
+//  لتفعيله: 1) حدد مواضع الحقول عبر زر "تحديد مواضع الحقول"
+//           2) غيّر VF_PDF_FILL إلى true في أعلى هذا الملف
+// ─────────────────────────────────────────────
+async function _vfFillPdf(data) {
+  const coords = _vfLoadCoords();
+  if (!coords) { _vfPrintHtml(data); return; }
+
+  try {
+    // رسم الـ PDF على canvas
+    const pdfBytes = await fetch(VF_PDF_URL).then(r => r.arrayBuffer());
+    const pdf  = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+    const page = await pdf.getPage(1);
+    const vp   = page.getViewport({ scale: 2 });
+    const canvas = document.createElement('canvas');
+    canvas.width  = vp.width;
+    canvas.height = vp.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+
+    // كتابة النصوص على الحقول المحددة
+    ctx.font = '24px Tahoma, Arial, sans-serif';
+    ctx.fillStyle = '#000';
+    ctx.textAlign = 'right';
+    VF_FIELDS.forEach(field => {
+      const pos = coords[field];
+      if (!pos || !data[field]) return;
+      ctx.fillText(String(data[field]), pos.x, pos.y);
+    });
+
+    // التوقيع
+    const sigUrl = _vfSigUrl();
+    if (sigUrl && coords['vf_signature']) {
+      const img = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
+      ctx.drawImage(img, coords['vf_signature'].x - 200, coords['vf_signature'].y - 60, 200, 60);
+    }
+
+    // تحويل canvas → PDF وتحميله
+    const { PDFDocument } = PDFLib;
+    const newPdf  = await PDFDocument.create();
+    const imgData = canvas.toDataURL('image/png');
+    const pngImg  = await newPdf.embedPng(imgData);
+    const newPage = newPdf.addPage([vp.width / 2, vp.height / 2]);
+    newPage.drawImage(pngImg, { x: 0, y: 0, width: vp.width / 2, height: vp.height / 2 });
+    const bytes = await newPdf.save();
+
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'violation-filled.pdf'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+
+  } catch (err) {
+    console.error('PDF fill error:', err);
+    _vfPrintHtml(data);
   }
+}
 
-  // ─── ربط الأحداث ─────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('pdfFormEl').addEventListener('submit', submitForm);
+// ─────────────────────────────────────────────
+//  تخزين / تحميل مواضع الحقول
+// ─────────────────────────────────────────────
+function _vfSaveCoords(coords) {
+  try { localStorage.setItem(VF_COORDS_KEY, JSON.stringify(coords)); } catch(_) {}
+}
+function _vfLoadCoords() {
+  try { return JSON.parse(localStorage.getItem(VF_COORDS_KEY) || 'null'); } catch(_) { return null; }
+}
 
-    document.getElementById('pdfFormClose').addEventListener('click', () =>
-      document.getElementById('pdfFormModal').classList.add('hidden'));
-    document.getElementById('pdfFormModal').addEventListener('click', e => {
-      if (e.target.id === 'pdfFormModal') document.getElementById('pdfFormModal').classList.add('hidden');
-    });
+// ─────────────────────────────────────────────
+//  محدد مواضع الحقول (يُفتح بزر "تحديد مواضع")
+// ─────────────────────────────────────────────
+let _vfMapField = null;
+let _vfMapCoords = {};
 
-    document.getElementById('pdfMapperClose').addEventListener('click', () =>
-      document.getElementById('pdfMapperModal').classList.add('hidden'));
+function openVfCoordMapper() {
+  _vfMapCoords = _vfLoadCoords() || {};
+  _vfMapField  = null;
+  const modal  = document.getElementById('vfMapperModal');
+  if (!modal) { _vfBuildMapperModal(); }
+  document.getElementById('vfMapperModal').classList.remove('hidden');
+  _vfRenderMapperPdf();
+}
 
-    document.getElementById('mapperSave').addEventListener('click', () => {
-      saveCoords(_url, _mapCoords);
-      document.getElementById('pdfMapperModal').classList.add('hidden');
-      // أعد فتح النموذج
-      openForm(_url);
-      // اعادة تعبئة البيانات
-      setTimeout(() => {
-        Object.entries(_data).forEach(([k, v]) => {
-          const el = document.querySelector(`#pdfFormFields [name="${k}"]`);
-          if (el) el.value = v;
-        });
-      }, 300);
-    });
+function _vfBuildMapperModal() {
+  const div = document.createElement('div');
+  div.id = 'vfMapperModal';
+  div.className = 'hidden fixed inset-0 z-[60] flex items-center justify-center p-4';
+  div.style.background = 'rgba(0,0,0,.85)';
+  div.innerHTML = `
+    <div class="modal-box w-full max-w-4xl max-h-[92vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 class="modal-title">تحديد مواضع الحقول على النموذج</h4>
+        <button onclick="document.getElementById('vfMapperModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-4">
+        <p style="font-size:.82rem;color:#a1a1aa;margin-bottom:.75rem">اختر الحقل ثم انقر على موضعه في النموذج</p>
+        <div id="vfMapFieldBtns" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
+        <div style="position:relative;display:inline-block;width:100%">
+          <canvas id="vfMapCanvas" style="width:100%;border:1.5px solid #3f3f46;border-radius:.5rem;cursor:crosshair;display:block"></canvas>
+          <div id="vfMapDots" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></div>
+        </div>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.75rem">
+          <button onclick="_vfMapCoords={};_vfRenderMapperDots()" class="contact-btn"><i class="fa-solid fa-trash"></i> مسح الكل</button>
+          <button onclick="_vfSaveCoords(_vfMapCoords);document.getElementById('vfMapperModal').classList.add('hidden')" class="escalation-btn"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
 
-    _initMapperClick();
+  // زر التوقيع
+  const allFields = [...VF_FIELDS, 'vf_signature'];
+  const labels = VF[_vfLang()].fieldLabels;
+  const btns = document.getElementById('vfMapFieldBtns');
+  allFields.forEach(f => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'contact-btn';
+    b.dataset.field = f;
+    b.textContent = labels[f] || f;
+    b.onclick = () => {
+      _vfMapField = f;
+      btns.querySelectorAll('.contact-btn').forEach(x => x.style.borderColor = '');
+      b.style.borderColor = '#FBBF24';
+    };
+    btns.appendChild(b);
   });
 
-  window.openPdfForm = openForm;
-})();
+  document.getElementById('vfMapCanvas').addEventListener('click', _vfMapCanvasClick);
+}
+
+async function _vfRenderMapperPdf() {
+  const canvas = document.getElementById('vfMapCanvas');
+  if (!canvas) return;
+  try {
+    const bytes = await fetch(VF_PDF_URL).then(r => r.arrayBuffer());
+    const pdf   = await pdfjsLib.getDocument({ data: bytes }).promise;
+    const page  = await pdf.getPage(1);
+    const vp    = page.getViewport({ scale: 1.8 });
+    canvas.width  = vp.width;
+    canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    _vfRenderMapperDots();
+  } catch(e) { console.error(e); }
+}
+
+function _vfMapCanvasClick(e) {
+  if (!_vfMapField) return;
+  const rect = e.target.getBoundingClientRect();
+  const scaleX = e.target.width  / rect.width;
+  const scaleY = e.target.height / rect.height;
+  _vfMapCoords[_vfMapField] = {
+    x: Math.round((e.clientX - rect.left) * scaleX),
+    y: Math.round((e.clientY - rect.top)  * scaleY)
+  };
+  _vfRenderMapperDots();
+}
+
+function _vfRenderMapperDots() {
+  const canvas = document.getElementById('vfMapCanvas');
+  const dots   = document.getElementById('vfMapDots');
+  if (!canvas || !dots) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = rect.width  / canvas.width;
+  const scaleY = rect.height / canvas.height;
+  dots.innerHTML = Object.entries(_vfMapCoords).map(([f, pos]) => {
+    const x = pos.x * scaleX, y = pos.y * scaleY;
+    const labels = VF[_vfLang()].fieldLabels;
+    return `<div style="position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%)">
+      <div style="width:10px;height:10px;background:#FBBF24;border-radius:50%;border:1.5px solid #000"></div>
+      <div style="font-size:9px;color:#FBBF24;white-space:nowrap;background:rgba(0,0,0,.6);padding:1px 3px;border-radius:2px">${labels[f]||f}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+//  زر الإرسال الرئيسي
+// ─────────────────────────────────────────────
+function vfPrint() {
+  const data = _vfCollectData();
+  if (VF_PDF_FILL) {
+    _vfFillPdf(data);
+  } else {
+    _vfPrintHtml(data);
+  }
+}
