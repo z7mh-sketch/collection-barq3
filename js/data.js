@@ -215,6 +215,7 @@ const quickLinks = [
   { label: "ITSM",             url: "https://newbank2.atlassian.net/servicedesk/customer/portals",             icon: "headset",     img: "assets/atlassian.png", phone: "0547562927" },
   { label: "Microsoft Teams",  url: "msteams://",                                                              icon: "comments" },
   { label: "Outlook",          url: "mailto:",                                                                  icon: "envelope" },
+  { label: "Intranet",         url: "https://intranet.prod.barraq.com.sa/workflow-status/?page=gravityflow-inbox&view=entry&id=23&lid=10902", icon: "globe" },
 ];
 
 // ===================== روابط إضافية =====================
