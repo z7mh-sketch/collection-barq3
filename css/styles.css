@@ -808,6 +808,32 @@ textarea.pf-ctrl { resize: vertical; }
 .dark .modal-section-title { color: #52525b; }
 .dark mark.search-hit { background: #854d0e; color: #fef9c3; }
 
+/* ========== Contact Modal ========== */
+.contact-modal-opt {
+  display: flex; align-items: center; gap: 1rem;
+  background: #18181b; border: 1.5px solid #27272a; border-radius: .875rem;
+  padding: .9rem 1rem; text-decoration: none; color: inherit;
+  transition: border-color .15s; cursor: pointer; width: 100%; text-align: start;
+}
+.contact-modal-opt:hover { border-color: #FBBF24; }
+.contact-opt-icon {
+  width: 40px; height: 40px; border-radius: .6rem;
+  background: rgba(251,191,36,.12); color: #FBBF24;
+  display: grid; place-items: center; font-size: 1.1rem; flex-shrink: 0;
+}
+.contact-opt-title { font-weight: 700; font-size: .9rem; margin-bottom: .15rem; }
+.contact-opt-sub { font-size: .78rem; color: #71717a; }
+
+.protocol-box { background: #0f0f0f; border: 1.5px solid #27272a; border-radius: 1rem; padding: 1.25rem; }
+.protocol-header { display: flex; align-items: center; gap: .6rem; color: #FBBF24; font-weight: 700; font-size: .95rem; margin-bottom: 1.1rem; }
+.protocol-steps { display: flex; flex-direction: column; gap: 0; }
+.protocol-step { background: #18181b; border: 1.5px solid #27272a; border-radius: .75rem; padding: .85rem 1rem; }
+.protocol-step-badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: .2rem .6rem; border-radius: 2rem; margin-bottom: .5rem; }
+.protocol-step-badge.caller { background: rgba(251,191,36,.15); color: #FBBF24; }
+.protocol-step-badge.receiver { background: rgba(34,197,94,.12); color: #22c55e; }
+.protocol-step-text { font-size: .84rem; line-height: 1.7; color: #d4d4d8; white-space: pre-line; }
+.protocol-divider { text-align: center; color: #3f3f46; font-size: .75rem; padding: .3rem 0; }
+
 /* ========== Header Search ========== */
 .header-search-wrap {
   position: relative;

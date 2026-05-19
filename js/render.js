@@ -18,14 +18,97 @@ function highlight(text, term) {
   return safe.replace(new RegExp(re, 'gi'), m => `<mark class="search-hit">${m}</mark>`);
 }
 
+// ----------- Contact Modal -----------
+const _contactProtocol = {
+  ar: {
+    webLabel:   'فتح الموقع',
+    webSub:     'افتح بوابة الدعم مباشرة',
+    phoneLabel: 'اتصال سريع',
+    backLabel:  'رجوع',
+    title:      'بروتوكول المكالمة الاحترافية',
+    ps1Badge:   'الليدر يبدأ',
+    ps1Text:    'السلام عليكم،\nأنا [اسمك]، [منصبك] في [قسمك].\nأتواصل معكم بخصوص مشكلة تقنية تحتاج إلى دعمكم.',
+    ps2Badge:   'المستقبل يرد',
+    ps2Text:    'وعليكم السلام، أهلاً بك.\nأنا من فريق الدعم الفني ITSM، كيف أقدر أساعدك؟',
+    ps3Badge:   'الليدر يشرح المشكلة',
+    ps3Text:    '• اسم النظام أو الجهاز المتأثر\n• وقت بدء المشكلة\n• عدد المتأثرين في الفريق\n• هل تؤثر على سير العمل مباشرة؟\n\n"المشكلة التي نواجهها هي: ..."',
+    ps4Badge:   'إغلاق المكالمة',
+    ps4Text:    '"هل تحتاج أي معلومات إضافية؟\nأتطلع إلى حل سريع، شكراً جزيلاً لكم."',
+    callNow:    'اتصل الآن',
+  },
+  en: {
+    webLabel:   'Open Website',
+    webSub:     'Open the support portal directly',
+    phoneLabel: 'Quick Call',
+    backLabel:  'Back',
+    title:      'Professional Call Protocol',
+    ps1Badge:   'Leader starts',
+    ps1Text:    'Hello,\nThis is [Your Name], [Your Title] at [Your Department].\nI\'m reaching out regarding a technical issue that requires your support.',
+    ps2Badge:   'Receiver responds',
+    ps2Text:    'Hello, welcome.\nThis is the ITSM support team. How can I assist you?',
+    ps3Badge:   'Leader explains the issue',
+    ps3Text:    '• Name of the affected system or device\n• When the issue started\n• Number of team members affected\n• Is it impacting operations directly?\n\n"The issue we are facing is: ..."',
+    ps4Badge:   'Closing the call',
+    ps4Text:    '"Do you need any additional information?\nI look forward to a quick resolution. Thank you very much."',
+    callNow:    'Call Now',
+  }
+};
+
+let _contactPhone = '';
+
+function openContactModal(label, url, phone) {
+  const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ar';
+  const P = _contactProtocol[lang];
+  _contactPhone = phone;
+
+  document.getElementById('contactModalTitle').textContent = label;
+  document.getElementById('contactWebBtn').href = url;
+  document.getElementById('contactWebLabel').textContent  = P.webLabel;
+  document.getElementById('contactWebSub').textContent    = P.webSub;
+  document.getElementById('contactPhoneLabel').textContent = P.phoneLabel;
+  document.getElementById('contactPhoneNum').textContent  = phone;
+
+  document.getElementById('contactOptions').classList.remove('hidden');
+  document.getElementById('contactProtocol').classList.add('hidden');
+  document.getElementById('contactModal').classList.remove('hidden');
+}
+
+function closeContactModal() {
+  document.getElementById('contactModal').classList.add('hidden');
+}
+
+function showProtocol() {
+  const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ar';
+  const P = _contactProtocol[lang];
+  const s = (id, val) => { document.getElementById(id).textContent = val; };
+  s('backLabel',     P.backLabel);
+  s('protocolTitle', P.title);
+  s('ps1Badge', P.ps1Badge); s('ps1Text', P.ps1Text);
+  s('ps2Badge', P.ps2Badge); s('ps2Text', P.ps2Text);
+  s('ps3Badge', P.ps3Badge); s('ps3Text', P.ps3Text);
+  s('ps4Badge', P.ps4Badge); s('ps4Text', P.ps4Text);
+  s('callNowLabel', P.callNow);
+  document.getElementById('protocolCallBtn').href = 'tel:' + _contactPhone;
+  document.getElementById('contactOptions').classList.add('hidden');
+  document.getElementById('contactProtocol').classList.remove('hidden');
+}
+
+function hideProtocol() {
+  document.getElementById('contactOptions').classList.remove('hidden');
+  document.getElementById('contactProtocol').classList.add('hidden');
+}
+
 // ----------- Quick Links -----------
 function renderQuickLinks() {
   document.getElementById('quickLinksGrid').innerHTML = quickLinks.map(link => {
     const iconHtml = link.img
       ? `<img src="${escapeHtml(link.img)}" alt="${escapeHtml(link.label)}" class="quick-img" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-${escapeHtml(link.icon)}\\'></i>'" />`
       : `<i class="fa-solid fa-${escapeHtml(link.icon)}"></i>`;
+    const clickAttr = link.phone
+      ? `href="#" onclick="openContactModal('${escapeHtml(link.label)}','${escapeHtml(link.url)}','${escapeHtml(link.phone)}');return false;"`
+      : `href="${escapeHtml(link.url)}" target="_blank" rel="noopener"`;
     return `
-      <a class="quick-card" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
+      <a class="quick-card" ${clickAttr}>
         <div class="quick-icon">${iconHtml}</div>
         <span>${escapeHtml(link.label)}</span>
       </a>`;

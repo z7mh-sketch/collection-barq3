@@ -212,7 +212,7 @@ const leaders = [
 // ===================== الروابط السريعة =====================
 const quickLinks = [
   { label: "Sprinklr",         url: "https://space-prod17.sprinklr.com/app/home",                              icon: "share-nodes", img: "assets/sprinklr.png" },
-  { label: "ITSM",             url: "https://newbank2.atlassian.net/servicedesk/customer/portals",             icon: "headset",     img: "assets/atlassian.png" },
+  { label: "ITSM",             url: "https://newbank2.atlassian.net/servicedesk/customer/portals",             icon: "headset",     img: "assets/atlassian.png", phone: "0547562927" },
   { label: "Microsoft Teams",  url: "msteams://",                                                              icon: "comments" },
   { label: "Outlook",          url: "mailto:",                                                                  icon: "envelope" },
 ];

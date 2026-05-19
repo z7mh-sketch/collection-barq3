@@ -159,6 +159,78 @@
     <span data-i18n="footerText">Collection Barq · مرجع داخلي للاستخدام ضمن الشركة فقط</span>
   </footer>
 
+  <!-- ============ CONTACT MODAL ============ -->
+  <div id="contactModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.78)">
+    <div class="modal-box w-full max-w-lg">
+      <div class="modal-header">
+        <h4 class="modal-title flex items-center gap-2">
+          <i class="fa-solid fa-headset" style="color:#FBBF24"></i>
+          <span id="contactModalTitle">ITSM</span>
+        </h4>
+        <button onclick="closeContactModal()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5">
+        <!-- خيارات التواصل -->
+        <div id="contactOptions" class="flex flex-col gap-3">
+          <a id="contactWebBtn" href="#" target="_blank" rel="noopener"
+            class="contact-modal-opt">
+            <div class="contact-opt-icon"><i class="fa-solid fa-globe"></i></div>
+            <div>
+              <div class="contact-opt-title" id="contactWebLabel">فتح الموقع</div>
+              <div class="contact-opt-sub" id="contactWebSub">افتح بوابة الدعم مباشرة</div>
+            </div>
+            <i class="fa-solid fa-arrow-up-left-from-square" style="margin-inline-start:auto;color:#71717a;font-size:.75rem"></i>
+          </a>
+          <button onclick="showProtocol()" class="contact-modal-opt">
+            <div class="contact-opt-icon" style="background:rgba(34,197,94,.15);color:#22c55e"><i class="fa-solid fa-phone"></i></div>
+            <div>
+              <div class="contact-opt-title" id="contactPhoneLabel">اتصال سريع</div>
+              <div class="contact-opt-sub" id="contactPhoneNum"></div>
+            </div>
+            <i class="fa-solid fa-chevron-left" style="margin-inline-start:auto;color:#71717a;font-size:.75rem"></i>
+          </button>
+        </div>
+
+        <!-- البروتوكول -->
+        <div id="contactProtocol" class="hidden">
+          <button onclick="hideProtocol()" class="contact-btn mb-4" style="font-size:.8rem">
+            <i class="fa-solid fa-arrow-right"></i> <span id="backLabel">رجوع</span>
+          </button>
+          <div class="protocol-box">
+            <div class="protocol-header">
+              <i class="fa-solid fa-scroll"></i>
+              <span id="protocolTitle">بروتوكول المكالمة الاحترافية</span>
+            </div>
+            <div class="protocol-steps">
+              <div class="protocol-step">
+                <div class="protocol-step-badge caller" id="ps1Badge">الليدر يبدأ</div>
+                <div class="protocol-step-text" id="ps1Text"></div>
+              </div>
+              <div class="protocol-divider"><i class="fa-solid fa-arrow-down"></i></div>
+              <div class="protocol-step">
+                <div class="protocol-step-badge receiver" id="ps2Badge">المستقبل يرد</div>
+                <div class="protocol-step-text" id="ps2Text"></div>
+              </div>
+              <div class="protocol-divider"><i class="fa-solid fa-arrow-down"></i></div>
+              <div class="protocol-step">
+                <div class="protocol-step-badge caller" id="ps3Badge">الليدر يشرح</div>
+                <div class="protocol-step-text" id="ps3Text"></div>
+              </div>
+              <div class="protocol-divider"><i class="fa-solid fa-arrow-down"></i></div>
+              <div class="protocol-step">
+                <div class="protocol-step-badge caller" id="ps4Badge">الإغلاق</div>
+                <div class="protocol-step-text" id="ps4Text"></div>
+              </div>
+            </div>
+            <a id="protocolCallBtn" href="#" class="escalation-btn w-full mt-4" style="display:flex;justify-content:center;gap:.5rem">
+              <i class="fa-solid fa-phone"></i> <span id="callNowLabel">اتصل الآن</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ VIOLATION FORM MODAL ============ -->
   <div id="violationFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.82)">
     <div class="modal-box w-full max-w-2xl max-h-[90vh] overflow-y-auto">
