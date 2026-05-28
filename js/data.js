@@ -6,207 +6,324 @@
 
 // ===================== الليدرز =====================
 const leaders = [
+
+  // ── السوبر فايزر ──────────────────────────────────────────
   {
-    id: "ceo-001",
-    name: "محمد السالم",          name_en: "Mohammed Al-Salem",
-    title: "الرئيس التنفيذي",      title_en: "Chief Executive Officer",
-    department: "الإدارة العليا",  department_en: "Executive Management",
+    id: "sv-alruways",
+    name: "عايض شاري الرويس",        name_en: "Ayidh Shari Alruways",
+    title: "سوبر فايزر",             title_en: "Supervisor",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
-    contacts: {
-      email: "ceo@company.com",
-      phone: "+966500000001",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=ceo@company.com"
-    },
-    escalationLinks: [
-      { label: "حجز اجتماع مع المكتب التنفيذي", label_en: "Book Executive Office Meeting", url: "https://example.com/exec-booking" }
-    ],
+    contacts: { email: "", phone: "", teams: "" },
+    escalationLinks: [],
     reportsTo: null
   },
   {
-    id: "cto-001",
-    name: "أحمد عبدالله",               name_en: "Ahmed Abdullah",
-    title: "مدير عام تقنية المعلومات",   title_en: "Chief Technology Officer",
-    department: "تقنية المعلومات",        department_en: "Information Technology",
+    id: "sv-almuqati",
+    name: "منصور علیان المقاطي",     name_en: "Mansour Olayan Almuqati",
+    title: "سوبر فايزر",             title_en: "Supervisor",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: { email: "", phone: "", teams: "" },
+    escalationLinks: [],
+    reportsTo: null
+  },
+
+  // ── Team Leaders ──────────────────────────────────────────
+  {
+    id: "tl-afsurayyi",
+    name: "العنود فهد السريع",        name_en: "Alanoud Fahad Surayyi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "ahmed.abdullah@company.com",
-      phone: "+966500000002",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=ahmed.abdullah@company.com"
+      email: "Afsurayyi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=Afsurayyi.c@barq.com"
     },
-    escalationLinks: [
-      { label: "نظام التذاكر التقنية",   label_en: "Technical Ticketing System", url: "https://servicedesk.company.com" },
-      { label: "طلب صلاحيات وصول",       label_en: "Request Access Permissions",  url: "https://access.company.com" },
-      { label: "حالات الطوارئ التقنية",  label_en: "Technical Emergency Cases",   url: "https://oncall.company.com" }
-    ],
-    reportsTo: "ceo-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "chro-001",
-    name: "سارة المطيري",              name_en: "Sara Al-Mutairi",
-    title: "مدير عام الموارد البشرية", title_en: "Chief HR Officer",
-    department: "الموارد البشرية",     department_en: "Human Resources",
+    id: "tl-smalhleel",
+    name: "شيكة ملفي الهليل",        name_en: "Shikah Melfy Alhileel",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "sara.almutairi@company.com",
-      phone: "+966500000003",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=sara.almutairi@company.com"
+      email: "smalhleel.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=smalhleel.c@barq.com"
     },
-    escalationLinks: [
-      { label: "بوابة الموظفين",          label_en: "Employee Portal",              url: "https://hr.company.com" },
-      { label: "تقديم شكوى أو ملاحظة",   label_en: "Submit Complaint or Feedback", url: "https://hr.company.com/feedback" }
-    ],
-    reportsTo: "ceo-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "cfo-001",
-    name: "خالد الزهراني",  name_en: "Khalid Al-Zahrani",
-    title: "المدير المالي",  title_en: "Chief Financial Officer",
-    department: "المالية",   department_en: "Finance",
+    id: "tl-maalajmi",
+    name: "منيرة عبدالله العجمي",    name_en: "Munirah Abdullah Alajmi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "khalid.alzahrani@company.com",
-      phone: "+966500000004",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=khalid.alzahrani@company.com"
+      email: "maalajmi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=maalajmi.c@barq.com"
     },
-    escalationLinks: [
-      { label: "طلبات الصرف والمصاريف", label_en: "Expense & Disbursement Requests", url: "https://finance.company.com/expenses" },
-      { label: "نظام الفواتير",          label_en: "Invoice System",                   url: "https://finance.company.com/invoices" }
-    ],
-    reportsTo: "ceo-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "it-mgr-001",
-    name: "ناصر القحطاني",   name_en: "Nasser Al-Qahtani",
-    title: "مدير الدعم الفني", title_en: "IT Support Manager",
-    department: "تقنية المعلومات", department_en: "Information Technology",
+    id: "tl-imabahussain",
+    name: "ابتهال منصور أبا حسين",   name_en: "Ibtehal Mansour Abahussain",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "nasser.alqahtani@company.com",
-      phone: "+966500000005",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=nasser.alqahtani@company.com"
+      email: "imabahussain.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=imabahussain.c@barq.com"
     },
-    escalationLinks: [
-      { label: "فتح تذكرة دعم",         label_en: "Open a Support Ticket",    url: "https://servicedesk.company.com/new" },
-      { label: "حالة الخدمات الحالية",  label_en: "Current Services Status",  url: "https://status.company.com" }
-    ],
-    reportsTo: "cto-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "dev-mgr-001",
-    name: "فيصل الشمري",   name_en: "Faisal Al-Shammari",
-    title: "مدير التطوير",  title_en: "Development Manager",
-    department: "تقنية المعلومات", department_en: "Information Technology",
+    id: "tl-wahazazi",
+    name: "وجدان أحمد الحازمي",      name_en: "Wejdan Ahmed Hazazi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "faisal.alshammari@company.com",
-      phone: "+966500000006",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=faisal.alshammari@company.com"
+      email: "wahazazi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=wahazazi.c@barq.com"
     },
-    escalationLinks: [
-      { label: "نظام إدارة المشاريع", label_en: "Project Management System", url: "https://projects.company.com" },
-      { label: "مستودعات الكود",       label_en: "Code Repositories",          url: "https://git.company.com" }
-    ],
-    reportsTo: "cto-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "hr-mgr-001",
-    name: "نورة العتيبي",          name_en: "Noura Al-Otaibi",
-    title: "مديرة شؤون الموظفين",  title_en: "Employee Affairs Manager",
-    department: "الموارد البشرية", department_en: "Human Resources",
+    id: "tl-fabintamim",
+    name: "فهد عبدالله تميم",        name_en: "Fahad Abdullah Tamim",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "noura.alotaibi@company.com",
-      phone: "+966500000007",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=noura.alotaibi@company.com"
+      email: "fabintamim.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=fabintamim.c@barq.com"
     },
-    escalationLinks: [
-      { label: "طلب إجازة",        label_en: "Request Leave",           url: "https://hr.company.com/leave" },
-      { label: "شهادات وتعريفات",  label_en: "Certificates & Letters",  url: "https://hr.company.com/letters" }
-    ],
-    reportsTo: "chro-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "train-mgr-001",
-    name: "عبدالرحمن البلوي",          name_en: "Abdulrahman Al-Balawi",
-    title: "مدير التدريب والتطوير",    title_en: "Training & Development Manager",
-    department: "الموارد البشرية",     department_en: "Human Resources",
+    id: "tl-mgalotaibi",
+    name: "محمد غلاب العتيبي",       name_en: "Mohammed Ghallab Alotaibi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "abdulrahman.albalawi@company.com",
-      phone: "+966500000008",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=abdulrahman.albalawi@company.com"
+      email: "Mgalotaibi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=Mgalotaibi.c@barq.com"
     },
-    escalationLinks: [
-      { label: "كتالوج الدورات",          label_en: "Course Catalogue",              url: "https://learning.company.com" },
-      { label: "خطة التطوير الفردية",     label_en: "Individual Development Plan",   url: "https://learning.company.com/idp" }
-    ],
-    reportsTo: "chro-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "finance-mgr-001",
-    name: "ماجد الدوسري",    name_en: "Majid Al-Dosari",
-    title: "مدير المحاسبة",  title_en: "Accounting Manager",
-    department: "المالية",   department_en: "Finance",
+    id: "tl-amrayyani",
+    name: "عاصم محمد الريان",        name_en: "Asim Mohammed Rayyani",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "majid.aldosari@company.com",
-      phone: "+966500000009",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=majid.aldosari@company.com"
+      email: "amrayyani.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=amrayyani.c@barq.com"
     },
-    escalationLinks: [
-      { label: "كشوف الرواتب", label_en: "Payroll Statements", url: "https://finance.company.com/payroll" }
-    ],
-    reportsTo: "cfo-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "ops-mgr-001",
-    name: "هند الغامدي",      name_en: "Hind Al-Ghamdi",
-    title: "مديرة العمليات",  title_en: "Operations Manager",
-    department: "العمليات",   department_en: "Operations",
+    id: "tl-nfalmutairi",
+    name: "نواف فالح المطيري",       name_en: "Nawaf Faleh AlMutairi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "hind.alghamdi@company.com",
-      phone: "+966500000010",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=hind.alghamdi@company.com"
+      email: "nfalmutairi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=nfalmutairi.c@barq.com"
     },
-    escalationLinks: [
-      { label: "تقارير العمليات اليومية", label_en: "Daily Operations Reports", url: "https://ops.company.com" }
-    ],
-    reportsTo: "ceo-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "security-mgr-001",
-    name: "سلطان الحربي",          name_en: "Sultan Al-Harbi",
-    title: "مدير أمن المعلومات",   title_en: "Information Security Manager",
-    department: "تقنية المعلومات", department_en: "Information Technology",
+    id: "tl-falmeshari",
+    name: "فيصل فهد المشاري",        name_en: "Faisal Fahied Almeshari",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "sultan.alharbi@company.com",
-      phone: "+966500000011",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=sultan.alharbi@company.com"
+      email: "falmeshari.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=falmeshari.c@barq.com"
     },
-    escalationLinks: [
-      { label: "الإبلاغ عن حادث أمني",  label_en: "Report a Security Incident",    url: "https://security.company.com/report" },
-      { label: "سياسات أمن المعلومات",  label_en: "Information Security Policies",  url: "https://security.company.com/policies" }
-    ],
-    reportsTo: "cto-001"
+    escalationLinks: [],
+    reportsTo: null
   },
   {
-    id: "marketing-mgr-001",
-    name: "ريم القرني",       name_en: "Reem Al-Qarni",
-    title: "مديرة التسويق",   title_en: "Marketing Manager",
-    department: "التسويق",    department_en: "Marketing",
+    id: "tl-salghamdi",
+    name: "سعود خالد الغامدي",       name_en: "Saud Khalid Alghamdi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
     contacts: {
-      email: "reem.alqarni@company.com",
-      phone: "+966500000012",
-      teams: "https://teams.microsoft.com/l/chat/0/0?users=reem.alqarni@company.com"
+      email: "salghamdi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=salghamdi.c@barq.com"
     },
-    escalationLinks: [
-      { label: "طلب حملة تسويقية", label_en: "Request a Marketing Campaign", url: "https://marketing.company.com/request" }
-    ],
-    reportsTo: "ceo-001"
-  }
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-ihjabr",
+    name: "عيسى حمد جابر",          name_en: "Issa Hamad Japr",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "IHJapr.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=IHJapr.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-nbindawood",
+    name: "نواف عبدالإله داوود",     name_en: "Nawaf Abdulelah Dawood",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "nbindawood.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=nbindawood.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-akalshammari",
+    name: "عبدالله خالد الشمري",     name_en: "Abdullah Khalid Alshammari",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "Akalshammari.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=Akalshammari.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-hahumadi",
+    name: "حسين عبدو حمادي",         name_en: "Hussain Abdu Humadi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "Hahumadi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=Hahumadi.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-fmalmutairi",
+    name: "فارس مجحز المطيري",       name_en: "Faris Majhaz Almutairi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "fmalmutairi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=fmalmutairi.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-hrashid",
+    name: "حسن محمد رشيد",           name_en: "Hassan Muhammad Rashid",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "hrashid.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=hrashid.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-malanzi",
+    name: "محمد سالم العنزي",        name_en: "Mohammed Salem Alanzi",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "malanzi.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=malanzi.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-maalramli",
+    name: "محمد عبدالله الرملي",     name_en: "Mohammed Abdullah Alramli",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "maalramli.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=maalramli.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-akaljeraisy",
+    name: "عبدالعزيز خالد الجريسي",  name_en: "Abdulaziz Khaled Aljeraisy",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "AKAljeraisy.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=AKAljeraisy.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
+  {
+    id: "tl-naalrusayyis",
+    name: "نواف عبدالعزيز الرسيس",   name_en: "Nawaf Abdulaziz Alrusayyis",
+    title: "قائد فريق",              title_en: "Team Leader",
+    department: "خدمة العملاء",      department_en: "Customer Service",
+    photo: null,
+    contacts: {
+      email: "naalrusayyis.c@barq.com",
+      phone: "",
+      teams: "https://teams.microsoft.com/l/chat/0/0?users=naalrusayyis.c@barq.com"
+    },
+    escalationLinks: [],
+    reportsTo: null
+  },
 ];
 
 // ===================== الروابط السريعة =====================
