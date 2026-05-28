@@ -4,7 +4,7 @@
 const VF_PDF_FILL = true;
 
 const VF_PDF_URL     = '/pdfs/violation.pdf';
-const VF_COORDS_KEY  = 'barq_vf_coords_v4'; // v4 = center anchor for all fields
+const VF_COORDS_KEY  = 'barq_vf_coords_v5'; // v5 = direct canvas px + live preview
 const VF_FILL_SCALE  = 2.5; // render scale for fill (higher = sharper text)
 
 // ── حقول الفورم وترتيبها للإلصاق ──
@@ -357,17 +357,18 @@ async function _vfFillPdf(data) {
     VF_FIELDS.forEach(field => {
       const pos = coords[field];
       if (!pos || !data[field]) return;
-      const px = pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x;
-      const py = pos.yPct !== undefined ? pos.yPct * vp.height : pos.y;
+      // canvasX/Y = direct pixels (v5), xPct/yPct = normalized (v3/v4), x/y = legacy
+      const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
+      const py = pos.canvasY !== undefined ? pos.canvasY : (pos.yPct !== undefined ? pos.yPct * vp.height : pos.y);
       ctx.fillText(String(data[field]), px, py);
     });
 
-    // التوقيع — مركز الصورة على نقطة الضغط
+    // التوقيع
     const sigUrl = _vfSigUrl();
     if (sigUrl && coords['vf_signature']) {
       const sp   = coords['vf_signature'];
-      const sx   = sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x;
-      const sy   = sp.yPct !== undefined ? sp.yPct * vp.height : sp.y;
+      const sx   = sp.canvasX !== undefined ? sp.canvasX : (sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x);
+      const sy   = sp.canvasY !== undefined ? sp.canvasY : (sp.yPct !== undefined ? sp.yPct * vp.height : sp.y);
       const img  = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
       const sigW = vp.width * 0.18, sigH = sigW * 0.3;
       ctx.drawImage(img, sx - sigW / 2, sy - sigH / 2, sigW, sigH);
@@ -438,7 +439,7 @@ function _vfBuildMapperModal() {
           <div id="vfMapDots" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></div>
         </div>
         <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.75rem">
-          <button onclick="_vfMapCoords={};_vfRenderMapperDots()" class="contact-btn"><i class="fa-solid fa-trash"></i> مسح الكل</button>
+          <button onclick="_vfMapCoords={};_vfRedrawMapperCanvas()" class="contact-btn"><i class="fa-solid fa-trash"></i> مسح الكل</button>
           <button onclick="_vfSaveCoords(_vfMapCoords);document.getElementById('vfMapperModal').classList.add('hidden')" class="escalation-btn"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
         </div>
       </div>
@@ -476,37 +477,60 @@ async function _vfRenderMapperPdf() {
     const vp    = page.getViewport({ scale: VF_FILL_SCALE });
     canvas.width  = vp.width;
     canvas.height = vp.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-    _vfRenderMapperDots();
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    // Snapshot the clean PDF so we can redraw it when dots change
+    canvas._basePdf = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    _vfRedrawMapperCanvas();
   } catch(e) { console.error(e); }
 }
 
 function _vfMapCanvasClick(e) {
   if (!_vfMapField) return;
-  const rect = e.target.getBoundingClientRect();
-  // Store as 0-1 percentage so fill scale never matters
-  _vfMapCoords[_vfMapField] = {
-    xPct: parseFloat(((e.clientX - rect.left) / rect.width).toFixed(5)),
-    yPct: parseFloat(((e.clientY - rect.top)  / rect.height).toFixed(5)),
-  };
-  _vfRenderMapperDots();
+  const canvas = e.target;
+  const rect   = canvas.getBoundingClientRect();
+  // Convert CSS click coords → actual canvas pixels
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const cx = Math.round((e.clientX - rect.left) * scaleX);
+  const cy = Math.round((e.clientY - rect.top)  * scaleY);
+  _vfMapCoords[_vfMapField] = { canvasX: cx, canvasY: cy };
+  _vfRedrawMapperCanvas();
+}
+
+function _vfRedrawMapperCanvas() {
+  const canvas = document.getElementById('vfMapCanvas');
+  if (!canvas || !canvas._basePdf) return;
+  const ctx = canvas.getContext('2d');
+  // Restore original PDF rendering
+  ctx.putImageData(canvas._basePdf, 0, 0);
+  // Draw all stored field positions as live previews
+  const fontSize = Math.round(canvas.height * 0.016);
+  ctx.font         = `bold ${fontSize}px Tahoma, Arial, sans-serif`;
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'middle';
+  const labels = VF[_vfLang()].fieldLabels;
+  Object.entries(_vfMapCoords).forEach(([f, pos]) => {
+    if (!pos) return;
+    const px = pos.canvasX !== undefined ? pos.canvasX : pos.xPct * canvas.width;
+    const py = pos.canvasY !== undefined ? pos.canvasY : pos.yPct * canvas.height;
+    // Highlight box
+    const label = labels[f] || f;
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = 'rgba(251,191,36,.25)';
+    ctx.fillRect(px - tw / 2 - 4, py - fontSize / 2 - 2, tw + 8, fontSize + 4);
+    // Text
+    ctx.fillStyle = '#000';
+    ctx.fillText(label, px, py);
+    // Crosshair dot
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+  });
 }
 
 function _vfRenderMapperDots() {
-  const canvas = document.getElementById('vfMapCanvas');
-  const dots   = document.getElementById('vfMapDots');
-  if (!canvas || !dots) return;
-  const rect   = canvas.getBoundingClientRect();
-  const labels = VF[_vfLang()].fieldLabels;
-  dots.innerHTML = Object.entries(_vfMapCoords).map(([f, pos]) => {
-    // Support both old {x,y} and new {xPct,yPct}
-    const x = pos.xPct !== undefined ? pos.xPct * rect.width  : pos.x * (rect.width  / canvas.width);
-    const y = pos.yPct !== undefined ? pos.yPct * rect.height : pos.y * (rect.height / canvas.height);
-    return `<div style="position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%)">
-      <div style="width:10px;height:10px;background:#FBBF24;border-radius:50%;border:1.5px solid #000"></div>
-      <div style="font-size:9px;color:#FBBF24;white-space:nowrap;background:rgba(0,0,0,.6);padding:1px 3px;border-radius:2px">${labels[f]||f}</div>
-    </div>`;
-  }).join('');
+  // Dots are now drawn directly on the canvas — delegate to redraw
+  _vfRedrawMapperCanvas();
 }
 
 // ─────────────────────────────────────────────
