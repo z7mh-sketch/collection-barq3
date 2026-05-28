@@ -598,46 +598,30 @@ header.site-header {
   justify-content: center;
   gap: 0;
   padding: .1rem 0;
-  color: #555;
-  font-size: .6rem;
-  overflow: hidden;
-  position: relative;
 }
+/* hide the chevron icons — only the chain shows */
+.sub-connector i { display: none; }
+
 .sub-conn-line {
-  width: 2px;
-  height: 40px;
-  border-radius: 1px;
+  width: 10px;
+  height: 48px;
   overflow: hidden;
   position: relative;
-  background: transparent;
 }
 .sub-conn-line::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 400%;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,.7)  0px,
-    rgba(0,0,0,.7)  6px,
-    transparent     6px,
-    transparent    12px
-  );
-  animation: chainFlow 1s linear infinite;
+  top: -16px; left: 0; right: 0;
+  height: calc(100% + 32px);
+  /* SVG chain link: oval 10×16px, gold stroke, repeating every 16px */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16'%3E%3Cellipse cx='5' cy='8' rx='3.5' ry='7' fill='none' stroke='%23FBBF24' stroke-width='1.6'/%3E%3C/svg%3E");
+  background-repeat: repeat-y;
+  background-size: 10px 16px;
+  animation: chainDrop .6s linear infinite;
 }
-.dark .sub-connector { color: #FBBF24; }
-.dark .sub-conn-line::before {
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(251,191,36,.9)  0px,
-    rgba(251,191,36,.9)  6px,
-    transparent          6px,
-    transparent         12px
-  );
-}
-@keyframes chainFlow {
-  from { transform: translateY(0); }
-  to   { transform: translateY(12px); }
+@keyframes chainDrop {
+  from { background-position: 0 0;    }
+  to   { background-position: 0 16px; }
 }
 
 @keyframes dropArrow {
