@@ -23,7 +23,7 @@
   </script>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
@@ -110,11 +110,19 @@
 
   <script>
     function closeWelcome() {
+      localStorage.setItem('barq_welcome_ts', Date.now());
       const m = document.getElementById('welcomeModal');
       m.style.transition = 'opacity .25s';
       m.style.opacity = '0';
       setTimeout(() => m.remove(), 260);
     }
+    (function() {
+      const last = parseInt(localStorage.getItem('barq_welcome_ts') || '0', 10);
+      if (Date.now() - last < 3600000) {
+        const m = document.getElementById('welcomeModal');
+        if (m) m.remove();
+      }
+    })();
   </script>
 
   <!-- ============ HEADER ============ -->
