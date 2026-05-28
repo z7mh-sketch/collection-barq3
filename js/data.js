@@ -10,7 +10,7 @@ const leaders = [
   // ── السوبر فايزر ──────────────────────────────────────────
   {
     id: "sv-alruways",
-    name: "عايض شاري الرويس",        name_en: "Ayidh Shari Alruways",
+    name: "Ayidh Shari Alruways",        name_en: "Ayidh Shari Alruways",
     title: "سوبر فايزر",             title_en: "Supervisor",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -20,7 +20,7 @@ const leaders = [
   },
   {
     id: "sv-almuqati",
-    name: "منصور علیان المقاطي",     name_en: "Mansour Olayan Almuqati",
+    name: "Mansour Olayan Almuqati",     name_en: "Mansour Olayan Almuqati",
     title: "سوبر فايزر",             title_en: "Supervisor",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -32,7 +32,7 @@ const leaders = [
   // ── Team Leaders ──────────────────────────────────────────
   {
     id: "tl-afsurayyi",
-    name: "العنود فهد السريع",        name_en: "Alanoud Fahad Surayyi",
+    name: "Alanoud Fahad Surayyi",        name_en: "Alanoud Fahad Surayyi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -46,7 +46,7 @@ const leaders = [
   },
   {
     id: "tl-smalhleel",
-    name: "شيكة ملفي الهليل",        name_en: "Shikah Melfy Alhileel",
+    name: "Shikah Melfy Alhileel",        name_en: "Shikah Melfy Alhileel",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -60,7 +60,7 @@ const leaders = [
   },
   {
     id: "tl-maalajmi",
-    name: "منيرة عبدالله العجمي",    name_en: "Munirah Abdullah Alajmi",
+    name: "Munirah Abdullah Alajmi",    name_en: "Munirah Abdullah Alajmi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -74,7 +74,7 @@ const leaders = [
   },
   {
     id: "tl-imabahussain",
-    name: "ابتهال منصور أبا حسين",   name_en: "Ibtehal Mansour Abahussain",
+    name: "Ibtehal Mansour Abahussain",   name_en: "Ibtehal Mansour Abahussain",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -88,7 +88,7 @@ const leaders = [
   },
   {
     id: "tl-wahazazi",
-    name: "وجدان أحمد الحازمي",      name_en: "Wejdan Ahmed Hazazi",
+    name: "Wejdan Ahmed Hazazi",      name_en: "Wejdan Ahmed Hazazi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -102,7 +102,7 @@ const leaders = [
   },
   {
     id: "tl-fabintamim",
-    name: "فهد عبدالله تميم",        name_en: "Fahad Abdullah Tamim",
+    name: "Fahad Abdullah Tamim",        name_en: "Fahad Abdullah Tamim",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -116,7 +116,7 @@ const leaders = [
   },
   {
     id: "tl-mgalotaibi",
-    name: "محمد غلاب العتيبي",       name_en: "Mohammed Ghallab Alotaibi",
+    name: "Mohammed Ghallab Alotaibi",       name_en: "Mohammed Ghallab Alotaibi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -130,7 +130,7 @@ const leaders = [
   },
   {
     id: "tl-amrayyani",
-    name: "عاصم محمد الريان",        name_en: "Asim Mohammed Rayyani",
+    name: "Asim Mohammed Rayyani",        name_en: "Asim Mohammed Rayyani",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -144,7 +144,7 @@ const leaders = [
   },
   {
     id: "tl-nfalmutairi",
-    name: "نواف فالح المطيري",       name_en: "Nawaf Faleh AlMutairi",
+    name: "Nawaf Faleh AlMutairi",       name_en: "Nawaf Faleh AlMutairi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -158,7 +158,7 @@ const leaders = [
   },
   {
     id: "tl-falmeshari",
-    name: "فيصل فهد المشاري",        name_en: "Faisal Fahied Almeshari",
+    name: "Faisal Fahied Almeshari",        name_en: "Faisal Fahied Almeshari",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -172,7 +172,7 @@ const leaders = [
   },
   {
     id: "tl-salghamdi",
-    name: "سعود خالد الغامدي",       name_en: "Saud Khalid Alghamdi",
+    name: "Saud Khalid Alghamdi",       name_en: "Saud Khalid Alghamdi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -186,7 +186,7 @@ const leaders = [
   },
   {
     id: "tl-ihjabr",
-    name: "عيسى حمد جابر",          name_en: "Issa Hamad Japr",
+    name: "Issa Hamad Japr",          name_en: "Issa Hamad Japr",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -200,7 +200,7 @@ const leaders = [
   },
   {
     id: "tl-nbindawood",
-    name: "نواف عبدالإله داوود",     name_en: "Nawaf Abdulelah Dawood",
+    name: "Nawaf Abdulelah Dawood",     name_en: "Nawaf Abdulelah Dawood",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -214,7 +214,7 @@ const leaders = [
   },
   {
     id: "tl-akalshammari",
-    name: "عبدالله خالد الشمري",     name_en: "Abdullah Khalid Alshammari",
+    name: "Abdullah Khalid Alshammari",     name_en: "Abdullah Khalid Alshammari",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -228,7 +228,7 @@ const leaders = [
   },
   {
     id: "tl-hahumadi",
-    name: "حسين عبدو حمادي",         name_en: "Hussain Abdu Humadi",
+    name: "Hussain Abdu Humadi",         name_en: "Hussain Abdu Humadi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -242,7 +242,7 @@ const leaders = [
   },
   {
     id: "tl-fmalmutairi",
-    name: "فارس مجحز المطيري",       name_en: "Faris Majhaz Almutairi",
+    name: "Faris Majhaz Almutairi",       name_en: "Faris Majhaz Almutairi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -256,7 +256,7 @@ const leaders = [
   },
   {
     id: "tl-hrashid",
-    name: "حسن محمد رشيد",           name_en: "Hassan Muhammad Rashid",
+    name: "Hassan Muhammad Rashid",           name_en: "Hassan Muhammad Rashid",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -270,7 +270,7 @@ const leaders = [
   },
   {
     id: "tl-malanzi",
-    name: "محمد سالم العنزي",        name_en: "Mohammed Salem Alanzi",
+    name: "Mohammed Salem Alanzi",        name_en: "Mohammed Salem Alanzi",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -284,7 +284,7 @@ const leaders = [
   },
   {
     id: "tl-maalramli",
-    name: "محمد عبدالله الرملي",     name_en: "Mohammed Abdullah Alramli",
+    name: "Mohammed Abdullah Alramli",     name_en: "Mohammed Abdullah Alramli",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -298,7 +298,7 @@ const leaders = [
   },
   {
     id: "tl-akaljeraisy",
-    name: "عبدالعزيز خالد الجريسي",  name_en: "Abdulaziz Khaled Aljeraisy",
+    name: "Abdulaziz Khaled Aljeraisy",  name_en: "Abdulaziz Khaled Aljeraisy",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
@@ -312,7 +312,7 @@ const leaders = [
   },
   {
     id: "tl-naalrusayyis",
-    name: "نواف عبدالعزيز الرسيس",   name_en: "Nawaf Abdulaziz Alrusayyis",
+    name: "Nawaf Abdulaziz Alrusayyis",   name_en: "Nawaf Abdulaziz Alrusayyis",
     title: "قائد فريق",              title_en: "Team Leader",
     department: "خدمة العملاء",      department_en: "Customer Service",
     photo: null,
