@@ -662,47 +662,73 @@
   <script src="js/pdf-forms.js"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
-  <button id="tasksToggleBtn" onclick="twToggle()" title="المهام">📝</button>
-  <div id="tasksWidget" class="tw-hidden">
-    <div class="tw-header">
-      <span class="tw-title">📌 المهام</span>
-      <div class="tw-page-nav">
-        <button onclick="twPrevPage()" title="السابق">‹</button>
-        <span id="twPageLabel">1 / 1</span>
-        <button onclick="twNextPage()" title="التالي">›</button>
-        <button onclick="twAddPage()" title="صفحة جديدة" style="background:rgba(0,0,0,.18);margin-right:.2rem">+</button>
+  <div id="tasksPanel">
+    <div id="tasksWidget">
+      <div class="tw-header">
+        <input id="twTitleInput" class="tw-title-input" placeholder="عنوان النوت..." autocomplete="off" />
+        <div class="tw-page-nav">
+          <button onclick="twPrevPage()" title="السابق">‹</button>
+          <span id="twPageLabel">1 / 1</span>
+          <button onclick="twNextPage()" title="التالي">›</button>
+          <button onclick="twAddPage()" title="نوت جديد" style="background:rgba(0,0,0,.18)">+</button>
+        </div>
+      </div>
+      <div id="twBody" class="tw-body"></div>
+      <div class="tw-footer">
+        <button class="tw-add-btn" onclick="twAddTask()">
+          <i class="fa-solid fa-plus"></i> مهمة جديدة
+        </button>
       </div>
     </div>
-    <div id="twBody" class="tw-body"></div>
-    <div class="tw-footer">
-      <button class="tw-add-btn" onclick="twAddTask()">
-        <i class="fa-solid fa-plus"></i> مهمة جديدة
-      </button>
-    </div>
+    <button id="tasksToggleBtn" onclick="twToggle()" title="إخفاء / إظهار المهام">📝</button>
   </div>
 
   <script>
   // ── Tasks Widget (Sticky Notes) ──────────────────────────
   (function(){
     const KEY = 'barq_tasks_v1';
-    let data  = { page: 0, pages: [[]] };   // pages: array of arrays of {text, done}
-    let open  = false;
+    // data structure: { page:0, open:true, pages:[{title:'', tasks:[{text,done}]}] }
+    let data = { page:0, open:true, pages:[{title:'', tasks:[]}] };
 
     function save() {
       try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(_){}
     }
+
     function load() {
       try {
         const s = localStorage.getItem(KEY);
-        if (s) data = JSON.parse(s);
-        // ensure at least 1 page
-        if (!data.pages || !data.pages.length) data.pages = [[]];
+        if (!s) return;
+        const p = JSON.parse(s);
+        // migrate old format: pages was array of arrays
+        if (p.pages && Array.isArray(p.pages[0])) {
+          data = { page: p.page||0, open: true,
+                   pages: p.pages.map(pg => ({ title:'', tasks: pg })) };
+        } else {
+          data = p;
+        }
+        if (!data.pages?.length) data.pages = [{title:'',tasks:[]}];
         if (data.page >= data.pages.length) data.page = 0;
-      } catch(_) { data = { page:0, pages:[[]] }; }
+        if (typeof data.open === 'undefined') data.open = true;
+      } catch(_) { data = {page:0, open:true, pages:[{title:'',tasks:[]}]}; }
+    }
+
+    function applyOpen() {
+      const panel = document.getElementById('tasksPanel');
+      panel.classList.toggle('tw-closed', !data.open);
+    }
+
+    function renderTitle() {
+      const inp = document.getElementById('twTitleInput');
+      if (!inp) return;
+      const pg = data.pages[data.page];
+      inp.value = pg?.title || '';
+      const isEN = document.documentElement.dir === 'ltr' ||
+                   document.documentElement.lang === 'en';
+      inp.placeholder = isEN ? 'Note title...' : 'عنوان النوت...';
     }
 
     function render() {
-      const pg   = data.pages[data.page] || [];
+      const pg   = data.pages[data.page]?.tasks || [];
       const body = document.getElementById('twBody');
       body.innerHTML = '';
       pg.forEach((task, idx) => {
@@ -712,39 +738,37 @@
           <div class="tw-chk" data-idx="${idx}">${task.done ? '✓' : ''}</div>
           <textarea class="tw-task-text" data-idx="${idx}" rows="1">${task.text}</textarea>
           <button class="tw-task-del" data-idx="${idx}" title="حذف">✕</button>`;
-        // auto-resize textarea
         const ta = row.querySelector('textarea');
-        ta.style.height = 'auto';
-        setTimeout(() => { ta.style.height = ta.scrollHeight + 'px'; }, 0);
+        setTimeout(() => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }, 0);
         ta.addEventListener('input', () => {
           ta.style.height = 'auto';
           ta.style.height = ta.scrollHeight + 'px';
-          data.pages[data.page][idx].text = ta.value;
+          data.pages[data.page].tasks[idx].text = ta.value;
           save();
         });
         row.querySelector('.tw-chk').addEventListener('click', () => {
-          data.pages[data.page][idx].done = !data.pages[data.page][idx].done;
+          data.pages[data.page].tasks[idx].done = !data.pages[data.page].tasks[idx].done;
           save(); render();
         });
         row.querySelector('.tw-task-del').addEventListener('click', () => {
-          data.pages[data.page].splice(idx, 1);
+          data.pages[data.page].tasks.splice(idx, 1);
           save(); render();
         });
         body.appendChild(row);
       });
       document.getElementById('twPageLabel').textContent =
         (data.page + 1) + ' / ' + data.pages.length;
+      renderTitle();
     }
 
     window.twToggle = function() {
-      open = !open;
-      const w = document.getElementById('tasksWidget');
-      w.classList.toggle('tw-hidden', !open);
+      data.open = !data.open;
+      applyOpen();
+      save();
     };
     window.twAddTask = function() {
-      data.pages[data.page].push({ text: '', done: false });
+      data.pages[data.page].tasks.push({ text:'', done:false });
       save(); render();
-      // focus the new textarea
       setTimeout(() => {
         const tas = document.querySelectorAll('#twBody .tw-task-text');
         if (tas.length) tas[tas.length - 1].focus();
@@ -757,13 +781,21 @@
       if (data.page < data.pages.length - 1) { data.page++; save(); render(); }
     };
     window.twAddPage = function() {
-      data.pages.push([]);
+      data.pages.push({ title:'', tasks:[] });
       data.page = data.pages.length - 1;
       save(); render();
     };
 
     load();
-    document.addEventListener('DOMContentLoaded', render);
+    document.addEventListener('DOMContentLoaded', () => {
+      applyOpen();
+      render();
+      const ti = document.getElementById('twTitleInput');
+      if (ti) ti.addEventListener('input', () => {
+        data.pages[data.page].title = ti.value;
+        save();
+      });
+    });
   })();
   </script>
 

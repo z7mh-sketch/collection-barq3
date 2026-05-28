@@ -881,61 +881,102 @@ textarea.pf-ctrl { resize: vertical; }
 }
 :not(.dark) .header-search-input:focus { border-color: #FBBF24; background: rgba(0,0,0,.07); }
 
-/* ========== Tasks Widget (Sticky Note) ========== */
-#tasksToggleBtn {
+/* ========== Tasks Widget (Sticky Note Sidebar) ========== */
+
+/* Panel wrapper — fixed to the LEFT in RTL (Arabic), RIGHT in LTR (English) */
+#tasksPanel {
   position: fixed;
-  bottom: 1.5rem;
-  left: 1.25rem;
-  z-index: 400;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: #FBBF24;
+  top: 4.5rem;
+  left: 0;
+  z-index: 399;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+html[dir="ltr"] #tasksPanel {
+  left: auto;
+  right: 0;
+  flex-direction: row-reverse;
+}
+
+/* The note panel */
+#tasksWidget {
+  width: 290px;
+  max-height: calc(100vh - 5rem);
+  background: #fef08a;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Tajawal', sans-serif;
+  box-shadow: 5px 0 28px rgba(0,0,0,.45);
+  direction: rtl;
+  transition: width .3s cubic-bezier(.4,0,.2,1), opacity .25s;
+  overflow: hidden;
+}
+html[dir="ltr"] #tasksWidget {
+  direction: ltr;
+  box-shadow: -5px 0 28px rgba(0,0,0,.45);
+}
+
+/* Closed state — collapse the panel, keep tab visible */
+#tasksPanel.tw-closed #tasksWidget {
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Toggle tab — sticks out to the right of the panel in RTL */
+#tasksToggleBtn {
+  align-self: flex-start;
+  margin-top: 2rem;
+  width: 2rem;
+  min-height: 5rem;
+  background: #fbbf24;
   border: none;
+  border-radius: 0 .6rem .6rem 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 18px rgba(251,191,36,.45);
-  transition: transform .15s, box-shadow .15s;
-  color: #111;
+  font-size: 1.1rem;
+  box-shadow: 4px 2px 14px rgba(0,0,0,.35);
+  transition: background .15s, transform .15s;
+  flex-shrink: 0;
+  z-index: 1;
+  padding: 0;
 }
-#tasksToggleBtn:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(251,191,36,.6); }
+html[dir="ltr"] #tasksToggleBtn {
+  border-radius: .6rem 0 0 .6rem;
+  box-shadow: -4px 2px 14px rgba(0,0,0,.35);
+}
+#tasksToggleBtn:hover { background: #f59e0b; transform: scale(1.05); }
 
-#tasksWidget {
-  position: fixed;
-  bottom: 5.5rem;
-  left: 1.25rem;
-  z-index: 399;
-  width: 300px;
-  max-height: 480px;
-  background: #fef08a;
-  border-radius: .85rem;
-  box-shadow: 0 8px 40px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3);
-  display: flex;
-  flex-direction: column;
-  font-family: 'Tajawal', sans-serif;
-  transition: opacity .2s, transform .2s;
-  direction: rtl;
-}
-#tasksWidget.tw-hidden {
-  opacity: 0;
-  transform: translateY(12px) scale(.97);
-  pointer-events: none;
-}
+/* Header with editable title */
 .tw-header {
   background: #fbbf24;
-  border-radius: .85rem .85rem 0 0;
-  padding: .55rem .85rem;
+  padding: .55rem .8rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: .5rem;
   user-select: none;
+  flex-shrink: 0;
 }
-.tw-title { font-size: .95rem; font-weight: 800; color: #1c1917; display: flex; align-items: center; gap: .4rem; }
-.tw-page-nav { display: flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 700; color: #1c1917; }
+.tw-title-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: .93rem;
+  font-weight: 800;
+  color: #1c1917;
+  font-family: inherit;
+  padding: 0;
+  min-width: 0;
+  cursor: text;
+}
+.tw-title-input::placeholder { color: rgba(28,25,23,.4); font-weight: 600; }
+
+.tw-page-nav { display: flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 700; color: #1c1917; flex-shrink: 0; }
 .tw-page-nav button {
   background: rgba(0,0,0,.12);
   border: none;
@@ -950,6 +991,7 @@ textarea.pf-ctrl { resize: vertical; }
   transition: background .15s;
 }
 .tw-page-nav button:hover { background: rgba(0,0,0,.22); }
+
 .tw-body {
   flex: 1;
   overflow-y: auto;
@@ -960,6 +1002,7 @@ textarea.pf-ctrl { resize: vertical; }
 }
 .tw-body::-webkit-scrollbar { width: 4px; }
 .tw-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,.2); border-radius: 2px; }
+
 .tw-task {
   display: flex;
   align-items: flex-start;
@@ -969,6 +1012,7 @@ textarea.pf-ctrl { resize: vertical; }
   transition: background .12s;
 }
 .tw-task:hover { background: rgba(0,0,0,.06); }
+
 .tw-chk {
   width: 1.1rem;
   height: 1.1rem;
@@ -986,11 +1030,8 @@ textarea.pf-ctrl { resize: vertical; }
   transition: background .15s, border-color .15s, color .15s;
   margin-top: .18rem;
 }
-.tw-task.done .tw-chk {
-  background: #16a34a;
-  border-color: #16a34a;
-  color: #fff;
-}
+.tw-task.done .tw-chk { background: #16a34a; border-color: #16a34a; color: #fff; }
+
 .tw-task-text {
   flex: 1;
   font-size: .85rem;
@@ -1006,11 +1047,8 @@ textarea.pf-ctrl { resize: vertical; }
   word-break: break-word;
   transition: color .2s, opacity .2s;
 }
-.tw-task.done .tw-task-text {
-  text-decoration: line-through;
-  color: #a8a29e;
-  opacity: .55;
-}
+.tw-task.done .tw-task-text { text-decoration: line-through; color: #a8a29e; opacity: .55; }
+
 .tw-task-del {
   background: none;
   border: none;
@@ -1026,9 +1064,11 @@ textarea.pf-ctrl { resize: vertical; }
 }
 .tw-task:hover .tw-task-del { opacity: 1; }
 .tw-task-del:hover { color: #dc2626; }
+
 .tw-footer {
   padding: .45rem .7rem .6rem;
   border-top: 1px solid rgba(0,0,0,.1);
+  flex-shrink: 0;
 }
 .tw-add-btn {
   width: 100%;
