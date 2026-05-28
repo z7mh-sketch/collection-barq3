@@ -17,18 +17,18 @@ const VF_FIELDS = [
 // ── إحداثيات افتراضية (canvas 1530×1980 عند VF_FILL_SCALE=2.5) ──
 // مستخرجة من نموذج المخالفة الأصلي عبر تحليل حقول الـ PDF
 const VF_DEFAULT_COORDS = {
-  vf_date:        { canvasX: 748,  canvasY: 448 },
+  vf_date:        { canvasX: 630,  canvasY: 448 },
   vf_emp_name:    { canvasX: 767,  canvasY: 489 },
   vf_job_title:   { canvasX: 714,  canvasY: 523 },
   vf_hrid:        { canvasX: 714,  canvasY: 563 },
-  vf_late_date:   { canvasX: 887,  canvasY: 704 },
-  vf_early_date:  { canvasX: 960,  canvasY: 738 },
+  vf_late_date:   { canvasX: 770,  canvasY: 704 },
+  vf_early_date:  { canvasX: 840,  canvasY: 738 },
   vf_early_dur:   { canvasX: 739,  canvasY: 744 },
   vf_absent_days: { canvasX: 979,  canvasY: 773 },
-  vf_absent_date: { canvasX: 840,  canvasY: 770 },
+  vf_absent_date: { canvasX: 720,  canvasY: 770 },
   vf_other_text:  { canvasX: 700,  canvasY: 810 },
   vf_consequence: { canvasX: 635,  canvasY: 897 },
-  vf_signature:   { canvasX: 922,  canvasY: 1006 },
+  vf_signature:   { canvasX: 860,  canvasY: 1006 },
 };
 
 const VF = {
@@ -120,7 +120,7 @@ function _vfFmtDate(v) {
 function _vfFmtDateShort(v) {
   if (!v || !v.includes('-')) return v;
   const [, m, d] = v.split('-');
-  return d ? `${d}/${m}` : v;
+  return d ? `${d} ${m}` : v;
 }
 
 let _vfSigMode = 'draw';
@@ -400,7 +400,7 @@ async function _vfFillPdf(data) {
       const sx   = sp.canvasX !== undefined ? sp.canvasX : (sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x);
       const sy   = sp.canvasY !== undefined ? sp.canvasY : (sp.yPct !== undefined ? sp.yPct * vp.height : sp.y);
       const img  = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
-      const sigW = vp.width * 0.18, sigH = sigW * 0.3;
+      const sigW = vp.width * 0.12, sigH = sigW * 0.3;
       ctx.drawImage(img, sx - sigW / 2, sy - sigH / 2, sigW, sigH);
     }
 
