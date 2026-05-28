@@ -29,6 +29,94 @@
 
 <body>
 
+  <!-- ============ WELCOME MODAL ============ -->
+  <div id="welcomeModal" style="
+    position:fixed;inset:0;z-index:99998;
+    background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;padding:1rem;
+    animation:wFadeIn .3s ease;
+  ">
+    <div style="
+      background:#111;border:1.5px solid #FBBF24;border-radius:1.5rem;
+      padding:2.25rem 2rem;width:min(500px,100%);position:relative;
+      box-shadow:0 0 80px rgba(251,191,36,.2);
+      animation:wSlideUp .35s ease;
+      font-family:'Tajawal',sans-serif;
+    ">
+      <!-- Close -->
+      <button onclick="closeWelcome()" style="
+        position:absolute;top:.85rem;left:.85rem;
+        background:#1a1a1a;border:1px solid #3f3f46;color:#a1a1aa;
+        width:2rem;height:2rem;border-radius:.5rem;cursor:pointer;
+        font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+        transition:all .15s;
+      " onmouseover="this.style.color='#fff';this.style.borderColor='#FBBF24'"
+         onmouseout="this.style.color='#a1a1aa';this.style.borderColor='#3f3f46'">✕</button>
+
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <div style="font-size:2.2rem;margin-bottom:.6rem;">✨</div>
+        <h2 style="color:#FBBF24;font-size:1.45rem;font-weight:800;margin-bottom:.5rem;line-height:1.3">
+          كل ما تحتاجه، هنا في مكان واحد
+        </h2>
+        <p style="color:#94a3b8;font-size:.95rem;line-height:1.7">
+          ما راح ينقصك أي شيء — خلّ التعب علينا<br>
+          وانت تبدع في شغلك 🚀
+        </p>
+      </div>
+
+      <!-- Features -->
+      <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.75rem;">
+        <div style="background:#1a1a1a;border:1px solid #27272a;border-radius:.75rem;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.25rem">👥</span>
+          <div>
+            <div style="color:#f4f4f5;font-size:.88rem;font-weight:700">بيانات جميع الليدرز</div>
+            <div style="color:#71717a;font-size:.78rem">الاسم، المنصب، وسائل التواصل كلها</div>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid #27272a;border-radius:.75rem;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.25rem">🔗</span>
+          <div>
+            <div style="color:#f4f4f5;font-size:.88rem;font-weight:700">روابط التصعيد الفورية</div>
+            <div style="color:#71717a;font-size:.78rem">وصّل مشكلتك للشخص الصح في ثوانٍ</div>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border:1px solid #27272a;border-radius:.75rem;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:1.25rem">⚡</span>
+          <div>
+            <div style="color:#f4f4f5;font-size:.88rem;font-weight:700">روابط سريعة للأنظمة</div>
+            <div style="color:#71717a;font-size:.78rem">كل شيء تحتاجه بضغطة واحدة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button onclick="closeWelcome()" style="
+        width:100%;padding:.8rem;
+        background:#FBBF24;color:#000;border:none;
+        border-radius:.75rem;font-family:inherit;
+        font-size:1rem;font-weight:800;cursor:pointer;
+        transition:opacity .15s;
+      " onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+        ابدأ الآن ←
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes wFadeIn  { from { opacity:0 } to { opacity:1 } }
+    @keyframes wSlideUp { from { opacity:0;transform:translateY(20px) } to { opacity:1;transform:translateY(0) } }
+  </style>
+
+  <script>
+    function closeWelcome() {
+      const m = document.getElementById('welcomeModal');
+      m.style.transition = 'opacity .25s';
+      m.style.opacity = '0';
+      setTimeout(() => m.remove(), 260);
+    }
+  </script>
+
   <!-- ============ HEADER ============ -->
   <header class="site-header sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 flex-wrap">
