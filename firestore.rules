@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection — only the owner can read/create their own doc.
+    // Status is set to "pending" on creation; only the admin (Firebase console)
+    // or Power Automate can promote it to "approved".
+    match /users/{uid} {
+      allow read:   if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && request.resource.data.status == 'pending';
+      allow update, delete: if false;
+    }
+
+    // Approvals collection — written by Power Automate via REST API (no auth token).
+    // Unauthenticated-only writes prevent self-approval by logged-in users.
+    match /approvals/{uid} {
+      allow write: if request.auth == null;
+      allow read:  if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

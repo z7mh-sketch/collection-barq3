@@ -1,66 +1,68 @@
-(function () {
-  // ── Password config ──────────────────────────────────────
-  // غيّر كلمة المرور هنا
-  const PASS = 'barq2025';
-  const KEY  = 'barq_auth_v1';
-  const TTL  = 30 * 24 * 60 * 60 * 1000; // 30 يوم
+import { auth, db } from './firebase-config.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-  function token() { return btoa(encodeURIComponent(PASS)); }
+// Show checking overlay immediately
+const overlay = document.createElement('div');
+overlay.id = 'authOverlay';
+overlay.innerHTML = `
+  <div class="auth-box">
+    <div class="auth-logo">Collection Barq</div>
+    <p class="auth-sub" style="color:#94a3b8">جاري التحقق...</p>
+  </div>`;
+document.documentElement.style.overflow = 'hidden';
+document.body.appendChild(overlay);
 
-  function isAuthed() {
-    try {
-      const s = localStorage.getItem(KEY);
-      if (!s) return false;
-      const { t, exp } = JSON.parse(s);
-      return Date.now() < exp && t === token();
-    } catch { return false; }
-  }
-
-  if (isAuthed()) return;
-
-  // ── Build overlay ────────────────────────────────────────
-  const overlay = document.createElement('div');
-  overlay.id = 'authOverlay';
+function showPending(user) {
   overlay.innerHTML = `
     <div class="auth-box">
       <div class="auth-logo">Collection Barq</div>
-      <p class="auth-sub">أدخل كلمة المرور للدخول</p>
-      <input type="password" id="authPass" class="search-input"
-        placeholder="كلمة المرور..."
-        autocomplete="current-password"
-        style="width:100%;margin-bottom:.75rem;text-align:center;letter-spacing:.25em" />
-      <button id="authBtn" class="escalation-btn" style="width:100%">
-        <i class="fa-solid fa-right-to-bracket"></i> دخول
-      </button>
-      <p id="authErr" style="color:#ef4444;font-size:.8rem;margin-top:.75rem;display:none">
-        <i class="fa-solid fa-circle-xmark"></i> كلمة المرور غير صحيحة
+      <p style="color:#f59e0b;font-size:1.1rem;margin-bottom:.5rem">⏳ طلبك قيد المراجعة</p>
+      <p style="color:#94a3b8;font-size:.85rem;margin-bottom:1.25rem">
+        سيتم إشعارك على بريدك الإلكتروني عند الموافقة على طلبك.
       </p>
+      <p style="color:#64748b;font-size:.8rem;margin-bottom:1rem">${user.email}</p>
+      <button id="authSignOut" style="padding:.55rem 1.75rem;background:#334155;color:#e2e8f0;border:none;border-radius:.5rem;cursor:pointer;font-size:.9rem">
+        تسجيل الخروج
+      </button>
     </div>`;
-  document.documentElement.style.overflow = 'hidden';
-  document.body.appendChild(overlay);
+  document.getElementById('authSignOut').addEventListener('click', () => {
+    signOut(auth).then(() => location.replace('login.html'));
+  });
+}
 
-  function tryLogin() {
-    const val = document.getElementById('authPass').value;
-    if (val === PASS) {
-      localStorage.setItem(KEY, JSON.stringify({ t: token(), exp: Date.now() + TTL }));
-      overlay.style.opacity = '0';
-      overlay.style.transition = 'opacity .4s';
-      setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 420);
-    } else {
-      const err = document.getElementById('authErr');
-      err.style.display = 'block';
-      const inp = document.getElementById('authPass');
-      inp.value = '';
-      inp.style.borderColor = '#ef4444';
-      setTimeout(() => { inp.style.borderColor = ''; }, 1200);
-    }
+function grantAccess() {
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'opacity .35s';
+  setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    location.replace('login.html');
+    return;
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('authBtn').addEventListener('click', tryLogin);
-    document.getElementById('authPass').addEventListener('keydown', e => {
-      if (e.key === 'Enter') tryLogin();
-    });
-    document.getElementById('authPass').focus();
-  });
-})();
+  if (!user.email?.toLowerCase().endsWith('@barq.com')) {
+    await signOut(auth);
+    location.replace('login.html?err=domain');
+    return;
+  }
+
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    const approvalDoc = await getDoc(doc(db, 'approvals', user.uid));
+
+    const status = userDoc.data()?.status;
+    const approved = status === 'approved' || approvalDoc.exists();
+
+    if (approved) {
+      grantAccess();
+    } else {
+      showPending(user);
+    }
+  } catch {
+    // Firestore error — grant access if authenticated (fail open for network issues)
+    grantAccess();
+  }
+});

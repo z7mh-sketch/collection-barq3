@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول — Collection Barq</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', system-ui, sans-serif;
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #111;
+      border: 1.5px solid #FBBF24;
+      border-radius: 1.25rem;
+      padding: 2.5rem 2rem;
+      width: min(400px, 100%);
+      box-shadow: 0 0 60px rgba(251,191,36,.15);
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #FBBF24;
+      text-align: center;
+      letter-spacing: -.01em;
+      margin-bottom: .35rem;
+    }
+    .logo-sub {
+      text-align: center;
+      color: #71717a;
+      font-size: .8rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: .375rem;
+      background: #1a1a1a;
+      border-radius: .75rem;
+      padding: .25rem;
+      margin-bottom: 1.75rem;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: .55rem .5rem;
+      border: none;
+      border-radius: .55rem;
+      background: transparent;
+      color: #71717a;
+      font-family: inherit;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .tab-btn.active {
+      background: #FBBF24;
+      color: #000;
+    }
+
+    /* Form */
+    .form-group { margin-bottom: 1rem; }
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin-bottom: .4rem;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: .65rem .85rem;
+      background: #1a1a1a;
+      border: 1.5px solid #27272a;
+      border-radius: .6rem;
+      color: #f4f4f5;
+      font-family: inherit;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .15s;
+      direction: ltr;
+      text-align: right;
+    }
+    input:focus { border-color: #FBBF24; }
+    input::placeholder { color: #52525b; direction: rtl; text-align: right; }
+
+    .btn-primary {
+      width: 100%;
+      padding: .72rem;
+      background: #FBBF24;
+      color: #000;
+      border: none;
+      border-radius: .65rem;
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: .5rem;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn-primary:hover { opacity: .9; }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* Messages */
+    .msg {
+      display: none;
+      padding: .65rem .85rem;
+      border-radius: .55rem;
+      font-size: .85rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .msg.error { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; display: block; }
+    .msg.success { background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.25); color: #86efac; display: block; }
+    .msg.info { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.2); color: #fde68a; display: block; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(0,0,0,.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-left: .4rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hint {
+      font-size: .75rem;
+      color: #52525b;
+      margin-top: .35rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Collection Barq</div>
+    <p class="logo-sub">مرجع الليدرز الداخلي</p>
+
+    <div id="alertMsg" class="msg"></div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">تسجيل الدخول</button>
+      <button class="tab-btn" id="tabRequest" onclick="switchTab('request')">طلب الوصول</button>
+    </div>
+
+    <!-- Sign In Panel -->
+    <div class="panel active" id="panelSignin">
+      <form id="formSignin" onsubmit="handleSignIn(event)">
+        <div class="form-group">
+          <label for="siEmail">البريد الإلكتروني</label>
+          <input type="email" id="siEmail" placeholder="name@barq.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="siPassword">كلمة المرور</label>
+          <input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-primary" id="btnSignIn">دخول</button>
+      </form>
+    </div>
+
+    <!-- Request Access Panel -->
+    <div class="panel" id="panelRequest">
+      <form id="formRequest" onsubmit="handleRequestAccess(event)">
+        <div class="form-group">
+          <label for="rqName">الاسم الكامل</label>
+          <input type="text" id="rqName" placeholder="محمد العلي" required>
+        </div>
+        <div class="form-group">
+          <label for="rqEmail">البريد الإلكتروني</label>
+          <input type="email" id="rqEmail" placeholder="name@barq.com" autocomplete="email" required>
+          <p class="hint">يجب أن يكون بريدك على نطاق @barq.com</p>
+        </div>
+        <div class="form-group">
+          <label for="rqPassword">كلمة المرور</label>
+          <input type="password" id="rqPassword" placeholder="6 أحرف على الأقل" autocomplete="new-password" required minlength="6">
+        </div>
+        <button type="submit" class="btn-primary" id="btnRequest">إرسال الطلب</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './js/firebase-config.js';
+    import {
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import {
+      doc, setDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    // ── Power Automate webhook URL ──────────────────────────────────────────
+    // Replace with your actual Power Automate HTTP trigger URL after creating the flow.
+    const POWER_AUTOMATE_WEBHOOK = 'YOUR_POWER_AUTOMATE_WEBHOOK_URL';
+    // ────────────────────────────────────────────────────────────────────────
+
+    const alertMsg = document.getElementById('alertMsg');
+
+    function showMsg(text, type = 'error') {
+      alertMsg.textContent = text;
+      alertMsg.className = 'msg ' + type;
+    }
+    function clearMsg() {
+      alertMsg.className = 'msg';
+      alertMsg.textContent = '';
+    }
+
+    // Handle ?err=domain from auth.js redirect
+    const params = new URLSearchParams(location.search);
+    if (params.get('err') === 'domain') {
+      showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+    }
+
+    function setLoading(btnId, loading, label) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? label + '<span class="spinner"></span>'
+        : label;
+    }
+
+    // ── Sign In ───────────────────────────────────────────────────────────
+    window.handleSignIn = async function(e) {
+      e.preventDefault();
+      clearMsg();
+      const email = document.getElementById('siEmail').value.trim().toLowerCase();
+      const password = document.getElementById('siPassword').value;
+
+      if (!email.endsWith('@barq.com')) {
+        showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+        return;
+      }
+
+      setLoading('btnSignIn', true, 'دخول');
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        location.replace('index.html');
+      } catch (err) {
+        const msg = {
+          'auth/user-not-found': 'لا يوجد حساب بهذا البريد الإلكتروني',
+          'auth/wrong-password': 'كلمة المرور غير صحيحة',
+          'auth/invalid-credential': 'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+          'auth/too-many-requests': 'تم تجاوز عدد المحاولات، حاول لاحقاً',
+          'auth/user-disabled': 'هذا الحساب موقوف، تواصل مع المسؤول',
+          'auth/network-request-failed': 'تعذر الاتصال، تحقق من الإنترنت',
+        }[err.code] || 'حدث خطأ، حاول مجدداً';
+        showMsg(msg, 'error');
+      } finally {
+        setLoading('btnSignIn', false, 'دخول');
+      }
+    };
+
+    // ── Request Access ────────────────────────────────────────────────────
+    window.handleRequestAccess = async function(e) {
+      e.preventDefault();
+      clearMsg();
+      const name  = document.getElementById('rqName').value.trim();
+      const email = document.getElementById('rqEmail').value.trim().toLowerCase();
+      const password = document.getElementById('rqPassword').value;
+
+      if (!email.endsWith('@barq.com')) {
+        showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+        return;
+      }
+
+      setLoading('btnRequest', true, 'إرسال الطلب');
+      try {
+        // 1. Create Firebase Auth account
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = cred.user.uid;
+
+        // 2. Write pending user record to Firestore
+        await setDoc(doc(db, 'users', uid), {
+          name,
+          email,
+          status: 'pending',
+          createdAt: serverTimestamp(),
+        });
+
+        // 3. Notify Power Automate (non-blocking — don't fail if webhook not set)
+        if (POWER_AUTOMATE_WEBHOOK && POWER_AUTOMATE_WEBHOOK !== 'YOUR_POWER_AUTOMATE_WEBHOOK_URL') {
+          fetch(POWER_AUTOMATE_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid, name, email }),
+          }).catch(() => {});
+        }
+
+        // 4. Sign out — they must wait for approval
+        await signOut(auth);
+
+        // 5. Show success and hide form
+        document.getElementById('formRequest').style.display = 'none';
+        showMsg('✓ تم إرسال طلبك بنجاح! سيتم إشعارك على بريدك الإلكتروني عند الموافقة.', 'success');
+      } catch (err) {
+        const msg = {
+          'auth/email-already-in-use': 'هذا البريد الإلكتروني مسجل بالفعل، جرب تسجيل الدخول',
+          'auth/weak-password': 'كلمة المرور ضعيفة، استخدم 6 أحرف على الأقل',
+          'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة',
+          'auth/network-request-failed': 'تعذر الاتصال، تحقق من الإنترنت',
+        }[err.code] || 'حدث خطأ، حاول مجدداً';
+        showMsg(msg, 'error');
+      } finally {
+        setLoading('btnRequest', false, 'إرسال الطلب');
+      }
+    };
+
+    // ── Tab switching ─────────────────────────────────────────────────────
+    window.switchTab = function(tab) {
+      clearMsg();
+      const isSignin = tab === 'signin';
+      document.getElementById('panelSignin').classList.toggle('active', isSignin);
+      document.getElementById('panelRequest').classList.toggle('active', !isSignin);
+      document.getElementById('tabSignIn').classList.toggle('active', isSignin);
+      document.getElementById('tabRequest').classList.toggle('active', !isSignin);
+      if (isSignin) {
+        document.getElementById('formRequest').style.display = '';
+      }
+    };
+  </script>
+</body>
+</html>
