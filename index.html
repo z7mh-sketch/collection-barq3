@@ -660,6 +660,113 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
   <script src="js/pdf-forms.js"></script>
+
+  <!-- ============ TASKS WIDGET ============ -->
+  <button id="tasksToggleBtn" onclick="twToggle()" title="المهام">📝</button>
+  <div id="tasksWidget" class="tw-hidden">
+    <div class="tw-header">
+      <span class="tw-title">📌 المهام</span>
+      <div class="tw-page-nav">
+        <button onclick="twPrevPage()" title="السابق">‹</button>
+        <span id="twPageLabel">1 / 1</span>
+        <button onclick="twNextPage()" title="التالي">›</button>
+        <button onclick="twAddPage()" title="صفحة جديدة" style="background:rgba(0,0,0,.18);margin-right:.2rem">+</button>
+      </div>
+    </div>
+    <div id="twBody" class="tw-body"></div>
+    <div class="tw-footer">
+      <button class="tw-add-btn" onclick="twAddTask()">
+        <i class="fa-solid fa-plus"></i> مهمة جديدة
+      </button>
+    </div>
+  </div>
+
+  <script>
+  // ── Tasks Widget (Sticky Notes) ──────────────────────────
+  (function(){
+    const KEY = 'barq_tasks_v1';
+    let data  = { page: 0, pages: [[]] };   // pages: array of arrays of {text, done}
+    let open  = false;
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(_){}
+    }
+    function load() {
+      try {
+        const s = localStorage.getItem(KEY);
+        if (s) data = JSON.parse(s);
+        // ensure at least 1 page
+        if (!data.pages || !data.pages.length) data.pages = [[]];
+        if (data.page >= data.pages.length) data.page = 0;
+      } catch(_) { data = { page:0, pages:[[]] }; }
+    }
+
+    function render() {
+      const pg   = data.pages[data.page] || [];
+      const body = document.getElementById('twBody');
+      body.innerHTML = '';
+      pg.forEach((task, idx) => {
+        const row = document.createElement('div');
+        row.className = 'tw-task' + (task.done ? ' done' : '');
+        row.innerHTML = `
+          <div class="tw-chk" data-idx="${idx}">${task.done ? '✓' : ''}</div>
+          <textarea class="tw-task-text" data-idx="${idx}" rows="1">${task.text}</textarea>
+          <button class="tw-task-del" data-idx="${idx}" title="حذف">✕</button>`;
+        // auto-resize textarea
+        const ta = row.querySelector('textarea');
+        ta.style.height = 'auto';
+        setTimeout(() => { ta.style.height = ta.scrollHeight + 'px'; }, 0);
+        ta.addEventListener('input', () => {
+          ta.style.height = 'auto';
+          ta.style.height = ta.scrollHeight + 'px';
+          data.pages[data.page][idx].text = ta.value;
+          save();
+        });
+        row.querySelector('.tw-chk').addEventListener('click', () => {
+          data.pages[data.page][idx].done = !data.pages[data.page][idx].done;
+          save(); render();
+        });
+        row.querySelector('.tw-task-del').addEventListener('click', () => {
+          data.pages[data.page].splice(idx, 1);
+          save(); render();
+        });
+        body.appendChild(row);
+      });
+      document.getElementById('twPageLabel').textContent =
+        (data.page + 1) + ' / ' + data.pages.length;
+    }
+
+    window.twToggle = function() {
+      open = !open;
+      const w = document.getElementById('tasksWidget');
+      w.classList.toggle('tw-hidden', !open);
+    };
+    window.twAddTask = function() {
+      data.pages[data.page].push({ text: '', done: false });
+      save(); render();
+      // focus the new textarea
+      setTimeout(() => {
+        const tas = document.querySelectorAll('#twBody .tw-task-text');
+        if (tas.length) tas[tas.length - 1].focus();
+      }, 60);
+    };
+    window.twPrevPage = function() {
+      if (data.page > 0) { data.page--; save(); render(); }
+    };
+    window.twNextPage = function() {
+      if (data.page < data.pages.length - 1) { data.page++; save(); render(); }
+    };
+    window.twAddPage = function() {
+      data.pages.push([]);
+      data.page = data.pages.length - 1;
+      save(); render();
+    };
+
+    load();
+    document.addEventListener('DOMContentLoaded', render);
+  })();
+  </script>
+
   <script>
     (function(){
       const btn  = document.getElementById('mobileMenuBtn');

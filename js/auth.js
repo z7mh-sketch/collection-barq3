@@ -45,7 +45,7 @@ function grantAccess(user) {
   // Auto-set presence name from email if not already saved
   if (user && !localStorage.getItem('presenceName')) {
     try {
-      const name = user.displayName || nameFromEmail(user.email);
+      const name = user.displayName || 'Developer';
       if (name) localStorage.setItem('presenceName', name);
     } catch (_) {}
   }
