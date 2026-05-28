@@ -673,6 +673,7 @@
           <span id="twPageLabel">1 / 1</span>
           <button onclick="twNextPage()" title="التالي">›</button>
           <button onclick="twAddPage()" title="نوت جديد" style="background:rgba(0,0,0,.18)">+</button>
+          <button onclick="twDeletePage()" title="حذف هذا النوت" style="background:rgba(180,0,0,.18);color:#7f1d1d">🗑</button>
           <button class="tw-close-btn" onclick="twToggle()" title="إخفاء">−</button>
         </div>
       </div>
@@ -785,6 +786,18 @@
     window.twAddPage = function() {
       data.pages.push({ title:'', tasks:[] });
       data.page = data.pages.length - 1;
+      save(); render();
+    };
+    window.twDeletePage = function() {
+      if (data.pages.length === 1) {
+        // last page — just clear it instead of removing
+        data.pages[0] = { title:'', tasks:[] };
+        save(); render();
+        return;
+      }
+      if (!confirm('حذف هذا النوت؟')) return;
+      data.pages.splice(data.page, 1);
+      if (data.page >= data.pages.length) data.page = data.pages.length - 1;
       save(); render();
     };
 
