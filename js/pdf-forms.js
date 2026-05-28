@@ -27,7 +27,7 @@ const VF_DEFAULT_COORDS = {
   vf_absent_days: { canvasX: 979,  canvasY: 773 },
   vf_absent_date: { canvasX: 800,  canvasY: 770 },
   vf_other_text:  { canvasX: 700,  canvasY: 810 },
-  vf_consequence: { canvasX: 635,  canvasY: 914 },
+  vf_consequence: { canvasX: 635,  canvasY: 897 },
   vf_signature:   { canvasX: 922,  canvasY: 971 },
 };
 
@@ -116,6 +116,11 @@ function _vfFmtDate(v) {
   if (!v || !v.includes('-')) return v;
   const [y, m, d] = v.split('-');
   return d ? `${d}/${m}/${y}` : v;
+}
+function _vfFmtDateShort(v) {
+  if (!v || !v.includes('-')) return v;
+  const [, m, d] = v.split('-');
+  return d ? `${d}/${m}` : v;
 }
 
 let _vfSigMode = 'draw';
@@ -375,13 +380,16 @@ async function _vfFillPdf(data) {
     ctx.fillStyle = '#000';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    const DATE_FIELDS = new Set(['vf_date','vf_late_date','vf_early_date','vf_absent_date']);
+    const FULL_DATE  = new Set(['vf_date']);
+    const SHORT_DATE = new Set(['vf_late_date','vf_early_date','vf_absent_date']);
     VF_FIELDS.forEach(field => {
       const pos = coords[field];
       if (!pos || !data[field]) return;
       const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
       const py = pos.canvasY !== undefined ? pos.canvasY : (pos.yPct !== undefined ? pos.yPct * vp.height : pos.y);
-      const val = DATE_FIELDS.has(field) ? _vfFmtDate(String(data[field])) : String(data[field]);
+      const val = FULL_DATE.has(field)  ? _vfFmtDate(String(data[field]))
+                : SHORT_DATE.has(field) ? _vfFmtDateShort(String(data[field]))
+                : String(data[field]);
       ctx.fillText(val, px, py);
     });
 
