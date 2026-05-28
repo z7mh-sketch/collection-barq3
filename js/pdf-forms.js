@@ -17,15 +17,15 @@ const VF_FIELDS = [
 // ── إحداثيات افتراضية (canvas 1530×1980 عند VF_FILL_SCALE=2.5) ──
 // مستخرجة من نموذج المخالفة الأصلي عبر تحليل حقول الـ PDF
 const VF_DEFAULT_COORDS = {
-  vf_date:        { canvasX: 630,  canvasY: 448 },
+  vf_date:        { canvasX: 669,  canvasY: 448 },
   vf_emp_name:    { canvasX: 767,  canvasY: 489 },
   vf_job_title:   { canvasX: 714,  canvasY: 523 },
   vf_hrid:        { canvasX: 714,  canvasY: 563 },
-  vf_late_date:   { canvasX: 770,  canvasY: 704 },
-  vf_early_date:  { canvasX: 840,  canvasY: 738 },
+  vf_late_date:   { canvasX: 809,  canvasY: 704 },
+  vf_early_date:  { canvasX: 880,  canvasY: 738 },
   vf_early_dur:   { canvasX: 739,  canvasY: 744 },
   vf_absent_days: { canvasX: 979,  canvasY: 773 },
-  vf_absent_date: { canvasX: 720,  canvasY: 770 },
+  vf_absent_date: { canvasX: 760,  canvasY: 770 },
   vf_other_text:  { canvasX: 700,  canvasY: 810 },
   vf_consequence: { canvasX: 635,  canvasY: 897 },
   vf_signature:   { canvasX: 860,  canvasY: 1006 },
