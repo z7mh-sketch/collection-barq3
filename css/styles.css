@@ -599,29 +599,34 @@ header.site-header {
   gap: 0;
   padding: .1rem 0;
 }
-/* hide the chevron icons — only the chain shows */
 .sub-connector i { display: none; }
 
 .sub-conn-line {
-  width: 10px;
-  height: 48px;
+  width: 12px;
+  height: 52px;
   overflow: hidden;
   position: relative;
 }
+/*
+  SVG chain tile (12×17px):
+  1. Vertical oval ring  (cx=6 cy=6 rx=3.5 ry=6)
+  2. Horizontal oval     (cx=6 cy=11 rx=5.5 ry=3) — dark fill masks the ring's lower stroke
+  3. Bottom-arc of ring redrawn ON TOP of horizontal oval → interlocking 3-D look
+  4. Short line connecting to the next tile's ring top
+*/
 .sub-conn-line::before {
   content: '';
   position: absolute;
-  top: -16px; left: 0; right: 0;
-  height: calc(100% + 32px);
-  /* SVG chain link: oval 10×16px, gold stroke, repeating every 16px */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16'%3E%3Cellipse cx='5' cy='8' rx='3.5' ry='7' fill='none' stroke='%23FBBF24' stroke-width='1.6'/%3E%3C/svg%3E");
+  top: 0; left: 0; right: 0;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='17'%3E%3Cellipse cx='6' cy='6' rx='3.5' ry='6' fill='none' stroke='%23FBBF24' stroke-width='1.8'/%3E%3Cellipse cx='6' cy='11' rx='5.5' ry='3' fill='%23111111' stroke='%23FBBF24' stroke-width='1.8'/%3E%3Cpath d='M 2.5 6 A 3.5 6 0 0 1 9.5 6' fill='none' stroke='%23FBBF24' stroke-width='1.8'/%3E%3Cline x1='6' y1='14' x2='6' y2='17' stroke='%23FBBF24' stroke-width='1.8'/%3E%3C/svg%3E");
   background-repeat: repeat-y;
-  background-size: 10px 16px;
-  animation: chainDrop .6s linear infinite;
+  background-size: 12px 17px;
+  animation: chainDrop .7s linear infinite;
 }
 @keyframes chainDrop {
   from { background-position: 0 0;    }
-  to   { background-position: 0 16px; }
+  to   { background-position: 0 17px; }
 }
 
 @keyframes dropArrow {
@@ -629,12 +634,6 @@ header.site-header {
   25%  { opacity: 1;   transform: translateY(0);    }
   60%  { opacity: 1;   transform: translateY(0);    }
   100% { opacity: 0;   transform: translateY(5px);  }
-}
-.sub-connector i {
-  animation: dropArrow 1.4s ease-in-out infinite;
-}
-.sub-connector i:last-child {
-  animation-delay: .7s;
 }
 
 /* ========== PDF Form Modal ========== */
