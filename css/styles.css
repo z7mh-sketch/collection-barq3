@@ -708,8 +708,10 @@ textarea.pf-ctrl { resize: vertical; }
   background: #000;
   border-top: 2.5px solid #FBBF24;
   text-align: center;
-  font-size: .85rem;
-  color: #71717a;
+  font-size: .92rem;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 600;
+  color: #d4d4d8;
   padding: 1.5rem 1rem;
   margin-top: 3rem;
 }
@@ -853,7 +855,7 @@ textarea.pf-ctrl { resize: vertical; }
   transition: border-color .2s, background .2s;
   outline: none;
 }
-.header-search-input::placeholder { color: #71717a; }
+.header-search-input::placeholder { color: #a1a1aa; font-family: 'Tajawal', sans-serif; font-weight: 500; }
 .header-search-input:focus {
   border-color: #FBBF24;
   background: rgba(255,255,255,.09);
