@@ -11,8 +11,11 @@ const VF_FILL_SCALE  = 2.5; // render scale for fill (higher = sharper text)
 const VF_FIELDS = [
   'vf_date', 'vf_emp_name', 'vf_job_title', 'vf_hrid',
   'vf_late_date', 'vf_early_date', 'vf_early_dur',
-  'vf_absent_days', 'vf_absent_date', 'vf_other_text', 'vf_consequence'
+  'vf_absent_days', 'vf_absent_date', 'vf_consequence'
 ];
+
+// ── حقول علامات الصح للمخالفات المختارة ──
+const VF_CHECK_FIELDS = ['chk_late', 'chk_early', 'chk_absent', 'chk_other'];
 
 // ── إحداثيات افتراضية (canvas 1530×1980 عند VF_FILL_SCALE=2.5) ──
 // مستخرجة من نموذج المخالفة الأصلي عبر تحليل حقول الـ PDF
@@ -21,14 +24,17 @@ const VF_DEFAULT_COORDS = {
   vf_emp_name:    { canvasX: 767,  canvasY: 489 },
   vf_job_title:   { canvasX: 714,  canvasY: 523 },
   vf_hrid:        { canvasX: 714,  canvasY: 563 },
-  vf_late_date:   { canvasX: 809,  canvasY: 704 },
-  vf_early_date:  { canvasX: 880,  canvasY: 738 },
-  vf_early_dur:   { canvasX: 739,  canvasY: 744 },
-  vf_absent_days: { canvasX: 979,  canvasY: 773 },
-  vf_absent_date: { canvasX: 760,  canvasY: 770 },
-  vf_other_text:  { canvasX: 700,  canvasY: 810 },
+  vf_late_date:   { canvasX: 1010, canvasY: 704 },
+  vf_early_date:  { canvasX: 1010, canvasY: 738 },
+  vf_early_dur:   { canvasX: 660,  canvasY: 744 },
+  vf_absent_days: { canvasX: 900,  canvasY: 773 },
+  vf_absent_date: { canvasX: 1010, canvasY: 770 },
   vf_consequence: { canvasX: 635,  canvasY: 897 },
   vf_signature:   { canvasX: 860,  canvasY: 1006 },
+  chk_late:       { canvasX: 1230, canvasY: 698 },
+  chk_early:      { canvasX: 1230, canvasY: 736 },
+  chk_absent:     { canvasX: 1230, canvasY: 770 },
+  chk_other:      { canvasX: 1230, canvasY: 808 },
 };
 
 const VF = {
@@ -66,8 +72,11 @@ const VF = {
       vf_early_dur:   'مدة المغادرة',
       vf_absent_days: 'عدد أيام الغياب',
       vf_absent_date: 'تاريخ الغياب',
-      vf_other_text:  'نص أخرى',
       vf_consequence: 'وقد ترتب على ذلك',
+      chk_late:       'صح: التأخير',
+      chk_early:      'صح: المغادرة',
+      chk_absent:     'صح: الغياب',
+      chk_other:      'صح: أخرى',
     }
   },
   en: {
@@ -104,8 +113,11 @@ const VF = {
       vf_early_dur:   'Duration',
       vf_absent_days: 'Absence Days',
       vf_absent_date: 'Absence Date',
-      vf_other_text:  'Other Text',
       vf_consequence: 'Accordingly',
+      chk_late:       'Tick: Late',
+      chk_early:      'Tick: Early',
+      chk_absent:     'Tick: Absent',
+      chk_other:      'Tick: Other',
     }
   }
 };
@@ -132,16 +144,54 @@ let _vfLX = 0, _vfLY = 0;
 // ─────────────────────────────────────────────
 function openViolationForm() {
   _vfApplyLabels();
-  const today = new Date().toISOString().split('T')[0];
-  ['vfDate','vfLatDate','vfEarlyDate','vfAbsentDate'].forEach(id => {
-    document.getElementById(id).value = today;
+  _vfPopulateDM();
+  _vfBindChkHighlight();
+  const today = new Date();
+  document.getElementById('vfDate').value = today.toISOString().split('T')[0];
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  ['vfLat', 'vfEarly', 'vfAbsent'].forEach(p => {
+    const dSel = document.getElementById(p + 'Day');
+    const mSel = document.getElementById(p + 'Month');
+    if (dSel) dSel.value = dd;
+    if (mSel) mSel.value = mm;
   });
+  // reset checked state highlight
+  document.querySelectorAll('.vf-vrow').forEach(r => r.classList.remove('is-checked'));
   // زر مواضع الحقول — يظهر فقط إذا VF_PDF_FILL مفعّل
   const coordBtn = document.getElementById('vfCoordBtn');
   if (coordBtn) coordBtn.style.display = VF_PDF_FILL ? 'inline-flex' : 'none';
 
   document.getElementById('violationFormModal').classList.remove('hidden');
   _vfInitCanvas();
+}
+
+// Populate day (01-31) and month (01-12) selects
+function _vfPopulateDM() {
+  const fill = (sel, n) => {
+    if (!sel || sel.options.length) return;
+    for (let i = 1; i <= n; i++) {
+      const o = document.createElement('option');
+      o.value = String(i).padStart(2, '0');
+      o.textContent = String(i).padStart(2, '0');
+      sel.appendChild(o);
+    }
+  };
+  ['vfLatDay', 'vfEarlyDay', 'vfAbsentDay'].forEach(id => fill(document.getElementById(id), 31));
+  ['vfLatMonth', 'vfEarlyMonth', 'vfAbsentMonth'].forEach(id => fill(document.getElementById(id), 12));
+}
+
+// Highlight row when its checkbox is checked
+function _vfBindChkHighlight() {
+  ['vfChkLate', 'vfChkEarly', 'vfChkAbsent', 'vfChkOther'].forEach(id => {
+    const chk = document.getElementById(id);
+    if (!chk || chk._vfBound) return;
+    chk._vfBound = true;
+    const row = chk.closest('.vf-vrow');
+    chk.addEventListener('change', () => {
+      if (row) row.classList.toggle('is-checked', chk.checked);
+    });
+  });
 }
 
 function closeViolationForm() {
@@ -261,22 +311,25 @@ function _vfSigUrl() {
 function _vfCollectData() {
   const g = id => document.getElementById(id);
   const v = id => g(id).value;
-  const unit = () => g('vfEarlyUnit').options[g('vfEarlyUnit').selectedIndex].textContent;
+  const dm = (dId, mId) => {
+    const d = g(dId)?.value, m = g(mId)?.value;
+    return (d && m) ? `${d} ${m}` : '';
+  };
   return {
     vf_date:        v('vfDate'),
     vf_emp_name:    v('vfEmpName'),
     vf_job_title:   v('vfJobTitle'),
     vf_hrid:        v('vfHRID'),
     chk_late:       g('vfChkLate').checked,
-    vf_late_date:   v('vfLatDate'),
+    vf_late_date:   dm('vfLatDay', 'vfLatMonth'),
     chk_early:      g('vfChkEarly').checked,
-    vf_early_date:  v('vfEarlyDate'),
-    vf_early_dur:   v('vfEarlyDur') + ' ' + unit(),
+    vf_early_date:  dm('vfEarlyDay', 'vfEarlyMonth'),
+    vf_early_dur:   v('vfEarlyDur'),
     chk_absent:     g('vfChkAbsent').checked,
     vf_absent_days: v('vfAbsentDays'),
-    vf_absent_date: v('vfAbsentDate'),
+    vf_absent_date: dm('vfAbsentDay', 'vfAbsentMonth'),
     chk_other:      g('vfChkOther').checked,
-    vf_other_text:  v('vfOtherText'),
+    vf_other_text:  '',
     vf_consequence: v('vfConsequence'),
   };
 }
@@ -297,7 +350,7 @@ function _vfPrintHtml(data) {
   if (data.chk_absent)
     rows.push(`&#9745; ${L.absence} ${data.vf_absent_days||'&mdash;'} ${L.days} ${data.vf_absent_date}`);
   if (data.chk_other)
-    rows.push(`&#9745; ${L.other} ${data.vf_other_text}`);
+    rows.push(`&#9745; ${L.other}`);
 
   const violHtml = rows.length
     ? rows.map(r => `<div class="vi">${r}</div>`).join('')
@@ -382,7 +435,17 @@ async function _vfFillPdf(data) {
     ctx.textBaseline = 'middle';
     const FULL_DATE  = new Set(['vf_date']);
     const SHORT_DATE = new Set(['vf_late_date','vf_early_date','vf_absent_date']);
+    // Map violation-specific fields to their checkbox; skip writing if unchecked.
+    const CHK_GATE = {
+      vf_late_date:   'chk_late',
+      vf_early_date:  'chk_early',
+      vf_early_dur:   'chk_early',
+      vf_absent_days: 'chk_absent',
+      vf_absent_date: 'chk_absent',
+    };
     VF_FIELDS.forEach(field => {
+      const gate = CHK_GATE[field];
+      if (gate && !data[gate]) return;
       const pos = coords[field];
       if (!pos || !data[field]) return;
       const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
@@ -392,6 +455,19 @@ async function _vfFillPdf(data) {
                 : String(data[field]);
       ctx.fillText(val, px, py);
     });
+
+    // ── علامات الصح (✓) لكل مخالفة مختارة ──
+    const tickSize = Math.round(vp.height * 0.022);
+    ctx.font = `bold ${tickSize}px Tahoma, Arial, sans-serif`;
+    VF_CHECK_FIELDS.forEach(name => {
+      if (!data[name]) return;
+      const pos = coords[name];
+      if (!pos) return;
+      const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
+      const py = pos.canvasY !== undefined ? pos.canvasY : (pos.yPct !== undefined ? pos.yPct * vp.height : pos.y);
+      ctx.fillText('✓', px, py);
+    });
+    ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
 
     // التوقيع
     const sigUrl = _vfSigUrl();
@@ -443,11 +519,45 @@ let _vfMapCoords = {};
 
 function openVfCoordMapper() {
   _vfMapCoords = _vfLoadCoords() || { ...VF_DEFAULT_COORDS };
+  // Pre-fill defaults for keys that may be missing in saved coords (after schema additions)
+  Object.keys(VF_DEFAULT_COORDS).forEach(k => {
+    if (!_vfMapCoords[k]) _vfMapCoords[k] = { ...VF_DEFAULT_COORDS[k] };
+  });
   _vfMapField  = null;
   const modal  = document.getElementById('vfMapperModal');
   if (!modal) { _vfBuildMapperModal(); }
   document.getElementById('vfMapperModal').classList.remove('hidden');
   _vfRenderMapperPdf();
+}
+
+// Arrow-key nudging for fine calibration. Active only while mapper modal is open.
+function _vfMapKeyDown(e) {
+  const modal = document.getElementById('vfMapperModal');
+  if (!modal || modal.classList.contains('hidden') || !_vfMapField) return;
+  const step = e.shiftKey ? 25 : (e.ctrlKey ? 1 : 5);
+  if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return;
+  e.preventDefault();
+  const c = _vfMapCoords[_vfMapField] = _vfMapCoords[_vfMapField] || { canvasX: 0, canvasY: 0 };
+  if (c.canvasX === undefined) c.canvasX = (c.xPct || 0) * 1530;
+  if (c.canvasY === undefined) c.canvasY = (c.yPct || 0) * 1980;
+  switch (e.key) {
+    case 'ArrowLeft':  c.canvasX -= step; break;
+    case 'ArrowRight': c.canvasX += step; break;
+    case 'ArrowUp':    c.canvasY -= step; break;
+    case 'ArrowDown':  c.canvasY += step; break;
+  }
+  _vfRedrawMapperCanvas();
+  _vfUpdateMapStatus();
+}
+
+function _vfUpdateMapStatus() {
+  const bar = document.getElementById('vfMapStatus');
+  if (!bar) return;
+  if (!_vfMapField) { bar.textContent = 'اختر حقلاً ثم انقر على النموذج، أو استخدم الأسهم ← ↑ → ↓ لضبط دقيق (Shift = قفزة 25px, Ctrl = 1px)'; return; }
+  const c = _vfMapCoords[_vfMapField] || {};
+  const x = Math.round(c.canvasX || 0), y = Math.round(c.canvasY || 0);
+  const labels = VF[_vfLang()].fieldLabels;
+  bar.textContent = `الحقل: ${labels[_vfMapField] || _vfMapField}   |   X: ${x}   Y: ${y}   |   الأسهم تضبط (Shift = 25px, Ctrl = 1px)`;
 }
 
 function _vfBuildMapperModal() {
@@ -462,14 +572,14 @@ function _vfBuildMapperModal() {
         <button onclick="document.getElementById('vfMapperModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-4">
-        <p style="font-size:.82rem;color:#a1a1aa;margin-bottom:.75rem">اختر الحقل ثم انقر على موضعه في النموذج</p>
+        <div id="vfMapStatus" style="font-size:.82rem;color:#FBBF24;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(251,191,36,.08);border-radius:.4rem;border:1px solid rgba(251,191,36,.3)">اختر حقلاً ثم انقر على النموذج، أو استخدم الأسهم ← ↑ → ↓ لضبط دقيق (Shift = قفزة 25px, Ctrl = 1px)</div>
         <div id="vfMapFieldBtns" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
         <div style="position:relative;display:inline-block;width:100%">
-          <canvas id="vfMapCanvas" style="width:100%;border:1.5px solid #3f3f46;border-radius:.5rem;cursor:crosshair;display:block"></canvas>
+          <canvas id="vfMapCanvas" tabindex="0" style="width:100%;border:1.5px solid #3f3f46;border-radius:.5rem;cursor:crosshair;display:block;outline:none"></canvas>
           <div id="vfMapDots" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></div>
         </div>
         <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.75rem">
-          <button onclick="_vfMapCoords={};_vfRedrawMapperCanvas()" class="contact-btn"><i class="fa-solid fa-trash"></i> مسح الكل</button>
+          <button onclick="_vfMapCoords={...VF_DEFAULT_COORDS};_vfRedrawMapperCanvas();_vfUpdateMapStatus()" class="contact-btn"><i class="fa-solid fa-rotate-left"></i> الإحداثيات الافتراضية</button>
           <button onclick="_vfSaveCoords(_vfMapCoords);document.getElementById('vfMapperModal').classList.add('hidden')" class="escalation-btn"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
         </div>
       </div>
@@ -477,7 +587,7 @@ function _vfBuildMapperModal() {
   document.body.appendChild(div);
 
   // زر التوقيع
-  const allFields = [...VF_FIELDS, 'vf_signature'];
+  const allFields = [...VF_FIELDS, 'vf_signature', ...VF_CHECK_FIELDS];
   const labels = VF[_vfLang()].fieldLabels;
   const btns = document.getElementById('vfMapFieldBtns');
   allFields.forEach(f => {
@@ -490,11 +600,15 @@ function _vfBuildMapperModal() {
       _vfMapField = f;
       btns.querySelectorAll('.contact-btn').forEach(x => x.style.borderColor = '');
       b.style.borderColor = '#FBBF24';
+      _vfUpdateMapStatus();
+      const cv = document.getElementById('vfMapCanvas');
+      if (cv) cv.focus();
     };
     btns.appendChild(b);
   });
 
   document.getElementById('vfMapCanvas').addEventListener('click', _vfMapCanvasClick);
+  document.addEventListener('keydown', _vfMapKeyDown);
 }
 
 async function _vfRenderMapperPdf() {
@@ -526,6 +640,7 @@ function _vfMapCanvasClick(e) {
   const cy = Math.round((e.clientY - rect.top)  * scaleY);
   _vfMapCoords[_vfMapField] = { canvasX: cx, canvasY: cy };
   _vfRedrawMapperCanvas();
+  _vfUpdateMapStatus();
 }
 
 function _vfRedrawMapperCanvas() {
@@ -573,4 +688,256 @@ function vfPrint() {
   } else {
     _vfPrintHtml(data);
   }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  VIOLATION FORM — LAUNCH FLOW + EMAIL FLOW
+// ═══════════════════════════════════════════════════════════
+
+// ── Employee data per leader email (populate when list is received) ──
+const VF_EMPLOYEES = {
+  // 'saud.alghamdi@barq.com': [
+  //   { name: 'Ahmed Ali', email: 'ahmed.ali@barq.com', hrid: '10001', title: 'Agent' },
+  // ]
+};
+
+// ── Email script templates ──
+const VF_EMAIL_SCRIPTS = {
+  late: {
+    label_ar: 'مخالفة تأخير',
+    label_en: 'Late Attendance',
+    ar:
+`السلام عليكم ورحمة الله وبركاته،
+
+أخي / أختي {emp_name}،
+
+نود إحاطتكم علماً بأنه تم رصد غياب بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
+
+يرجى مراجعة إدارة الموارد البشرية للاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
+
+وتفضلوا بقبول فائق الاحترام والتقدير،
+المشرف المباشر`,
+    en:
+`Dear {emp_name},
+
+This is to formally inform you that a late attendance violation has been recorded on {date}.
+
+Kindly review the attached violation form and sign it accordingly. Please contact HR for further details.
+
+Best regards,
+Direct Supervisor`
+  },
+  absent: {
+    label_ar: 'مخالفة غياب',
+    label_en: 'Absence Violation',
+    ar:
+`السلام عليكم ورحمة الله وبركاته،
+
+أخي / أختي {emp_name}،
+
+نود إحاطتكم علماً بأنه تم رصد حالة غياب بتاريخ {date}، وقد تم احتساب مخالفة غياب.
+
+يرجى مراجعة إدارة الموارد البشرية للاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
+
+وتفضلوا بقبول فائق الاحترام والتقدير،
+المشرف المباشر`,
+    en:
+`Dear {emp_name},
+
+This is to formally inform you that an absence violation has been recorded on {date}.
+
+Kindly review the attached violation form and sign it accordingly. Please contact HR for further details.
+
+Best regards,
+Direct Supervisor`
+  },
+  exit: {
+    label_ar: 'مخالفة خروج غير مصرّح',
+    label_en: 'Unauthorized Exit',
+    ar:
+`السلام عليكم ورحمة الله وبركاته،
+
+أخي / أختي {emp_name}،
+
+نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن المشرف المباشر في الفلور، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
+
+يرجى مراجعة إدارة الموارد البشرية للاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
+
+وتفضلوا بقبول فائق الاحترام والتقدير،
+المشرف المباشر`,
+    en:
+`Dear {emp_name},
+
+This is to formally inform you that an unauthorized departure from the client site was recorded without the direct supervisor's approval on {date}. An unauthorized exit violation has been issued accordingly.
+
+Kindly review the attached violation form and sign it accordingly. Please contact HR for further details.
+
+Best regards,
+Direct Supervisor`
+  },
+  other: {
+    label_ar: 'أخرى (نص حر)',
+    label_en: 'Other (Custom)',
+    ar: '',
+    en: ''
+  }
+};
+
+let _vfEmailData = null;
+let _vfEmailLang = 'ar';
+let _vfEmailTpl  = 'late';
+
+// ─────────────────────────────────────────────
+//  Step 0 — Launch modal
+// ─────────────────────────────────────────────
+function openVfLaunch() {
+  document.getElementById('vfLaunchModal').classList.remove('hidden');
+}
+
+function vfLaunchManual() {
+  document.getElementById('vfLaunchModal').classList.add('hidden');
+  openViolationForm();
+}
+
+function vfLaunchEmpPicker() {
+  const userEmail = _vfCurrentEmail();
+  const emps = (VF_EMPLOYEES[userEmail?.toLowerCase()] || []);
+  const list = document.getElementById('vfEmpList');
+  list.innerHTML = '';
+
+  if (!emps.length) {
+    list.innerHTML = `
+      <div style="color:#71717a;text-align:center;padding:2rem 1rem">
+        <i class="fa-solid fa-users-slash" style="font-size:2.2rem;display:block;margin-bottom:.75rem;color:#3f3f46"></i>
+        <p>لم يتم إضافة موظفيك بعد.</p>
+        <p style="font-size:.8rem;margin-top:.35rem">تواصل مع مدير النظام لإضافة بيانات فريقك.</p>
+      </div>`;
+  } else {
+    emps.forEach(emp => {
+      const btn = document.createElement('button');
+      btn.className = 'contact-btn';
+      btn.style.cssText = 'width:100%;justify-content:flex-start;gap:.75rem;padding:.75rem 1rem;text-align:right;display:flex;align-items:center';
+      btn.innerHTML = `
+        <span style="width:36px;height:36px;border-radius:50%;background:#FBBF2422;border:1.5px solid #FBBF2455;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="fa-solid fa-user" style="color:#FBBF24;font-size:.85rem"></i>
+        </span>
+        <span style="flex:1;min-width:0">
+          <strong style="display:block;font-size:.9rem">${emp.name}</strong>
+          <span style="color:#71717a;font-size:.77rem">${emp.title || ''} ${emp.hrid ? '· ' + emp.hrid : ''}</span>
+        </span>
+        <i class="fa-solid fa-chevron-left" style="color:#52525b;font-size:.75rem"></i>`;
+      btn.onclick = () => vfPickEmployee(emp);
+      list.appendChild(btn);
+    });
+  }
+
+  document.getElementById('vfLaunchModal').classList.add('hidden');
+  document.getElementById('vfEmpPickerModal').classList.remove('hidden');
+}
+
+function _vfCurrentEmail() {
+  try { if (typeof auth !== 'undefined' && auth.currentUser) return auth.currentUser.email; } catch(_) {}
+  return null;
+}
+
+function vfPickEmployee(emp) {
+  document.getElementById('vfEmpPickerModal').classList.add('hidden');
+  openViolationForm();
+  setTimeout(() => {
+    ['vfEmpName','vfJobTitle','vfHRID'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.value = [emp.name, emp.title, emp.hrid][i] || '';
+    });
+    const toEl = document.getElementById('vfEmailTo');
+    if (toEl && emp.email) toEl.value = emp.email;
+  }, 120);
+}
+
+// ─────────────────────────────────────────────
+//  Email flow
+// ─────────────────────────────────────────────
+function vfOpenEmailModal() {
+  _vfEmailData = _vfCollectData();
+  _vfEmailLang = 'ar';
+  _vfEmailTpl  = 'late';
+
+  // Build template radio options
+  const container = document.getElementById('vfEmailTemplates');
+  container.innerHTML = '';
+  Object.entries(VF_EMAIL_SCRIPTS).forEach(([key, tpl], idx) => {
+    const wrap = document.createElement('label');
+    wrap.style.cssText = 'display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border:1.5px solid #27272a;border-radius:.65rem;cursor:pointer;transition:border-color .15s;user-select:none';
+    if (idx === 0) wrap.style.borderColor = '#FBBF24';
+    wrap.innerHTML = `
+      <input type="radio" name="vfEmailTpl" value="${key}" ${idx === 0 ? 'checked' : ''} style="accent-color:#FBBF24;width:16px;height:16px;flex-shrink:0">
+      <span>
+        <strong style="display:block;font-size:.88rem">${tpl.label_ar}</strong>
+        <span style="color:#71717a;font-size:.77rem">${tpl.label_en}</span>
+      </span>`;
+    const radio = wrap.querySelector('input');
+    radio.addEventListener('change', () => {
+      _vfEmailTpl = key;
+      vfEmailUpdateBody();
+      container.querySelectorAll('label').forEach(l => l.style.borderColor = '#27272a');
+      wrap.style.borderColor = '#FBBF24';
+    });
+    container.appendChild(wrap);
+  });
+
+  // Set language buttons
+  document.getElementById('vfEmailLangAr').style.borderColor = '#FBBF24';
+  document.getElementById('vfEmailLangEn').style.borderColor = '';
+
+  vfEmailUpdateBody();
+  document.getElementById('vfEmailModal').classList.remove('hidden');
+}
+
+function vfEmailSetLang(lang) {
+  _vfEmailLang = lang;
+  document.getElementById('vfEmailLangAr').style.borderColor = lang === 'ar' ? '#FBBF24' : '';
+  document.getElementById('vfEmailLangEn').style.borderColor = lang === 'en' ? '#FBBF24' : '';
+  document.getElementById('vfEmailBody').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  vfEmailUpdateBody();
+}
+
+function vfEmailUpdateBody() {
+  const tpl  = VF_EMAIL_SCRIPTS[_vfEmailTpl];
+  if (!tpl) return;
+  const d    = _vfEmailData || {};
+  const date = d.vf_late_date || d.vf_early_date || d.vf_absent_date || '';
+  let body   = tpl[_vfEmailLang] || '';
+  body = body
+    .replace(/\{emp_name\}/g, d.vf_emp_name || '...')
+    .replace(/\{date\}/g,     date           || '...');
+  const ta = document.getElementById('vfEmailBody');
+  ta.value = body;
+  ta.setAttribute('dir', _vfEmailLang === 'ar' ? 'rtl' : 'ltr');
+}
+
+function vfShowEmailPreview() {
+  const to   = (document.getElementById('vfEmailTo')?.value || '').trim();
+  const body = (document.getElementById('vfEmailBody')?.value || '').trim();
+  const d    = _vfEmailData || {};
+  const name = d.vf_emp_name || '...';
+  const subj = _vfEmailLang === 'ar'
+    ? `إشعار مخالفة — ${name}`
+    : `Violation Notice — ${name}`;
+
+  document.getElementById('vfPrevTo').textContent      = to      || '(لم يُحدد بعد)';
+  document.getElementById('vfPrevSubject').textContent = subj;
+  document.getElementById('vfPrevBody').textContent    = body;
+
+  window._vfMailSend = { to, subject: subj, body };
+  document.getElementById('vfEmailPreviewModal').classList.remove('hidden');
+}
+
+function vfDoSendEmail() {
+  const { to, subject, body } = window._vfMailSend || {};
+  const mailto = `mailto:${encodeURIComponent(to || '')}?subject=${encodeURIComponent(subject || '')}&body=${encodeURIComponent(body || '')}`;
+  window.location.href = mailto;
+  setTimeout(() => {
+    ['vfEmailPreviewModal','vfEmailModal'].forEach(id => {
+      document.getElementById(id)?.classList.add('hidden');
+    });
+  }, 600);
 }

@@ -140,7 +140,7 @@ function renderPdfLinks() {
       : `<i class="fa-solid fa-${escapeHtml(link.icon)}"></i>`;
     const isViolation = link.url === '/pdfs/violation.pdf';
     const clickAttr = isViolation
-      ? `href="#" onclick="openViolationForm();return false;"`
+      ? `href="#" onclick="openVfLaunch();return false;"`
       : `href="${escapeHtml(link.url)}" download`;
     return `
       <a class="quick-card" ${clickAttr}>

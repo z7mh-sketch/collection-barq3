@@ -402,11 +402,110 @@
           <button type="button" onclick="vfPrint()" class="escalation-btn">
             <i class="fa-solid fa-file-arrow-down"></i> <span id="vfBtnPrintLbl">تحميل PDF</span>
           </button>
+          <button type="button" onclick="vfOpenEmailModal()" class="escalation-btn" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+            <i class="fa-solid fa-envelope"></i> إرسال بالإيميل
+          </button>
         </div>
       </div>
     </div>
   </div>
   <div id="vfPrintArea"></div>
+
+  <!-- ============ VF LAUNCH MODAL (Step 0) ============ -->
+  <div id="vfLaunchModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:210;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
+    <div class="modal-box" style="width:min(460px,100%);padding:2rem">
+      <div class="modal-header" style="margin-bottom:1.5rem">
+        <h4 class="modal-title"><i class="fa-solid fa-file-circle-exclamation" style="color:#FBBF24"></i> نموذج مخالفة</h4>
+        <button onclick="document.getElementById('vfLaunchModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="color:#a1a1aa;font-size:.9rem;margin-bottom:1.5rem;text-align:center">كيف تريد ملء النموذج؟</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <button onclick="vfLaunchEmpPicker()" class="escalation-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem">
+          <i class="fa-solid fa-users"></i> اختر من موظفيك
+        </button>
+        <button onclick="vfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#FBBF24">
+          <i class="fa-solid fa-pen-to-square"></i> أملأها بنفسك
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VF EMPLOYEE PICKER ============ -->
+  <div id="vfEmpPickerModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:211;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
+    <div class="modal-box" style="width:min(500px,100%);max-height:80vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#FBBF24"></i> موظفيك</h4>
+        <button onclick="document.getElementById('vfEmpPickerModal').classList.add('hidden');document.getElementById('vfLaunchModal').classList.remove('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="vfEmpList" style="padding:1rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
+  </div>
+
+  <!-- ============ VF EMAIL MODAL ============ -->
+  <div id="vfEmailModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:212;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
+    <div class="modal-box" style="width:min(620px,100%);max-height:92vh;overflow-y:auto">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa-solid fa-envelope" style="color:#FBBF24"></i> إرسال المخالفة عبر الإيميل</h4>
+        <button onclick="document.getElementById('vfEmailModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1.25rem">
+        <div>
+          <p style="color:#a1a1aa;font-size:.85rem;margin-bottom:.75rem;font-weight:600">اختر نوع المخالفة للرسالة:</p>
+          <div id="vfEmailTemplates" style="display:flex;flex-direction:column;gap:.5rem"></div>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <span style="color:#a1a1aa;font-size:.82rem">لغة النص الجاهز:</span>
+          <button id="vfEmailLangAr" onclick="vfEmailSetLang('ar')" class="contact-btn" style="border-color:#FBBF24;padding:.3rem .9rem;font-size:.8rem">العربية</button>
+          <button id="vfEmailLangEn" onclick="vfEmailSetLang('en')" class="contact-btn" style="padding:.3rem .9rem;font-size:.8rem">English</button>
+        </div>
+        <div>
+          <label style="color:#a1a1aa;font-size:.82rem;display:block;margin-bottom:.4rem">نص الرسالة <span style="color:#71717a;font-size:.75rem">(قابل للتعديل)</span>:</label>
+          <textarea id="vfEmailBody" class="search-input" style="width:100%;height:210px;resize:vertical;font-family:inherit;line-height:1.7;font-size:.88rem"></textarea>
+        </div>
+        <div>
+          <label style="color:#a1a1aa;font-size:.82rem;display:block;margin-bottom:.4rem">إيميل الموظف:</label>
+          <input type="email" id="vfEmailTo" class="search-input" style="width:100%" placeholder="employee@barq.com" />
+        </div>
+        <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap">
+          <button onclick="document.getElementById('vfEmailModal').classList.add('hidden')" class="contact-btn">رجوع</button>
+          <button onclick="vfShowEmailPreview()" class="escalation-btn">
+            <i class="fa-solid fa-eye"></i> معاينة وإرسال
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VF EMAIL PREVIEW MODAL ============ -->
+  <div id="vfEmailPreviewModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:213;background:rgba(0,0,0,.85);backdrop-filter:blur(6px)">
+    <div class="modal-box" style="width:min(660px,100%);max-height:92vh;overflow-y:auto">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa-solid fa-paper-plane" style="color:#FBBF24"></i> معاينة قبل الإرسال</h4>
+        <button onclick="document.getElementById('vfEmailPreviewModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem">
+        <div style="background:#1a1a1a;border:1.5px solid #3f3f46;border-radius:.75rem;padding:1.25rem">
+          <table style="width:100%;font-size:.85rem;border-collapse:collapse;margin-bottom:1rem">
+            <tr><td style="color:#71717a;padding:.25rem .5rem .25rem 0;white-space:nowrap">إلى:</td><td id="vfPrevTo" style="color:#e4e4e7;word-break:break-all"></td></tr>
+            <tr><td style="color:#71717a;padding:.25rem .5rem .25rem 0;white-space:nowrap">الموضوع:</td><td id="vfPrevSubject" style="color:#FBBF24;font-weight:600"></td></tr>
+          </table>
+          <hr style="border-color:#3f3f46;margin-bottom:1rem">
+          <pre id="vfPrevBody" style="white-space:pre-wrap;font-family:inherit;font-size:.88rem;color:#d4d4d8;line-height:1.75"></pre>
+        </div>
+        <div style="background:#1c1917;border:1px solid #3f3f46;border-radius:.65rem;padding:.85rem">
+          <p style="color:#71717a;font-size:.8rem;margin-bottom:.4rem"><i class="fa-solid fa-paperclip"></i> المرفقات:</p>
+          <span style="color:#FBBF24;font-size:.85rem"><i class="fa-solid fa-file-pdf"></i> violation-filled.pdf</span>
+          <span style="color:#52525b;font-size:.75rem;margin-right:.5rem">(احفظ الـ PDF أولاً ثم أرفقه يدوياً)</span>
+        </div>
+        <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;padding-top:.25rem">
+          <button onclick="document.getElementById('vfEmailPreviewModal').classList.add('hidden')" class="contact-btn"><i class="fa-solid fa-pen"></i> تعديل</button>
+          <button onclick="vfDoSendEmail()" class="escalation-btn" style="background:linear-gradient(135deg,#059669,#10b981);border-color:transparent">
+            <i class="fa-solid fa-paper-plane"></i> إرسال المخالفة
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ============ LEADERS MODAL ============ -->
   <div id="leadersModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
