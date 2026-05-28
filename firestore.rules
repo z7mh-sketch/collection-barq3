@@ -2,21 +2,33 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users collection — only the owner can read/create their own doc.
-    // Status is set to "pending" on creation; only the admin (Firebase console)
-    // or Power Automate can promote it to "approved".
-    match /users/{uid} {
-      allow read:   if request.auth != null && request.auth.uid == uid;
-      allow create: if request.auth != null && request.auth.uid == uid
-                    && request.resource.data.status == 'pending';
-      allow update, delete: if false;
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Approvals collection — written by Power Automate via REST API (no auth token).
-    // Unauthenticated-only writes prevent self-approval by logged-in users.
+    // Users — owner can read/create their own (status must start as "pending").
+    // Admins can list/read all users and update status.
+    match /users/{uid} {
+      allow get:    if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow list:   if isAdmin();
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Approvals — written ONLY by admins. Owner can read their own approval.
     match /approvals/{uid} {
-      allow write: if request.auth == null;
+      allow read:  if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Admins collection — each doc id is an admin's UID. Readable by self only.
+    // Add admins manually via Firebase Console.
+    match /admins/{uid} {
       allow read:  if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
     }
   }
 }

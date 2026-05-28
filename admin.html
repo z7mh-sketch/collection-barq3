@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة — Collection Barq</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', system-ui, sans-serif;
+      background: #000;
+      min-height: 100vh;
+      color: #f4f4f5;
+    }
+
+    .topbar {
+      background: #0a0a0a;
+      border-bottom: 2.5px solid #FBBF24;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar h1 {
+      color: #FBBF24;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+    .topbar .user-info {
+      font-size: .8rem;
+      color: #a1a1aa;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .signout-btn {
+      background: transparent;
+      color: #a1a1aa;
+      border: 1px solid #3f3f46;
+      padding: .35rem .8rem;
+      border-radius: .5rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .8rem;
+    }
+    .signout-btn:hover { color: #FBBF24; border-color: #FBBF24; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    /* Center screen (for sign-in / not-admin / empty) */
+    .center-screen {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background: #111;
+      border: 1.5px solid #FBBF24;
+      border-radius: 1.25rem;
+      padding: 2.5rem 2rem;
+      width: min(400px, 100%);
+      box-shadow: 0 0 60px rgba(251,191,36,.15);
+      text-align: center;
+    }
+    .card .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #FBBF24;
+      margin-bottom: .35rem;
+    }
+    .card .sub {
+      color: #71717a;
+      font-size: .85rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-group { margin-bottom: 1rem; text-align: right; }
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin-bottom: .4rem;
+    }
+    input {
+      width: 100%;
+      padding: .65rem .85rem;
+      background: #1a1a1a;
+      border: 1.5px solid #27272a;
+      border-radius: .6rem;
+      color: #f4f4f5;
+      font-family: inherit;
+      font-size: .9rem;
+      outline: none;
+      direction: ltr;
+      text-align: right;
+    }
+    input:focus { border-color: #FBBF24; }
+    input::placeholder { color: #52525b; direction: rtl; text-align: right; }
+
+    .btn-primary {
+      width: 100%;
+      padding: .72rem;
+      background: #FBBF24;
+      color: #000;
+      border: none;
+      border-radius: .65rem;
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-primary:hover { opacity: .9; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #27272a;
+    }
+    .tab {
+      padding: .65rem 1rem;
+      background: transparent;
+      color: #71717a;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: -1px;
+    }
+    .tab.active { color: #FBBF24; border-bottom-color: #FBBF24; }
+    .tab .count {
+      display: inline-block;
+      background: #27272a;
+      color: #a1a1aa;
+      font-size: .75rem;
+      padding: .1rem .45rem;
+      border-radius: .8rem;
+      margin-right: .35rem;
+    }
+    .tab.active .count { background: #FBBF24; color: #000; }
+
+    /* User list */
+    .user-list { display: flex; flex-direction: column; gap: .75rem; }
+    .user-item {
+      background: #111;
+      border: 1px solid #27272a;
+      border-radius: .85rem;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .user-item:hover { border-color: #3f3f46; }
+    .user-info-block { flex: 1; min-width: 0; }
+    .user-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #f4f4f5;
+      margin-bottom: .2rem;
+    }
+    .user-email {
+      font-size: .8rem;
+      color: #71717a;
+      direction: ltr;
+      text-align: right;
+    }
+    .user-date {
+      font-size: .7rem;
+      color: #52525b;
+      margin-top: .2rem;
+    }
+    .user-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+    .btn-action {
+      padding: .5rem .9rem;
+      border: none;
+      border-radius: .55rem;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-action:hover { opacity: .85; }
+    .btn-action:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-approve { background: #16a34a; color: #fff; }
+    .btn-reject  { background: #dc2626; color: #fff; }
+
+    .status-pill {
+      display: inline-block;
+      padding: .2rem .6rem;
+      border-radius: .35rem;
+      font-size: .72rem;
+      font-weight: 600;
+    }
+    .status-approved { background: rgba(34,197,94,.15); color: #86efac; }
+    .status-rejected { background: rgba(239,68,68,.15); color: #fca5a5; }
+    .status-pending  { background: rgba(251,191,36,.15); color: #fde68a; }
+
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #52525b;
+      font-size: .9rem;
+    }
+
+    .msg {
+      display: none;
+      padding: .65rem .85rem;
+      border-radius: .55rem;
+      font-size: .85rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .msg.error   { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3);  color: #fca5a5; display: block; }
+    .msg.success { background: rgba(34,197,94,.1);  border: 1px solid rgba(34,197,94,.25); color: #86efac; display: block; }
+
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.2);
+      border-top-color: #FBBF24;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    @media (max-width: 600px) {
+      .user-item { flex-direction: column; align-items: stretch; }
+      .user-actions { justify-content: stretch; }
+      .btn-action { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sign-in screen -->
+  <div id="signinScreen" class="center-screen">
+    <div class="card">
+      <div class="logo">لوحة الإدارة</div>
+      <p class="sub">Collection Barq</p>
+      <div id="signinMsg" class="msg"></div>
+      <form id="formSignin" onsubmit="handleSignIn(event)">
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" placeholder="admin@barq.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="password">كلمة المرور</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-primary" id="btnSignIn">دخول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Not authorized -->
+  <div id="notAdminScreen" class="center-screen" style="display:none">
+    <div class="card">
+      <div class="logo" style="color:#ef4444">⛔ غير مصرّح</div>
+      <p class="sub">هذا الحساب ليس له صلاحيات إدارة.</p>
+      <p style="font-size:.8rem;color:#71717a;margin-bottom:1.5rem" id="notAdminEmail"></p>
+      <button class="btn-primary" onclick="doSignOut()">تسجيل خروج</button>
+    </div>
+  </div>
+
+  <!-- Admin dashboard -->
+  <div id="adminScreen" style="display:none">
+    <div class="topbar">
+      <h1>لوحة إدارة الطلبات</h1>
+      <div class="user-info">
+        <span id="adminEmail"></span>
+        <button class="signout-btn" onclick="doSignOut()">خروج</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="dashMsg" class="msg"></div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="pending"  onclick="switchTab('pending')">معلّقة <span class="count" id="countPending">0</span></button>
+        <button class="tab"        data-tab="approved" onclick="switchTab('approved')">معتمدة <span class="count" id="countApproved">0</span></button>
+        <button class="tab"        data-tab="rejected" onclick="switchTab('rejected')">مرفوضة <span class="count" id="countRejected">0</span></button>
+      </div>
+
+      <div id="loadingState" class="empty"><span class="spinner"></span> جاري التحميل...</div>
+
+      <div id="panelPending"  class="panel active"><div class="user-list" id="listPending"></div></div>
+      <div id="panelApproved" class="panel"><div class="user-list" id="listApproved"></div></div>
+      <div id="panelRejected" class="panel"><div class="user-list" id="listRejected"></div></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './js/firebase-config.js';
+    import {
+      onAuthStateChanged, signInWithEmailAndPassword, signOut
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+    import {
+      doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, orderBy, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    const signinScreen  = document.getElementById('signinScreen');
+    const notAdminScreen= document.getElementById('notAdminScreen');
+    const adminScreen   = document.getElementById('adminScreen');
+    const dashMsg       = document.getElementById('dashMsg');
+    const signinMsg     = document.getElementById('signinMsg');
+
+    function showMsg(el, text, type) {
+      el.textContent = text;
+      el.className = 'msg ' + type;
+      if (type === 'success') setTimeout(() => { el.className = 'msg'; el.textContent = ''; }, 3000);
+    }
+
+    // ── Auth state listener ──────────────────────────────────────────────
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        signinScreen.style.display = '';
+        notAdminScreen.style.display = 'none';
+        adminScreen.style.display = 'none';
+        return;
+      }
+
+      // Check if user is an admin
+      try {
+        const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+        if (!adminDoc.exists()) {
+          signinScreen.style.display = 'none';
+          adminScreen.style.display = 'none';
+          notAdminScreen.style.display = '';
+          document.getElementById('notAdminEmail').textContent = user.email + ' — UID: ' + user.uid;
+          return;
+        }
+
+        // Admin authenticated — show dashboard
+        signinScreen.style.display = 'none';
+        notAdminScreen.style.display = 'none';
+        adminScreen.style.display = '';
+        document.getElementById('adminEmail').textContent = user.email;
+        loadUsers();
+      } catch (err) {
+        showMsg(signinMsg, 'تعذر التحقق من الصلاحيات: ' + err.message, 'error');
+      }
+    });
+
+    // ── Sign in ──────────────────────────────────────────────────────────
+    window.handleSignIn = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('btnSignIn');
+      btn.disabled = true;
+      btn.textContent = '...';
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // onAuthStateChanged will handle the rest
+      } catch (err) {
+        const msg = {
+          'auth/invalid-credential': 'بيانات الدخول غير صحيحة',
+          'auth/user-not-found': 'لا يوجد حساب بهذا البريد',
+          'auth/wrong-password': 'كلمة المرور غير صحيحة',
+          'auth/too-many-requests': 'محاولات كثيرة، حاول لاحقاً',
+        }[err.code] || 'حدث خطأ، حاول مجدداً';
+        showMsg(signinMsg, msg, 'error');
+        btn.disabled = false;
+        btn.textContent = 'دخول';
+      }
+    };
+
+    window.doSignOut = function() {
+      signOut(auth).then(() => location.reload());
+    };
+
+    // ── Load users by status ─────────────────────────────────────────────
+    async function loadUsers() {
+      document.getElementById('loadingState').style.display = '';
+      try {
+        const snap = await getDocs(collection(db, 'users'));
+        const all = [];
+        snap.forEach(d => all.push({ id: d.id, ...d.data() }));
+
+        const pending  = all.filter(u => (u.status || 'pending') === 'pending');
+        const approved = all.filter(u => u.status === 'approved');
+        const rejected = all.filter(u => u.status === 'rejected');
+
+        // Sort newest first
+        const byDateDesc = (a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+        pending.sort(byDateDesc);
+        approved.sort(byDateDesc);
+        rejected.sort(byDateDesc);
+
+        renderList('listPending',  pending,  'pending');
+        renderList('listApproved', approved, 'approved');
+        renderList('listRejected', rejected, 'rejected');
+
+        document.getElementById('countPending').textContent  = pending.length;
+        document.getElementById('countApproved').textContent = approved.length;
+        document.getElementById('countRejected').textContent = rejected.length;
+
+        document.getElementById('loadingState').style.display = 'none';
+      } catch (err) {
+        document.getElementById('loadingState').style.display = 'none';
+        showMsg(dashMsg, 'تعذر تحميل المستخدمين: ' + err.message, 'error');
+      }
+    }
+
+    function formatDate(ts) {
+      if (!ts?.seconds) return '';
+      const d = new Date(ts.seconds * 1000);
+      return d.toLocaleString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderList(containerId, users, type) {
+      const container = document.getElementById(containerId);
+      if (users.length === 0) {
+        container.innerHTML = `<div class="empty">لا توجد طلبات ${type === 'pending' ? 'معلّقة' : type === 'approved' ? 'معتمدة' : 'مرفوضة'}</div>`;
+        return;
+      }
+      container.innerHTML = users.map(u => `
+        <div class="user-item" data-uid="${u.id}">
+          <div class="user-info-block">
+            <div class="user-name">${escapeHtml(u.name || '—')}</div>
+            <div class="user-email">${escapeHtml(u.email || '')}</div>
+            <div class="user-date">${formatDate(u.createdAt)}</div>
+          </div>
+          <div class="user-actions">
+            ${type === 'pending' ? `
+              <button class="btn-action btn-approve" onclick="approveUser('${u.id}')">موافقة</button>
+              <button class="btn-action btn-reject"  onclick="rejectUser('${u.id}')">رفض</button>
+            ` : `
+              <span class="status-pill status-${type}">${type === 'approved' ? 'معتمد' : 'مرفوض'}</span>
+            `}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    // ── Approve / Reject ─────────────────────────────────────────────────
+    window.approveUser = async function(uid) {
+      const item = document.querySelector(`.user-item[data-uid="${uid}"]`);
+      const btns = item?.querySelectorAll('button');
+      btns?.forEach(b => b.disabled = true);
+      try {
+        // Update user status
+        await updateDoc(doc(db, 'users', uid), { status: 'approved', approvedAt: serverTimestamp() });
+        // Create approval record (auth.js checks this too)
+        await setDoc(doc(db, 'approvals', uid), {
+          approvedAt: serverTimestamp(),
+          approvedBy: auth.currentUser.email,
+        });
+        showMsg(dashMsg, '✓ تمت الموافقة', 'success');
+        loadUsers();
+      } catch (err) {
+        showMsg(dashMsg, 'فشلت الموافقة: ' + err.message, 'error');
+        btns?.forEach(b => b.disabled = false);
+      }
+    };
+
+    window.rejectUser = async function(uid) {
+      if (!confirm('تأكيد رفض هذا الطلب؟')) return;
+      const item = document.querySelector(`.user-item[data-uid="${uid}"]`);
+      const btns = item?.querySelectorAll('button');
+      btns?.forEach(b => b.disabled = true);
+      try {
+        await updateDoc(doc(db, 'users', uid), { status: 'rejected', rejectedAt: serverTimestamp() });
+        showMsg(dashMsg, '✓ تم الرفض', 'success');
+        loadUsers();
+      } catch (err) {
+        showMsg(dashMsg, 'فشل الرفض: ' + err.message, 'error');
+        btns?.forEach(b => b.disabled = false);
+      }
+    };
+
+    // ── Tabs ─────────────────────────────────────────────────────────────
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    };
+  </script>
+</body>
+</html>

@@ -211,10 +211,72 @@
       doc, setDoc, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-    // ── Power Automate webhook URL ──────────────────────────────────────────
-    // Replace with your actual Power Automate HTTP trigger URL after creating the flow.
-    const POWER_AUTOMATE_WEBHOOK = 'YOUR_POWER_AUTOMATE_WEBHOOK_URL';
+    // ── Teams Incoming Webhook URL ──────────────────────────────────────────
+    // Get from: Teams → channel → Workflows → "Post to a channel when a webhook
+    // request is received" template. Paste the generated URL below.
+    const TEAMS_WEBHOOK_URL = 'YOUR_TEAMS_WEBHOOK_URL';
+    // Admin page URL (link shown in the Teams notification).
+    const ADMIN_URL = 'https://z7mh-sketch.github.io/collection-barq3/admin.html';
     // ────────────────────────────────────────────────────────────────────────
+
+    function buildTeamsCard(name, email, uid) {
+      return {
+        type: 'message',
+        attachments: [{
+          contentType: 'application/vnd.microsoft.card.adaptive',
+          contentUrl: null,
+          content: {
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            type: 'AdaptiveCard',
+            version: '1.4',
+            body: [
+              {
+                type: 'TextBlock',
+                text: '🔔 طلب وصول جديد',
+                weight: 'Bolder',
+                size: 'Large',
+                color: 'Warning',
+                wrap: true,
+              },
+              {
+                type: 'FactSet',
+                facts: [
+                  { title: 'الاسم:', value: name },
+                  { title: 'البريد:', value: email },
+                  { title: 'الوقت:', value: new Date().toLocaleString('ar-SA') },
+                ],
+              },
+              {
+                type: 'TextBlock',
+                text: 'افتح لوحة الإدارة لمراجعة الطلب والموافقة عليه.',
+                wrap: true,
+                spacing: 'Medium',
+              },
+            ],
+            actions: [
+              {
+                type: 'Action.OpenUrl',
+                title: 'فتح لوحة الإدارة',
+                url: ADMIN_URL,
+              },
+            ],
+          },
+        }],
+      };
+    }
+
+    async function notifyTeams(name, email, uid) {
+      if (!TEAMS_WEBHOOK_URL || TEAMS_WEBHOOK_URL === 'YOUR_TEAMS_WEBHOOK_URL') return;
+      try {
+        await fetch(TEAMS_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(buildTeamsCard(name, email, uid)),
+        });
+      } catch (_) {
+        // Non-blocking — registration still succeeds if Teams notify fails.
+      }
+    }
 
     const alertMsg = document.getElementById('alertMsg');
 
@@ -299,14 +361,8 @@
           createdAt: serverTimestamp(),
         });
 
-        // 3. Notify Power Automate (non-blocking — don't fail if webhook not set)
-        if (POWER_AUTOMATE_WEBHOOK && POWER_AUTOMATE_WEBHOOK !== 'YOUR_POWER_AUTOMATE_WEBHOOK_URL') {
-          fetch(POWER_AUTOMATE_WEBHOOK, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ uid, name, email }),
-          }).catch(() => {});
-        }
+        // 3. Notify Teams channel (non-blocking)
+        notifyTeams(name, email, uid);
 
         // 4. Sign out — they must wait for approval
         await signOut(auth);
