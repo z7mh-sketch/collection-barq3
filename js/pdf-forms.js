@@ -4,7 +4,8 @@
 const VF_PDF_FILL = true;
 
 const VF_PDF_URL     = '/pdfs/violation.pdf';
-const VF_COORDS_KEY  = 'barq_vf_coords_v1';
+const VF_COORDS_KEY  = 'barq_vf_coords_v3'; // v3 = normalized (xPct,yPct)
+const VF_FILL_SCALE  = 2.5; // render scale for fill (higher = sharper text)
 
 // ── حقول الفورم وترتيبها للإلصاق ──
 const VF_FIELDS = [
@@ -340,28 +341,36 @@ async function _vfFillPdf(data) {
     const pdfBytes = await fetch(VF_PDF_URL).then(r => r.arrayBuffer());
     const pdf  = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
     const page = await pdf.getPage(1);
-    const vp   = page.getViewport({ scale: 2 });
+    const vp   = page.getViewport({ scale: VF_FILL_SCALE });
     const canvas = document.createElement('canvas');
     canvas.width  = vp.width;
     canvas.height = vp.height;
     const ctx = canvas.getContext('2d');
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
-    // كتابة النصوص على الحقول المحددة
-    ctx.font = '24px Tahoma, Arial, sans-serif';
+    // كتابة النصوص — font size نسبي بالنسبة لحجم الصفحة
+    const fontSize = Math.round(vp.height * 0.016); // ~11pt على A4
+    ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
     ctx.fillStyle = '#000';
     ctx.textAlign = 'right';
     VF_FIELDS.forEach(field => {
       const pos = coords[field];
       if (!pos || !data[field]) return;
-      ctx.fillText(String(data[field]), pos.x, pos.y);
+      // Support both normalized {xPct,yPct} and legacy {x,y}
+      const px = pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x;
+      const py = pos.yPct !== undefined ? pos.yPct * vp.height : pos.y;
+      ctx.fillText(String(data[field]), px, py);
     });
 
     // التوقيع
     const sigUrl = _vfSigUrl();
     if (sigUrl && coords['vf_signature']) {
+      const sp  = coords['vf_signature'];
+      const sx  = sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x;
+      const sy  = sp.yPct !== undefined ? sp.yPct * vp.height : sp.y;
       const img = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
-      ctx.drawImage(img, coords['vf_signature'].x - 200, coords['vf_signature'].y - 60, 200, 60);
+      const sigW = vp.width * 0.18, sigH = sigW * 0.3;
+      ctx.drawImage(img, sx - sigW, sy - sigH, sigW, sigH);
     }
 
     // تحويل canvas → PDF وتحميله
@@ -464,7 +473,7 @@ async function _vfRenderMapperPdf() {
     const bytes = await fetch(VF_PDF_URL).then(r => r.arrayBuffer());
     const pdf   = await pdfjsLib.getDocument({ data: bytes }).promise;
     const page  = await pdf.getPage(1);
-    const vp    = page.getViewport({ scale: 1.8 });
+    const vp    = page.getViewport({ scale: VF_FILL_SCALE });
     canvas.width  = vp.width;
     canvas.height = vp.height;
     await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
@@ -475,11 +484,10 @@ async function _vfRenderMapperPdf() {
 function _vfMapCanvasClick(e) {
   if (!_vfMapField) return;
   const rect = e.target.getBoundingClientRect();
-  const scaleX = e.target.width  / rect.width;
-  const scaleY = e.target.height / rect.height;
+  // Store as 0-1 percentage so fill scale never matters
   _vfMapCoords[_vfMapField] = {
-    x: Math.round((e.clientX - rect.left) * scaleX),
-    y: Math.round((e.clientY - rect.top)  * scaleY)
+    xPct: parseFloat(((e.clientX - rect.left) / rect.width).toFixed(5)),
+    yPct: parseFloat(((e.clientY - rect.top)  / rect.height).toFixed(5)),
   };
   _vfRenderMapperDots();
 }
@@ -488,12 +496,12 @@ function _vfRenderMapperDots() {
   const canvas = document.getElementById('vfMapCanvas');
   const dots   = document.getElementById('vfMapDots');
   if (!canvas || !dots) return;
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = rect.width  / canvas.width;
-  const scaleY = rect.height / canvas.height;
+  const rect   = canvas.getBoundingClientRect();
+  const labels = VF[_vfLang()].fieldLabels;
   dots.innerHTML = Object.entries(_vfMapCoords).map(([f, pos]) => {
-    const x = pos.x * scaleX, y = pos.y * scaleY;
-    const labels = VF[_vfLang()].fieldLabels;
+    // Support both old {x,y} and new {xPct,yPct}
+    const x = pos.xPct !== undefined ? pos.xPct * rect.width  : pos.x * (rect.width  / canvas.width);
+    const y = pos.yPct !== undefined ? pos.yPct * rect.height : pos.y * (rect.height / canvas.height);
     return `<div style="position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%)">
       <div style="width:10px;height:10px;background:#FBBF24;border-radius:50%;border:1.5px solid #000"></div>
       <div style="font-size:9px;color:#FBBF24;white-space:nowrap;background:rgba(0,0,0,.6);padding:1px 3px;border-radius:2px">${labels[f]||f}</div>
