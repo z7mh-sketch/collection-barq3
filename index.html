@@ -243,7 +243,7 @@
       <div class="section-header">
         <h3 class="section-title">
           <i class="fa-solid fa-link"></i>
-          <span>روابط إضافية</span>
+          <span>Additional Links</span>
         </h3>
       </div>
       <div id="additionalLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
@@ -347,33 +347,36 @@
         <div class="mb-4">
           <label class="vf-label" id="vfLblVType">نوع المخالفة</label>
           <div class="vf-violations">
-            <div class="vf-vrow">
+            <div class="vf-vrow" data-vfrow="late">
               <input type="checkbox" id="vfChkLate" class="vf-chk" />
               <label for="vfChkLate" class="vf-chk-label" id="vfLblLate">مخالفة التأخير في الحضور لمقر العمل بتاريخ:</label>
-              <input type="date" id="vfLatDate" class="search-input vf-date-inline" />
+              <div class="vf-dm" data-for="vfLatDate">
+                <select id="vfLatDay"   class="search-input vf-dm-sel" aria-label="يوم"></select>
+                <select id="vfLatMonth" class="search-input vf-dm-sel" aria-label="شهر"></select>
+              </div>
             </div>
-            <div class="vf-vrow vf-vrow-wrap">
+            <div class="vf-vrow vf-vrow-wrap" data-vfrow="early">
               <input type="checkbox" id="vfChkEarly" class="vf-chk" />
               <label for="vfChkEarly" class="vf-chk-label" id="vfLblEarlyLeave">مخالفة مغادرة مقر العمل بتاريخ:</label>
-              <input type="date" id="vfEarlyDate" class="search-input vf-date-inline" />
-              <span class="vf-txt" id="vfLblForDuration">ولمدة</span>
-              <input type="number" id="vfEarlyDur" min="1" class="search-input vf-num" />
-              <select id="vfEarlyUnit" class="search-input vf-select">
-                <option id="vfOptMinutes">دقيقة</option>
-                <option id="vfOptHour">ساعة</option>
-              </select>
+              <div class="vf-dm" data-for="vfEarlyDate">
+                <select id="vfEarlyDay"   class="search-input vf-dm-sel" aria-label="يوم"></select>
+                <select id="vfEarlyMonth" class="search-input vf-dm-sel" aria-label="شهر"></select>
+              </div>
+              <input type="text" id="vfEarlyDur" class="search-input vf-dur-text" placeholder="المدة (مثال: 30 دقيقة)" />
             </div>
-            <div class="vf-vrow vf-vrow-wrap">
+            <div class="vf-vrow vf-vrow-wrap" data-vfrow="absent">
               <input type="checkbox" id="vfChkAbsent" class="vf-chk" />
               <label for="vfChkAbsent" class="vf-chk-label" id="vfLblAbsence">مخالفة الغياب عن العمل ولمدة</label>
               <input type="number" id="vfAbsentDays" min="1" class="search-input vf-num" />
               <span class="vf-txt" id="vfLblDays">يوم بتاريخ:</span>
-              <input type="date" id="vfAbsentDate" class="search-input vf-date-inline" />
+              <div class="vf-dm" data-for="vfAbsentDate">
+                <select id="vfAbsentDay"   class="search-input vf-dm-sel" aria-label="يوم"></select>
+                <select id="vfAbsentMonth" class="search-input vf-dm-sel" aria-label="شهر"></select>
+              </div>
             </div>
-            <div class="vf-vrow">
+            <div class="vf-vrow" data-vfrow="other">
               <input type="checkbox" id="vfChkOther" class="vf-chk" />
-              <label for="vfChkOther" class="vf-chk-label" id="vfLblOther">أخرى:</label>
-              <input type="text" id="vfOtherText" class="search-input" style="flex:1;min-width:100px" />
+              <label for="vfChkOther" class="vf-chk-label" id="vfLblOther">أخرى</label>
             </div>
           </div>
         </div>
