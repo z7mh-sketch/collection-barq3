@@ -1176,7 +1176,9 @@ function vfLaunchEmpPicker() {
 }
 
 function _vfCurrentEmail() {
-  try { if (typeof auth !== 'undefined' && auth.currentUser) return auth.currentUser.email; } catch(_) {}
+  // Try Firebase auth first, fall back to localStorage set by auth.js
+  try { if (typeof auth !== 'undefined' && auth.currentUser) return auth.currentUser.email.toLowerCase(); } catch(_) {}
+  try { const e = localStorage.getItem('userEmail'); if (e) return e; } catch(_) {}
   return null;
 }
 

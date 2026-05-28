@@ -49,6 +49,10 @@ function grantAccess(user) {
       if (name) localStorage.setItem('presenceName', name);
     } catch (_) {}
   }
+  // Always persist the current user's email so pdf-forms.js can read it
+  if (user?.email) {
+    try { localStorage.setItem('userEmail', user.email.toLowerCase()); } catch (_) {}
+  }
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity .35s';
   setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);
