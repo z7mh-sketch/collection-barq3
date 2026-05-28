@@ -4,7 +4,7 @@
 const VF_PDF_FILL = true;
 
 const VF_PDF_URL     = '/pdfs/violation.pdf';
-const VF_COORDS_KEY  = 'barq_vf_coords_v3'; // v3 = normalized (xPct,yPct)
+const VF_COORDS_KEY  = 'barq_vf_coords_v4'; // v4 = center anchor for all fields
 const VF_FILL_SCALE  = 2.5; // render scale for fill (higher = sharper text)
 
 // ── حقول الفورم وترتيبها للإلصاق ──
@@ -348,29 +348,29 @@ async function _vfFillPdf(data) {
     const ctx = canvas.getContext('2d');
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
-    // كتابة النصوص — font size نسبي بالنسبة لحجم الصفحة
+    // كتابة النصوص — المرساة = مركز النقطة أفقياً + وسط ارتفاع السطر عمودياً
     const fontSize = Math.round(vp.height * 0.016); // ~11pt على A4
     ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
     ctx.fillStyle = '#000';
-    ctx.textAlign = 'right';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
     VF_FIELDS.forEach(field => {
       const pos = coords[field];
       if (!pos || !data[field]) return;
-      // Support both normalized {xPct,yPct} and legacy {x,y}
       const px = pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x;
       const py = pos.yPct !== undefined ? pos.yPct * vp.height : pos.y;
       ctx.fillText(String(data[field]), px, py);
     });
 
-    // التوقيع
+    // التوقيع — مركز الصورة على نقطة الضغط
     const sigUrl = _vfSigUrl();
     if (sigUrl && coords['vf_signature']) {
-      const sp  = coords['vf_signature'];
-      const sx  = sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x;
-      const sy  = sp.yPct !== undefined ? sp.yPct * vp.height : sp.y;
-      const img = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
+      const sp   = coords['vf_signature'];
+      const sx   = sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x;
+      const sy   = sp.yPct !== undefined ? sp.yPct * vp.height : sp.y;
+      const img  = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
       const sigW = vp.width * 0.18, sigH = sigW * 0.3;
-      ctx.drawImage(img, sx - sigW, sy - sigH, sigW, sigH);
+      ctx.drawImage(img, sx - sigW / 2, sy - sigH / 2, sigW, sigH);
     }
 
     // تحويل canvas → PDF وتحميله
