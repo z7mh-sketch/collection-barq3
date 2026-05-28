@@ -701,7 +701,16 @@
   (function(){
     const KEY = 'barq_tasks_v1';
     // data structure: { page:0, open:true, pages:[{title:'', tasks:[{text,done}]}] }
-    let data = { page:0, open:true, pages:[{title:'', tasks:[]}] };
+    const DEFAULT_DATA = {
+      page: 0, open: true,
+      pages: [{
+        title: '📌 مهامي اليوم',
+        tasks: [
+          { text: '🏆 النصر بطل الدوري', done: false }
+        ]
+      }]
+    };
+    let data = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
     function save() {
       try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(_){}
