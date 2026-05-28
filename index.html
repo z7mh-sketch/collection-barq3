@@ -773,6 +773,12 @@
           data.pages[data.page].tasks[idx].text = el.innerHTML;
           save();
         });
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            window.twAddTask();
+          }
+        });
 
         const del = document.createElement('button');
         del.className = 'tw-task-del';
