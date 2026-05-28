@@ -3,7 +3,7 @@
 // ── تحكم: true = يلصق البيانات في الـ PDF الحقيقي، false = يطبع فورم HTML ──
 const VF_PDF_FILL = true;
 
-const VF_PDF_URL     = '/pdfs/violation.pdf';
+const VF_PDF_URL     = 'pdfs/violation.pdf';
 const VF_COORDS_KEY  = 'barq_vf_coords_v5'; // v5 = direct canvas px + live preview
 const VF_FILL_SCALE  = 2.5; // render scale for fill (higher = sharper text)
 
@@ -421,7 +421,7 @@ async function _vfFillPdf(data) {
 
   } catch (err) {
     console.error('PDF fill error:', err);
-    _vfPrintHtml(data);
+    alert('تعذّر تحميل النموذج، تحقق من الاتصال وحاول مجدداً.');
   }
 }
 
