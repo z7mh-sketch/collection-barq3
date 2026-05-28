@@ -31,7 +31,24 @@ function showPending(user) {
   });
 }
 
-function grantAccess() {
+function nameFromEmail(email) {
+  // e.g. "saud.alghamdi@barq.com"  →  "Saud Alghamdi"
+  // also handles  "saud.alghamdi.c@barq.com"  (trailing .c suffix)
+  const local = email.split('@')[0].toLowerCase();
+  const parts = local.split('.').filter(p => p.length > 1 || /^\d+$/.test(p) === false);
+  // drop single-char suffixes like ".c" at the end
+  const cleaned = parts.filter((p, i) => !(i === parts.length - 1 && p.length === 1));
+  return cleaned.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+}
+
+function grantAccess(user) {
+  // Auto-set presence name from email if not already saved
+  if (user && !localStorage.getItem('presenceName')) {
+    try {
+      const name = user.displayName || nameFromEmail(user.email);
+      if (name) localStorage.setItem('presenceName', name);
+    } catch (_) {}
+  }
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity .35s';
   setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);
@@ -57,12 +74,12 @@ onAuthStateChanged(auth, async (user) => {
     const approved = status === 'approved' || approvalDoc.exists();
 
     if (approved) {
-      grantAccess();
+      grantAccess(user);
     } else {
       showPending(user);
     }
   } catch {
     // Firestore error — grant access if authenticated (fail open for network issues)
-    grantAccess();
+    grantAccess(user);
   }
 });

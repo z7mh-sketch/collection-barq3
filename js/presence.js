@@ -66,9 +66,12 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     initNameModal();
+    // Refresh name from localStorage (auth.js may have set it after page load)
+    userName = localStorage.getItem('presenceName');
     if (userName) {
       startPresence();
     } else {
+      // Show modal as fallback (shouldn't normally appear after login)
       document.getElementById('nameModal').classList.remove('hidden');
     }
   });
