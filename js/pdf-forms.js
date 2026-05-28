@@ -17,18 +17,18 @@ const VF_FIELDS = [
 // ── إحداثيات افتراضية (canvas 1530×1980 عند VF_FILL_SCALE=2.5) ──
 // مستخرجة من نموذج المخالفة الأصلي عبر تحليل حقول الـ PDF
 const VF_DEFAULT_COORDS = {
-  vf_date:        { canvasX: 708,  canvasY: 448 },
+  vf_date:        { canvasX: 748,  canvasY: 448 },
   vf_emp_name:    { canvasX: 767,  canvasY: 489 },
   vf_job_title:   { canvasX: 714,  canvasY: 523 },
   vf_hrid:        { canvasX: 714,  canvasY: 563 },
-  vf_late_date:   { canvasX: 847,  canvasY: 704 },
-  vf_early_date:  { canvasX: 920,  canvasY: 738 },
+  vf_late_date:   { canvasX: 887,  canvasY: 704 },
+  vf_early_date:  { canvasX: 960,  canvasY: 738 },
   vf_early_dur:   { canvasX: 739,  canvasY: 744 },
   vf_absent_days: { canvasX: 979,  canvasY: 773 },
-  vf_absent_date: { canvasX: 800,  canvasY: 770 },
+  vf_absent_date: { canvasX: 840,  canvasY: 770 },
   vf_other_text:  { canvasX: 700,  canvasY: 810 },
   vf_consequence: { canvasX: 635,  canvasY: 897 },
-  vf_signature:   { canvasX: 922,  canvasY: 971 },
+  vf_signature:   { canvasX: 922,  canvasY: 1006 },
 };
 
 const VF = {
@@ -375,7 +375,7 @@ async function _vfFillPdf(data) {
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
     // كتابة النصوص — المرساة = مركز النقطة أفقياً + وسط ارتفاع السطر عمودياً
-    const fontSize = Math.round(vp.height * 0.016);
+    const fontSize = Math.round(vp.height * 0.012);
     ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
     ctx.fillStyle = '#000';
     ctx.textAlign    = 'center';
