@@ -14,6 +14,23 @@ const VF_FIELDS = [
   'vf_absent_days', 'vf_absent_date', 'vf_other_text', 'vf_consequence'
 ];
 
+// ── إحداثيات افتراضية (canvas 1530×1980 عند VF_FILL_SCALE=2.5) ──
+// مستخرجة من نموذج المخالفة الأصلي عبر تحليل حقول الـ PDF
+const VF_DEFAULT_COORDS = {
+  vf_date:        { canvasX: 708,  canvasY: 448 },
+  vf_emp_name:    { canvasX: 767,  canvasY: 489 },
+  vf_job_title:   { canvasX: 714,  canvasY: 523 },
+  vf_hrid:        { canvasX: 714,  canvasY: 563 },
+  vf_late_date:   { canvasX: 847,  canvasY: 704 },
+  vf_early_date:  { canvasX: 920,  canvasY: 738 },
+  vf_early_dur:   { canvasX: 739,  canvasY: 744 },
+  vf_absent_days: { canvasX: 979,  canvasY: 773 },
+  vf_absent_date: { canvasX: 800,  canvasY: 770 },
+  vf_other_text:  { canvasX: 700,  canvasY: 810 },
+  vf_consequence: { canvasX: 635,  canvasY: 914 },
+  vf_signature:   { canvasX: 922,  canvasY: 971 },
+};
+
 const VF = {
   ar: {
     title:       'نموذج مخالفة موظف',
@@ -95,6 +112,11 @@ const VF = {
 
 function _vfLang() { return (typeof currentLang !== 'undefined') ? currentLang : 'ar'; }
 function _vfL(k)   { return VF[_vfLang()]?.[k] || VF.ar[k] || k; }
+function _vfFmtDate(v) {
+  if (!v || !v.includes('-')) return v;
+  const [y, m, d] = v.split('-');
+  return d ? `${d}/${m}/${y}` : v;
+}
 
 let _vfSigMode = 'draw';
 let _vfDrawing = false;
@@ -333,8 +355,7 @@ ${violHtml}
 //           2) غيّر VF_PDF_FILL إلى true في أعلى هذا الملف
 // ─────────────────────────────────────────────
 async function _vfFillPdf(data) {
-  const coords = _vfLoadCoords();
-  if (!coords) { _vfPrintHtml(data); return; }
+  const coords = _vfLoadCoords() || VF_DEFAULT_COORDS;
 
   try {
     // رسم الـ PDF على canvas
@@ -349,18 +370,19 @@ async function _vfFillPdf(data) {
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
     // كتابة النصوص — المرساة = مركز النقطة أفقياً + وسط ارتفاع السطر عمودياً
-    const fontSize = Math.round(vp.height * 0.016); // ~11pt على A4
+    const fontSize = Math.round(vp.height * 0.016);
     ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
     ctx.fillStyle = '#000';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
+    const DATE_FIELDS = new Set(['vf_date','vf_late_date','vf_early_date','vf_absent_date']);
     VF_FIELDS.forEach(field => {
       const pos = coords[field];
       if (!pos || !data[field]) return;
-      // canvasX/Y = direct pixels (v5), xPct/yPct = normalized (v3/v4), x/y = legacy
       const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
       const py = pos.canvasY !== undefined ? pos.canvasY : (pos.yPct !== undefined ? pos.yPct * vp.height : pos.y);
-      ctx.fillText(String(data[field]), px, py);
+      const val = DATE_FIELDS.has(field) ? _vfFmtDate(String(data[field])) : String(data[field]);
+      ctx.fillText(val, px, py);
     });
 
     // التوقيع
@@ -412,7 +434,7 @@ let _vfMapField = null;
 let _vfMapCoords = {};
 
 function openVfCoordMapper() {
-  _vfMapCoords = _vfLoadCoords() || {};
+  _vfMapCoords = _vfLoadCoords() || { ...VF_DEFAULT_COORDS };
   _vfMapField  = null;
   const modal  = document.getElementById('vfMapperModal');
   if (!modal) { _vfBuildMapperModal(); }
