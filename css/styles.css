@@ -883,15 +883,17 @@ textarea.pf-ctrl { resize: vertical; }
 
 /* ========== Tasks Widget (Sticky Note Sidebar) ========== */
 
-/* Panel wrapper — fixed to the LEFT in RTL (Arabic), RIGHT in LTR (English) */
+/* Panel wrapper — fixed LEFT in RTL (Arabic), RIGHT in LTR (English), full height */
 #tasksPanel {
   position: fixed;
-  top: 4.5rem;
+  top: 0;
   left: 0;
+  bottom: 0;
   z-index: 399;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: stretch;
+  pointer-events: none; /* children manage their own */
 }
 html[dir="ltr"] #tasksPanel {
   left: auto;
@@ -899,10 +901,39 @@ html[dir="ltr"] #tasksPanel {
   flex-direction: row-reverse;
 }
 
-/* The note panel */
+/* Re-open strip — thin vertical bar, only visible when closed */
+#tasksToggleBtn {
+  pointer-events: all;
+  align-self: center;
+  width: 1.7rem;
+  height: 5rem;
+  background: #fbbf24;
+  border: none;
+  border-radius: 0 .55rem .55rem 0;
+  cursor: pointer;
+  display: none; /* hidden by default (panel is open) */
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 3px 0 12px rgba(0,0,0,.35);
+  transition: background .15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+html[dir="ltr"] #tasksToggleBtn {
+  border-radius: .55rem 0 0 .55rem;
+  box-shadow: -3px 0 12px rgba(0,0,0,.35);
+}
+#tasksToggleBtn:hover { background: #f59e0b; }
+
+/* Show strip only when closed */
+#tasksPanel.tw-closed #tasksToggleBtn { display: flex; }
+
+/* The note panel — full height */
 #tasksWidget {
+  pointer-events: all;
   width: 290px;
-  max-height: calc(100vh - 5rem);
+  height: 100%;
   background: #fef08a;
   display: flex;
   flex-direction: column;
@@ -917,38 +948,32 @@ html[dir="ltr"] #tasksWidget {
   box-shadow: -5px 0 28px rgba(0,0,0,.45);
 }
 
-/* Closed state — collapse the panel, keep tab visible */
+/* Closed — collapse widget */
 #tasksPanel.tw-closed #tasksWidget {
   width: 0;
   opacity: 0;
   pointer-events: none;
 }
 
-/* Toggle tab — sticks out to the right of the panel in RTL */
-#tasksToggleBtn {
-  align-self: flex-start;
-  margin-top: 2rem;
-  width: 2rem;
-  min-height: 5rem;
-  background: #fbbf24;
+/* Close (−) button inside header */
+.tw-close-btn {
+  background: rgba(0,0,0,.12);
   border: none;
-  border-radius: 0 .6rem .6rem 0;
+  border-radius: .3rem;
+  width: 1.4rem;
+  height: 1.4rem;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  box-shadow: 4px 2px 14px rgba(0,0,0,.35);
-  transition: background .15s, transform .15s;
+  transition: background .15s;
   flex-shrink: 0;
-  z-index: 1;
-  padding: 0;
+  color: #1c1917;
+  line-height: 1;
 }
-html[dir="ltr"] #tasksToggleBtn {
-  border-radius: .6rem 0 0 .6rem;
-  box-shadow: -4px 2px 14px rgba(0,0,0,.35);
-}
-#tasksToggleBtn:hover { background: #f59e0b; transform: scale(1.05); }
+.tw-close-btn:hover { background: rgba(0,0,0,.25); }
 
 /* Header with editable title */
 .tw-header {

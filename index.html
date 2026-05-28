@@ -663,6 +663,8 @@
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
+    <!-- thin re-open strip, visible only when panel is closed -->
+    <button id="tasksToggleBtn" onclick="twToggle()" title="إظهار المهام">📝</button>
     <div id="tasksWidget">
       <div class="tw-header">
         <input id="twTitleInput" class="tw-title-input" placeholder="عنوان النوت..." autocomplete="off" />
@@ -671,6 +673,7 @@
           <span id="twPageLabel">1 / 1</span>
           <button onclick="twNextPage()" title="التالي">›</button>
           <button onclick="twAddPage()" title="نوت جديد" style="background:rgba(0,0,0,.18)">+</button>
+          <button class="tw-close-btn" onclick="twToggle()" title="إخفاء">−</button>
         </div>
       </div>
       <div id="twBody" class="tw-body"></div>
@@ -680,7 +683,6 @@
         </button>
       </div>
     </div>
-    <button id="tasksToggleBtn" onclick="twToggle()" title="إخفاء / إظهار المهام">📝</button>
   </div>
 
   <script>
