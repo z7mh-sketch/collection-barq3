@@ -382,9 +382,14 @@
           <canvas id="vfSigCanvas" width="600" height="130" style="width:100%;height:130px;border:1.5px solid #3f3f46;border-radius:.5rem;background:#fff;touch-action:none;cursor:crosshair;display:block"></canvas>
           <input type="text" id="vfSigText" class="search-input" style="width:100%;display:none;font-size:1.4rem;font-style:italic;font-family:Georgia,serif" />
         </div>
-        <div style="display:flex;gap:.75rem;justify-content:flex-end;padding-top:.5rem">
+        <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;padding-top:.5rem">
           <button type="button" onclick="closeViolationForm()" class="contact-btn" id="vfBtnCancel">إلغاء</button>
-          <button type="button" onclick="vfPrint()" class="escalation-btn"><i class="fa-solid fa-print"></i> <span id="vfBtnPrintLbl">طباعة / تحميل</span></button>
+          <button type="button" id="vfCoordBtn" onclick="openVfCoordMapper()" class="contact-btn" style="display:none">
+            <i class="fa-solid fa-crosshairs"></i> تحديد مواضع الحقول
+          </button>
+          <button type="button" onclick="vfPrint()" class="escalation-btn">
+            <i class="fa-solid fa-file-arrow-down"></i> <span id="vfBtnPrintLbl">تحميل PDF</span>
+          </button>
         </div>
       </div>
     </div>

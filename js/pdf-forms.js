@@ -1,7 +1,7 @@
 // ======================== Violation Form ========================
 
 // ── تحكم: true = يلصق البيانات في الـ PDF الحقيقي، false = يطبع فورم HTML ──
-const VF_PDF_FILL = false;
+const VF_PDF_FILL = true;
 
 const VF_PDF_URL     = '/pdfs/violation.pdf';
 const VF_COORDS_KEY  = 'barq_vf_coords_v1';
