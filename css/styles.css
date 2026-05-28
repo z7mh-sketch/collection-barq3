@@ -602,31 +602,31 @@ header.site-header {
 .sub-connector i { display: none; }
 
 .sub-conn-line {
-  width: 12px;
-  height: 52px;
+  width: 18px;
+  height: 56px;
   overflow: hidden;
   position: relative;
 }
 /*
-  SVG chain tile (12×17px):
-  1. Vertical oval ring  (cx=6 cy=6 rx=3.5 ry=6)
-  2. Horizontal oval     (cx=6 cy=11 rx=5.5 ry=3) — dark fill masks the ring's lower stroke
-  3. Bottom-arc of ring redrawn ON TOP of horizontal oval → interlocking 3-D look
-  4. Short line connecting to the next tile's ring top
+  Chain tile (18×26px) — two interlocking oval links:
+  1. Horizontal oval drawn first  (back layer)
+  2. Dark rect mask hides top of horizontal where vertical passes IN FRONT
+  3. Vertical oval drawn last     (front layer)
+  Result: vertical ring appears to go THROUGH the horizontal ring = real chain look
 */
 .sub-conn-line::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='17'%3E%3Cellipse cx='6' cy='6' rx='3.5' ry='6' fill='none' stroke='%23FBBF24' stroke-width='1.8'/%3E%3Cellipse cx='6' cy='11' rx='5.5' ry='3' fill='%23111111' stroke='%23FBBF24' stroke-width='1.8'/%3E%3Cpath d='M 2.5 6 A 3.5 6 0 0 1 9.5 6' fill='none' stroke='%23FBBF24' stroke-width='1.8'/%3E%3Cline x1='6' y1='14' x2='6' y2='17' stroke='%23FBBF24' stroke-width='1.8'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='26'%3E%3Cellipse cx='9' cy='19' rx='8' ry='5' fill='none' stroke='%23FBBF24' stroke-width='2.2'/%3E%3Crect x='3' y='14.5' width='12' height='4.5' fill='%230f172a'/%3E%3Cellipse cx='9' cy='8' rx='5' ry='7.5' fill='none' stroke='%23FBBF24' stroke-width='2.2'/%3E%3C/svg%3E");
   background-repeat: repeat-y;
-  background-size: 12px 17px;
-  animation: chainDrop .7s linear infinite;
+  background-size: 18px 26px;
+  animation: chainDrop .85s linear infinite;
 }
 @keyframes chainDrop {
   from { background-position: 0 0;    }
-  to   { background-position: 0 17px; }
+  to   { background-position: 0 26px; }
 }
 
 @keyframes dropArrow {
