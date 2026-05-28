@@ -677,6 +677,16 @@
           <button class="tw-close-btn" onclick="twToggle()" title="إخفاء">−</button>
         </div>
       </div>
+      <!-- Formatting toolbar -->
+      <div class="tw-toolbar">
+        <button class="tw-fmt" onmousedown="event.preventDefault();document.execCommand('bold')"         title="Bold"><b>B</b></button>
+        <button class="tw-fmt" onmousedown="event.preventDefault();document.execCommand('italic')"       title="Italic"><i>I</i></button>
+        <button class="tw-fmt" onmousedown="event.preventDefault();document.execCommand('underline')"    title="Underline"><u>U</u></button>
+        <button class="tw-fmt" onmousedown="event.preventDefault();document.execCommand('strikeThrough')" title="Strikethrough"><s>ab</s></button>
+        <button class="tw-fmt" onmousedown="event.preventDefault();document.execCommand('insertUnorderedList')" title="قائمة">≡</button>
+        <button class="tw-fmt" onclick="twInsertImage()" title="صورة">🖼</button>
+        <input type="file" id="twImgInput" accept="image/*" style="display:none" onchange="twHandleImage(this)">
+      </div>
       <div id="twBody" class="tw-body"></div>
       <div class="tw-footer">
         <button class="tw-add-btn" onclick="twAddTask()">
@@ -737,26 +747,36 @@
       pg.forEach((task, idx) => {
         const row = document.createElement('div');
         row.className = 'tw-task' + (task.done ? ' done' : '');
-        row.innerHTML = `
-          <div class="tw-chk" data-idx="${idx}">${task.done ? '✓' : ''}</div>
-          <textarea class="tw-task-text" data-idx="${idx}" rows="1">${task.text}</textarea>
-          <button class="tw-task-del" data-idx="${idx}" title="حذف">✕</button>`;
-        const ta = row.querySelector('textarea');
-        setTimeout(() => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }, 0);
-        ta.addEventListener('input', () => {
-          ta.style.height = 'auto';
-          ta.style.height = ta.scrollHeight + 'px';
-          data.pages[data.page].tasks[idx].text = ta.value;
-          save();
-        });
-        row.querySelector('.tw-chk').addEventListener('click', () => {
+
+        const chk = document.createElement('div');
+        chk.className = 'tw-chk';
+        chk.textContent = task.done ? '✓' : '';
+        chk.addEventListener('click', () => {
           data.pages[data.page].tasks[idx].done = !data.pages[data.page].tasks[idx].done;
           save(); render();
         });
-        row.querySelector('.tw-task-del').addEventListener('click', () => {
+
+        const el = document.createElement('div');
+        el.className = 'tw-task-text';
+        el.contentEditable = 'true';
+        el.innerHTML = task.text || '';
+        el.addEventListener('input', () => {
+          data.pages[data.page].tasks[idx].text = el.innerHTML;
+          save();
+        });
+
+        const del = document.createElement('button');
+        del.className = 'tw-task-del';
+        del.title = 'حذف';
+        del.textContent = '✕';
+        del.addEventListener('click', () => {
           data.pages[data.page].tasks.splice(idx, 1);
           save(); render();
         });
+
+        row.appendChild(chk);
+        row.appendChild(el);
+        row.appendChild(del);
         body.appendChild(row);
       });
       document.getElementById('twPageLabel').textContent =
@@ -773,9 +793,28 @@
       data.pages[data.page].tasks.push({ text:'', done:false });
       save(); render();
       setTimeout(() => {
-        const tas = document.querySelectorAll('#twBody .tw-task-text');
-        if (tas.length) tas[tas.length - 1].focus();
+        const els = document.querySelectorAll('#twBody .tw-task-text');
+        if (els.length) els[els.length - 1].focus();
       }, 60);
+    };
+    window.twInsertImage = function() {
+      document.getElementById('twImgInput').click();
+    };
+    window.twHandleImage = function(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const focused = document.querySelector('#twBody .tw-task-text:focus') ||
+                        document.querySelector('#twBody .tw-task-text');
+        if (!focused) return;
+        focused.focus();
+        document.execCommand('insertImage', false, e.target.result);
+        const idx = [...document.querySelectorAll('#twBody .tw-task-text')].indexOf(focused);
+        if (idx >= 0) { data.pages[data.page].tasks[idx].text = focused.innerHTML; save(); }
+      };
+      reader.readAsDataURL(file);
+      input.value = '';
     };
     window.twPrevPage = function() {
       if (data.page > 0) { data.page--; save(); render(); }
