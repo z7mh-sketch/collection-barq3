@@ -771,16 +771,35 @@
         row.className = 'tw-task' + (task.done ? ' done' : '');
         if (pri !== null) row.dataset.pri = pri;
 
-        // ── Priority dot button ──
+        // ── Priority dot button — shows popup picker on click ──
         const priBtn = document.createElement('button');
         priBtn.className = 'tw-pri' + (pri !== null ? ' tw-pri-' + pri : '');
         priBtn.title = pri !== null ? PRI_LABELS[pri] : 'تحديد الأهمية';
-        priBtn.addEventListener('click', () => {
-          // cycle: null→0→1→2→null
-          const cur = data.pages[data.page].tasks[idx].priority ?? null;
-          const next = cur === null ? 0 : cur === 2 ? null : cur + 1;
-          data.pages[data.page].tasks[idx].priority = next;
-          save(); render();
+        priBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          // Remove any existing picker
+          document.querySelectorAll('.tw-pri-picker').forEach(p => p.remove());
+          const picker = document.createElement('div');
+          picker.className = 'tw-pri-picker';
+          // Options: 0,1,2,null
+          [0,1,2,null].forEach(p => {
+            const opt = document.createElement('button');
+            opt.className = 'tw-pri-opt' + (p !== null ? ' tw-pri-' + p : ' tw-pri-none');
+            opt.title = p !== null ? PRI_LABELS[p] : 'بدون أولوية';
+            if (p === pri) opt.classList.add('tw-pri-opt-active');
+            opt.addEventListener('mousedown', ev => {
+              ev.preventDefault();
+              data.pages[data.page].tasks[idx].priority = p;
+              save(); render();
+              picker.remove();
+            });
+            picker.appendChild(opt);
+          });
+          priBtn.appendChild(picker);
+          // Close picker on outside click
+          setTimeout(() => {
+            document.addEventListener('click', () => picker.remove(), { once: true });
+          }, 0);
         });
 
         const chk = document.createElement('div');
