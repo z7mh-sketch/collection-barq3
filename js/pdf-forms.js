@@ -1196,7 +1196,7 @@ function vfPickEmployee(emp) {
   setTimeout(() => {
     ['vfEmpName','vfJobTitle','vfHRID'].forEach((id, i) => {
       const el = document.getElementById(id);
-      if (el) el.value = [emp.name, emp.title, emp.hrid][i] || '';
+      if (el) el.value = [emp.name, 'CCS', emp.hrid][i] || '';
     });
     const toEl = document.getElementById('vfEmailTo');
     if (toEl && emp.email) toEl.value = emp.email;
