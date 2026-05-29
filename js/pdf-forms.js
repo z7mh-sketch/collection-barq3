@@ -1399,9 +1399,11 @@ function vfDoSendEmail() {
   const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'new';
   const qs = `?to=${encodeURIComponent(to||'')}&subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
   if (method === 'new') {
+    // Outlook الجديد — ms-outlook:// protocol
     window.location.href = `ms-outlook://compose${qs}`;
   } else {
-    window.location.href = `mailto:${encodeURIComponent(to||'')}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
+    // Outlook الكلاسيكي — mailto: (الإيميل بدون تشفير لأنه قبل الـ ?)
+    window.location.href = `mailto:${to||''}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
   }
 
 
