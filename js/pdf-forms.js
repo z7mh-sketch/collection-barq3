@@ -497,7 +497,7 @@ async function _vfFillPdf(data) {
     if (sigUrl && C.signature) {
       const sp   = C.signature;
       const img  = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
-      const sigW = vp.width * 0.12, sigH = sigW * 0.3;
+      const sigW = vp.width * 0.155, sigH = sigW * 0.3;
       ctx.drawImage(img, sp.x - sigW / 2, sp.y - sigH / 2, sigW, sigH);
     }
 
