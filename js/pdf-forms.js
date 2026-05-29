@@ -158,9 +158,9 @@ function openViolationForm() {
   });
   // reset checked state highlight
   document.querySelectorAll('.vf-vrow').forEach(r => r.classList.remove('is-checked'));
-  // زر مواضع الحقول — يظهر فقط إذا VF_PDF_FILL مفعّل
+  // زر مواضع الحقول — مخفي دائماً (أداة تطوير فقط)
   const coordBtn = document.getElementById('vfCoordBtn');
-  if (coordBtn) coordBtn.style.display = VF_PDF_FILL ? 'inline-flex' : 'none';
+  if (coordBtn) coordBtn.style.display = 'none';
 
   document.getElementById('violationFormModal').classList.remove('hidden');
   _vfInitCanvas();
