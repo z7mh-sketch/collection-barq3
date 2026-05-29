@@ -92,6 +92,13 @@ leaders-hub/
 
 ---
 
+## ⚠️ إحداثيات نموذج المخالفة — معتمدة نهائياً (لا تُغيَّر)
+`VF_FILL_COORDS` في `js/pdf-forms.js` معتمدة من المستخدم بتاريخ 2026-05-29 (commit d027fcc).
+**ممنوع تعديلها** إلا بطلب صريح من المستخدم:
+- التأخير: y=704، day_x=900، mon_x=848
+- الخروج المبكر: y=737، day_x=977، mon_x=927 — المدة early_dur x=741,y=737
+- الغياب: y=770، day_x=841، mon_x=804 — أيام الغياب absent_days x=979,y=770
+
 ## ملاحظات مهمة
 - `pdf-forms.js` لا يستورد `auth` مباشرة — يقرأ `userEmail` من localStorage
 - البيانات تُحفظ كلها في localStorage (لا backend للـ tasks/presence)
