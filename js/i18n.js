@@ -29,8 +29,6 @@ const translations = {
     responsibleLabel: 'المسؤولون',
     teamsChat: 'محادثة على Teams',
     themeLabel: 'تبديل الوضع',
-    violationsLogLabel: 'سجل المخالفات',
-    violationsLogEmpty: 'لا توجد مخالفات مسجلة',
   },
   en: {
     navQuickLinks: 'Quick Links',
@@ -62,8 +60,6 @@ const translations = {
     responsibleLabel: 'Responsible',
     teamsChat: 'Chat on Teams',
     themeLabel: 'Toggle theme',
-    violationsLogLabel: 'Violations Log',
-    violationsLogEmpty: 'No violations recorded',
   }
 };
 

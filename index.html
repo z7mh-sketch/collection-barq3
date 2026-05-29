@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605300155" />
+  <link rel="stylesheet" href="css/styles.css?v=202605300200" />
 </head>
 
 <body>
@@ -257,37 +257,6 @@
         </h3>
       </div>
       <div id="additionalLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-    </section>
-
-    <!-- ============ VIOLATIONS LOG ============ -->
-    <section id="violations-log">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="fa-solid fa-file-circle-exclamation"></i>
-          <span data-i18n="violationsLogLabel" id="vLogTitle">سجل المخالفات</span>
-        </h3>
-        <button id="vLogRefreshBtn" onclick="vLogRefresh()" class="contact-btn" title="تحديث القائمة" style="gap:.5rem;padding:.4rem .75rem;font-size:.8rem">
-          <i class="fa-solid fa-arrow-rotate-right"></i> <span id="vLogRefreshLbl">تحديث</span>
-        </button>
-      </div>
-      <div id="vLogContainer" style="display:none;overflow-x:auto;border:1.5px solid #e4e4e7;border-radius:.875rem;background:#fff">
-        <table id="vLogTable" style="width:100%;border-collapse:collapse;font-size:.85rem">
-          <thead style="background:#fafafa;border-bottom:1.5px solid #e4e4e7">
-            <tr>
-              <th style="padding:.75rem;text-align:center;color:#000;font-weight:700;border-right:1px solid #e4e4e7">نوع المخالفة</th>
-              <th style="padding:.75rem;text-align:center;color:#000;font-weight:700;border-right:1px solid #e4e4e7">اسم الموظف</th>
-              <th style="padding:.75rem;text-align:center;color:#000;font-weight:700;border-right:1px solid #e4e4e7">الرقم الوظيفي</th>
-              <th style="padding:.75rem;text-align:center;color:#000;font-weight:700;border-right:1px solid #e4e4e7">البريد الإلكتروني</th>
-              <th style="padding:.75rem;text-align:center;color:#000;font-weight:700">تاريخ المخالفة</th>
-            </tr>
-          </thead>
-          <tbody id="vLogBody"></tbody>
-        </table>
-      </div>
-      <div id="vLogEmpty" style="text-align:center;padding:2rem;color:#71717a;display:none">
-        <i class="fa-solid fa-inbox" style="font-size:2.5rem;opacity:.5;display:block;margin-bottom:1rem"></i>
-        <p data-i18n="violationsLogEmpty">لا توجد مخالفات مسجلة</p>
-      </div>
     </section>
 
   </main>
@@ -713,17 +682,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605300155"></script>
-  <script src="js/data.js?v=202605300155"></script>
-  <script src="js/i18n.js?v=202605300155"></script>
-  <script src="js/render.js?v=202605300155"></script>
-  <script src="js/search.js?v=202605300155"></script>
-  <script src="js/presence.js?v=202605300155"></script>
-  <script src="js/animations.js?v=202605300155"></script>
+  <script type="module" src="js/auth.js?v=202605300200"></script>
+  <script src="js/data.js?v=202605300200"></script>
+  <script src="js/i18n.js?v=202605300200"></script>
+  <script src="js/render.js?v=202605300200"></script>
+  <script src="js/search.js?v=202605300200"></script>
+  <script src="js/presence.js?v=202605300200"></script>
+  <script src="js/animations.js?v=202605300200"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605300155"></script>
+  <script src="js/pdf-forms.js?v=202605300200"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
