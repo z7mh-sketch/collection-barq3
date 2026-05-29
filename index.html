@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605290505" />
+  <link rel="stylesheet" href="css/styles.css?v=202605290506" />
 </head>
 
 <body>
@@ -587,6 +587,7 @@
   // ─── HR-FLOW Modal Logic ───
   const HF_URL = "https://globalfinancingsolutions.sharepoint.com/sites/test/_layouts/15/listforms.aspx?cid=M2JjMjdiZWUtMjAxOC00OTgwLThmNTItOTcyZjY2YjAwZmI5&nav=M2Q3MGI2YjUtOWE3ZC00NTM2LTkyM2ItOTZmMTZiODFkMWFi&LOF=1";
   let _hfSelected = null;
+  let _hfEmpsCache = [];   // نحفظ الموظفين هنا بدل ما نمررهم في onclick
 
   function openHrFlowModal() {
     _hfSelected = null;
@@ -595,13 +596,13 @@
     document.getElementById('hfEmpInfo').style.display = 'none';
     document.getElementById('hfOpenBtn').disabled = true;
     document.getElementById('hfModal').classList.remove('hidden');
+    setTimeout(() => document.getElementById('hfSearch').focus(), 150);
   }
 
   function _hfGetAllEmps() {
     if (typeof VF_EMPLOYEES === 'undefined') return [];
     const email = (localStorage.getItem('userEmail') || '').toLowerCase();
     if (email && VF_EMPLOYEES[email]) return VF_EMPLOYEES[email];
-    // fallback: كل الموظفين
     return Object.values(VF_EMPLOYEES).flat();
   }
 
@@ -609,14 +610,24 @@
     const q = document.getElementById('hfSearch').value.trim().toLowerCase();
     const dd = document.getElementById('hfDropdown');
     const emps = _hfGetAllEmps();
-    const filtered = q ? emps.filter(e => e.name.toLowerCase().includes(q) || (e.hrid||'').includes(q)) : emps;
+    const filtered = q
+      ? emps.filter(e => e.name.toLowerCase().includes(q) || (e.hrid||'').includes(q))
+      : emps;
     if (!filtered.length) { dd.style.display = 'none'; return; }
-    dd.innerHTML = filtered.slice(0, 30).map(e => `
-      <div onclick='hfSelectEmp(${JSON.stringify(e).replace(/'/g,"&apos;")})' style="padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid #1e293b;transition:background .12s"
-        onmouseover="this.style.background='#1e3a5f'" onmouseout="this.style.background=''">
+
+    _hfEmpsCache = filtered.slice(0, 40);   // احفظ المصفوفة
+    dd.innerHTML = _hfEmpsCache.map((e, i) => `
+      <div data-hfi="${i}" style="padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid #1e293b">
         <span style="color:#f4f4f5;font-size:.88rem">${e.name}</span>
         <span style="color:#64748b;font-size:.75rem;margin-right:.5rem">${e.hrid||''}</span>
       </div>`).join('');
+
+    // event delegation — آمن من مشاكل الاقتباس
+    dd.onclick = function(ev) {
+      const row = ev.target.closest('[data-hfi]');
+      if (!row) return;
+      hfSelectEmp(_hfEmpsCache[+row.dataset.hfi]);
+    };
     dd.style.display = 'block';
   }
 
@@ -633,9 +644,15 @@
 
   function hfOpenForm() {
     if (!_hfSelected) return;
-    // نسخ البيانات للكليب بورد كمرجع للليدر
+    // نسخ البيانات للكليب بورد + toast
     const txt = `الاسم: ${_hfSelected.name}\nHRID: ${_hfSelected.hrid||''}\nالإيميل: ${_hfSelected.email||''}`;
-    try { navigator.clipboard.writeText(txt); } catch(_) {}
+    navigator.clipboard.writeText(txt).then(() => {
+      const t = document.createElement('div');
+      t.textContent = '✅ تم نسخ بيانات الموظف — الصقها في النموذج';
+      t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e3a5f;color:#fff;padding:.65rem 1.25rem;border-radius:.75rem;font-size:.85rem;z-index:99999;border:1px solid #3b82f6';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3500);
+    }).catch(()=>{});
     window.open(HF_URL, '_blank', 'noopener');
     document.getElementById('hfModal').classList.add('hidden');
   }
@@ -788,17 +805,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605290505"></script>
-  <script src="js/data.js?v=202605290505"></script>
-  <script src="js/i18n.js?v=202605290505"></script>
-  <script src="js/render.js?v=202605290505"></script>
-  <script src="js/search.js?v=202605290505"></script>
-  <script src="js/presence.js?v=202605290505"></script>
-  <script src="js/animations.js?v=202605290505"></script>
+  <script type="module" src="js/auth.js?v=202605290506"></script>
+  <script src="js/data.js?v=202605290506"></script>
+  <script src="js/i18n.js?v=202605290506"></script>
+  <script src="js/render.js?v=202605290506"></script>
+  <script src="js/search.js?v=202605290506"></script>
+  <script src="js/presence.js?v=202605290506"></script>
+  <script src="js/animations.js?v=202605290506"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605290505"></script>
+  <script src="js/pdf-forms.js?v=202605290506"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
