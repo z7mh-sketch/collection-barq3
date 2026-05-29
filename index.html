@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605300208" />
+  <link rel="stylesheet" href="css/styles.css?v=202605300211" />
 </head>
 
 <body>
@@ -447,6 +447,10 @@
         <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#FBBF24"></i> موظفيك</h4>
         <button onclick="document.getElementById('vfEmpPickerModal').classList.add('hidden');document.getElementById('vfLaunchModal').classList.remove('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
+      <div style="padding:1rem 1rem 0">
+        <input id="vfEmpSearch" type="text" oninput="vfFilterEmpList(this.value)" placeholder="ابحث بالاسم أو الرقم الوظيفي..."
+          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(251,191,36,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
+      </div>
       <div id="vfEmpList" style="padding:1rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem"></div>
     </div>
   </div>
@@ -682,17 +686,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605300208"></script>
-  <script src="js/data.js?v=202605300208"></script>
-  <script src="js/i18n.js?v=202605300208"></script>
-  <script src="js/render.js?v=202605300208"></script>
-  <script src="js/search.js?v=202605300208"></script>
-  <script src="js/presence.js?v=202605300208"></script>
-  <script src="js/animations.js?v=202605300208"></script>
+  <script type="module" src="js/auth.js?v=202605300211"></script>
+  <script src="js/data.js?v=202605300211"></script>
+  <script src="js/i18n.js?v=202605300211"></script>
+  <script src="js/render.js?v=202605300211"></script>
+  <script src="js/search.js?v=202605300211"></script>
+  <script src="js/presence.js?v=202605300211"></script>
+  <script src="js/animations.js?v=202605300211"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605300208"></script>
+  <script src="js/pdf-forms.js?v=202605300211"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">

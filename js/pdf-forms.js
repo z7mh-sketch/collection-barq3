@@ -1148,9 +1148,9 @@ function vfLaunchManual() {
   openViolationForm();
 }
 
-function vfLaunchEmpPicker() {
-  const userEmail = _vfCurrentEmail();
-  const emps = (VF_EMPLOYEES[userEmail?.toLowerCase()] || []);
+let _vfEmpListCache = [];
+
+function _vfRenderEmpList(emps) {
   const list = document.getElementById('vfEmpList');
   list.innerHTML = '';
 
@@ -1158,26 +1158,55 @@ function vfLaunchEmpPicker() {
     list.innerHTML = `
       <div style="color:#71717a;text-align:center;padding:2rem 1rem">
         <i class="fa-solid fa-users-slash" style="font-size:2.2rem;display:block;margin-bottom:.75rem;color:#3f3f46"></i>
+        <p>لا توجد نتائج مطابقة.</p>
+      </div>`;
+    return;
+  }
+
+  emps.forEach(emp => {
+    const btn = document.createElement('button');
+    btn.className = 'contact-btn';
+    btn.style.cssText = 'width:100%;justify-content:flex-start;gap:.75rem;padding:.75rem 1rem;text-align:right;display:flex;align-items:center';
+    btn.innerHTML = `
+      <span style="width:36px;height:36px;border-radius:50%;background:#FBBF2422;border:1.5px solid #FBBF2455;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="fa-solid fa-user" style="color:#FBBF24;font-size:.85rem"></i>
+      </span>
+      <span style="flex:1;min-width:0">
+        <strong style="display:block;font-size:.9rem">${emp.name}</strong>
+        <span style="color:#71717a;font-size:.77rem">${emp.title || ''} ${emp.hrid ? '· ' + emp.hrid : ''}</span>
+      </span>
+      <i class="fa-solid fa-chevron-left" style="color:#52525b;font-size:.75rem"></i>`;
+    btn.onclick = () => vfPickEmployee(emp);
+    list.appendChild(btn);
+  });
+}
+
+function vfFilterEmpList(q) {
+  const term = (q || '').trim().toLowerCase();
+  if (!term) return _vfRenderEmpList(_vfEmpListCache);
+  const filtered = _vfEmpListCache.filter(emp =>
+    (emp.name || '').toLowerCase().includes(term) ||
+    String(emp.hrid || '').toLowerCase().includes(term)
+  );
+  _vfRenderEmpList(filtered);
+}
+
+function vfLaunchEmpPicker() {
+  const userEmail = _vfCurrentEmail();
+  _vfEmpListCache = (VF_EMPLOYEES[userEmail?.toLowerCase()] || []);
+  const search = document.getElementById('vfEmpSearch');
+
+  if (!_vfEmpListCache.length) {
+    if (search) search.value = '';
+    document.getElementById('vfEmpList').innerHTML = `
+      <div style="color:#71717a;text-align:center;padding:2rem 1rem">
+        <i class="fa-solid fa-users-slash" style="font-size:2.2rem;display:block;margin-bottom:.75rem;color:#3f3f46"></i>
         <p>لم يتم إضافة موظفيك بعد.</p>
         <p style="font-size:.8rem;margin-top:.35rem">تواصل مع مدير النظام لإضافة بيانات فريقك.</p>
       </div>`;
   } else {
-    emps.forEach(emp => {
-      const btn = document.createElement('button');
-      btn.className = 'contact-btn';
-      btn.style.cssText = 'width:100%;justify-content:flex-start;gap:.75rem;padding:.75rem 1rem;text-align:right;display:flex;align-items:center';
-      btn.innerHTML = `
-        <span style="width:36px;height:36px;border-radius:50%;background:#FBBF2422;border:1.5px solid #FBBF2455;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <i class="fa-solid fa-user" style="color:#FBBF24;font-size:.85rem"></i>
-        </span>
-        <span style="flex:1;min-width:0">
-          <strong style="display:block;font-size:.9rem">${emp.name}</strong>
-          <span style="color:#71717a;font-size:.77rem">${emp.title || ''} ${emp.hrid ? '· ' + emp.hrid : ''}</span>
-        </span>
-        <i class="fa-solid fa-chevron-left" style="color:#52525b;font-size:.75rem"></i>`;
-      btn.onclick = () => vfPickEmployee(emp);
-      list.appendChild(btn);
-    });
+    if (search) search.value = '';
+    _vfRenderEmpList(_vfEmpListCache);
   }
 
   document.getElementById('vfLaunchModal').classList.add('hidden');
