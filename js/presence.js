@@ -44,35 +44,19 @@
     setInterval(ping, PING_MS);
   }
 
-  function initNameModal() {
-    const modal = document.getElementById('nameModal');
-    const input = document.getElementById('nameInput');
-    const btn   = document.getElementById('nameSubmit');
-    const skip  = document.getElementById('nameSkip');
-
-    function submit() {
-      const name = input.value.trim();
-      if (!name) { input.focus(); return; }
-      localStorage.setItem('presenceName', name);
-      userName = name;
-      modal.classList.add('hidden');
-      startPresence();
-    }
-
-    btn.addEventListener('click', submit);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
-    skip.addEventListener('click', () => modal.classList.add('hidden'));
-  }
-
   document.addEventListener('DOMContentLoaded', () => {
-    initNameModal();
-    // Refresh name from localStorage (auth.js may have set it after page load)
+    // تأكيد إخفاء أي نافذة قديمة لطلب الاسم — الاسم يُؤخذ من تسجيل الدخول فقط
+    document.getElementById('nameModal')?.classList.add('hidden');
+
+    // الاسم يضبطه auth.js بعد تحقق Firebase (غير متزامن) — ننتظره ولا نسأل المستخدم
     userName = localStorage.getItem('presenceName');
-    if (userName) {
-      startPresence();
-    } else {
-      // Show modal as fallback (shouldn't normally appear after login)
-      document.getElementById('nameModal').classList.remove('hidden');
-    }
+    if (userName) { startPresence(); return; }
+
+    let tries = 0;
+    const waitForName = setInterval(() => {
+      userName = localStorage.getItem('presenceName');
+      if (userName) { clearInterval(waitForName); startPresence(); }
+      else if (++tries > 50) { clearInterval(waitForName); } // ~10s ثم نتوقف بصمت دون نافذة
+    }, 200);
   });
 })();

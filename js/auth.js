@@ -41,14 +41,21 @@ function nameFromEmail(email) {
   return cleaned.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
 }
 
-function grantAccess(user) {
-  // Auto-set presence name from email if not already saved
-  if (user && !localStorage.getItem('presenceName')) {
-    try {
-      const name = user.displayName || 'Developer';
-      if (name) localStorage.setItem('presenceName', name);
-    } catch (_) {}
-  }
+function deriveName(user, userData, approvalData) {
+  // الاسم المعتمد = الاسم المُدخل وقت التسجيل (Firestore) ← ثم displayName ← ثم اشتقاق من الإيميل
+  return (userData && userData.name)
+      || (approvalData && approvalData.name)
+      || (user && user.displayName)
+      || (user && user.email ? nameFromEmail(user.email) : '')
+      || 'مستخدم';
+}
+
+function grantAccess(user, userData, approvalData) {
+  // تعيين اسم الحضور من بيانات تسجيل الدخول — مرة واحدة، بدون سؤال المستخدم
+  try {
+    const name = deriveName(user, userData, approvalData);
+    if (name) localStorage.setItem('presenceName', name);
+  } catch (_) {}
   // Always persist the current user's email so pdf-forms.js can read it
   if (user?.email) {
     try { localStorage.setItem('userEmail', user.email.toLowerCase()); } catch (_) {}
@@ -74,11 +81,13 @@ onAuthStateChanged(auth, async (user) => {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     const approvalDoc = await getDoc(doc(db, 'approvals', user.uid));
 
-    const status = userDoc.data()?.status;
+    const userData = userDoc.data();
+    const approvalData = approvalDoc.data();
+    const status = userData?.status;
     const approved = status === 'approved' || approvalDoc.exists();
 
     if (approved) {
-      grantAccess(user);
+      grantAccess(user, userData, approvalData);
     } else {
       showPending(user);
     }

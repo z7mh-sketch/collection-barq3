@@ -38,7 +38,7 @@ leaders-hub/
 ### 1. Auth (auth.js)
 - Firebase Auth — فقط `@barq.com`
 - يحفظ `presenceName` و `userEmail` في localStorage عند grantAccess
-- presenceName = "Developer" للمستخدم الحالي (salghamdi.c@barq.com)
+- **الاسم يؤخذ مرة واحدة من تسجيل الدخول فقط**: `presenceName` = اسم Firestore (`users/{uid}.name` المُدخل وقت التسجيل) ← ثم displayName ← ثم اشتقاق من الإيميل. يُحدَّث في كل دخول (overwrite). presence.js ما يطلب الاسم أبداً — ينتظر auth.js (نافذة #nameModal صارت dead code)
 
 ### 2. نموذج المخالفات (pdf-forms.js)
 - زر "نموذج مخالفة" يفتح wizard متعدد الخطوات
