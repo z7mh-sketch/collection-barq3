@@ -530,6 +530,122 @@
     </div>
   </div>
 
+  <!-- ============ HR-FLOW MODAL ============ -->
+  <div id="hfModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.8)">
+    <div class="modal-box w-full max-w-lg" style="padding:1.75rem">
+      <!-- Header -->
+      <div class="modal-header" style="margin-bottom:1.25rem">
+        <h4 class="modal-title flex items-center gap-2">
+          <i class="fa-solid fa-users" style="color:#FBBF24"></i> HR-FLOW
+        </h4>
+        <button onclick="document.getElementById('hfModal').classList.add('hidden')" class="modal-close">✕</button>
+      </div>
+
+      <!-- بحث عن موظف -->
+      <label class="vf-label" style="display:block;margin-bottom:.4rem">اختر الموظف</label>
+      <div style="position:relative;margin-bottom:1.1rem">
+        <input id="hfSearch" type="text" class="search-input" style="width:100%;padding-left:2.2rem" placeholder="ابحث باسم الموظف أو رقمه..." oninput="hfFilterList()" />
+        <i class="fa-solid fa-search" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);color:#71717a;font-size:.85rem"></i>
+        <div id="hfDropdown" style="display:none;position:absolute;top:110%;right:0;left:0;background:#1e293b;border:1.5px solid #334155;border-radius:.6rem;max-height:200px;overflow-y:auto;z-index:999"></div>
+      </div>
+
+      <!-- بيانات الموظف المختار (read-only) -->
+      <div id="hfEmpInfo" style="display:none;background:#111827;border:1.5px solid #1e3a5f;border-radius:.75rem;padding:1rem;margin-bottom:1.25rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+          <div>
+            <p style="font-size:.72rem;color:#64748b;margin-bottom:.2rem">اسم الموظف</p>
+            <p id="hfDispName" style="color:#f4f4f5;font-size:.9rem;font-weight:600"></p>
+          </div>
+          <div>
+            <p style="font-size:.72rem;color:#64748b;margin-bottom:.2rem">الرقم الوظيفي</p>
+            <p id="hfDispHrid" style="color:#FBBF24;font-size:.9rem;font-weight:600"></p>
+          </div>
+          <div style="grid-column:1/-1">
+            <p style="font-size:.72rem;color:#64748b;margin-bottom:.2rem">الإيميل</p>
+            <p id="hfDispEmail" style="color:#94a3b8;font-size:.85rem"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- تعليمات -->
+      <div style="background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:.6rem;padding:.7rem .9rem;margin-bottom:1.25rem;font-size:.78rem;color:#d4d4d8">
+        <i class="fa-solid fa-circle-info" style="color:#FBBF24;margin-left:.4rem"></i>
+        اختر الموظف لتظهر بياناته — ثم افتح النموذج وأكمل الحقول المتبقية
+      </div>
+
+      <!-- أزرار -->
+      <div style="display:flex;gap:.75rem;justify-content:flex-end">
+        <button onclick="document.getElementById('hfModal').classList.add('hidden')" class="contact-btn">إلغاء</button>
+        <button id="hfOpenBtn" onclick="hfOpenForm()" class="escalation-btn" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);border-color:transparent" disabled>
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح HR-FLOW
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ─── HR-FLOW Modal Logic ───
+  const HF_URL = "https://globalfinancingsolutions.sharepoint.com/sites/test/_layouts/15/listforms.aspx?cid=M2JjMjdiZWUtMjAxOC00OTgwLThmNTItOTcyZjY2YjAwZmI5&nav=M2Q3MGI2YjUtOWE3ZC00NTM2LTkyM2ItOTZmMTZiODFkMWFi&LOF=1";
+  let _hfSelected = null;
+
+  function openHrFlowModal() {
+    _hfSelected = null;
+    document.getElementById('hfSearch').value = '';
+    document.getElementById('hfDropdown').style.display = 'none';
+    document.getElementById('hfEmpInfo').style.display = 'none';
+    document.getElementById('hfOpenBtn').disabled = true;
+    document.getElementById('hfModal').classList.remove('hidden');
+  }
+
+  function _hfGetAllEmps() {
+    if (typeof VF_EMPLOYEES === 'undefined') return [];
+    const email = (localStorage.getItem('userEmail') || '').toLowerCase();
+    if (email && VF_EMPLOYEES[email]) return VF_EMPLOYEES[email];
+    // fallback: كل الموظفين
+    return Object.values(VF_EMPLOYEES).flat();
+  }
+
+  function hfFilterList() {
+    const q = document.getElementById('hfSearch').value.trim().toLowerCase();
+    const dd = document.getElementById('hfDropdown');
+    const emps = _hfGetAllEmps();
+    const filtered = q ? emps.filter(e => e.name.toLowerCase().includes(q) || (e.hrid||'').includes(q)) : emps;
+    if (!filtered.length) { dd.style.display = 'none'; return; }
+    dd.innerHTML = filtered.slice(0, 30).map(e => `
+      <div onclick='hfSelectEmp(${JSON.stringify(e).replace(/'/g,"&apos;")})' style="padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid #1e293b;transition:background .12s"
+        onmouseover="this.style.background='#1e3a5f'" onmouseout="this.style.background=''">
+        <span style="color:#f4f4f5;font-size:.88rem">${e.name}</span>
+        <span style="color:#64748b;font-size:.75rem;margin-right:.5rem">${e.hrid||''}</span>
+      </div>`).join('');
+    dd.style.display = 'block';
+  }
+
+  function hfSelectEmp(emp) {
+    _hfSelected = emp;
+    document.getElementById('hfSearch').value = emp.name;
+    document.getElementById('hfDropdown').style.display = 'none';
+    document.getElementById('hfDispName').textContent  = emp.name;
+    document.getElementById('hfDispHrid').textContent  = emp.hrid  || '—';
+    document.getElementById('hfDispEmail').textContent = emp.email || '—';
+    document.getElementById('hfEmpInfo').style.display = 'block';
+    document.getElementById('hfOpenBtn').disabled = false;
+  }
+
+  function hfOpenForm() {
+    if (!_hfSelected) return;
+    // نسخ البيانات للكليب بورد كمرجع للليدر
+    const txt = `الاسم: ${_hfSelected.name}\nHRID: ${_hfSelected.hrid||''}\nالإيميل: ${_hfSelected.email||''}`;
+    try { navigator.clipboard.writeText(txt); } catch(_) {}
+    window.open(HF_URL, '_blank', 'noopener');
+    document.getElementById('hfModal').classList.add('hidden');
+  }
+
+  // إغلاق عند الضغط خارج المودال
+  document.getElementById('hfModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.add('hidden');
+  });
+  </script>
+
   <!-- ============ LEADERS MODAL ============ -->
   <div id="leadersModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
     <div class="modal-box w-full max-w-6xl max-h-[90vh] overflow-y-auto">
