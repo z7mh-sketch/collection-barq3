@@ -1433,6 +1433,7 @@ function _vfSaveViolationLog() {
     const record = {
       empName:  data.vf_emp_name || '',
       hrid:     data.vf_hrid     || '',
+      email:    (document.getElementById('vfEmailTo')?.value || '').toLowerCase(),
       date:     data.vf_date     || new Date().toISOString().split('T')[0],
       type:     vType,
       lang:     lang,
@@ -1480,3 +1481,43 @@ function vfRedownloadPdf() {
   a.href = url; a.download = 'violation-form.pdf'; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
+
+// ──── VIOLATIONS LOG ────
+function vLogRefresh() {
+  try {
+    const records = JSON.parse(localStorage.getItem('barq_violations_v1') || '[]');
+    const container = document.getElementById('vLogContainer');
+    const tbody = document.getElementById('vLogBody');
+    const empty = document.getElementById('vLogEmpty');
+
+    if (!records || records.length === 0) {
+      container.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    tbody.innerHTML = '';
+    records.forEach(rec => {
+      const row = document.createElement('tr');
+      row.style.borderBottom = '1px solid #e4e4e7';
+      row.innerHTML = `
+        <td style="padding:.75rem;text-align:center;color:#18181b;border-right:1px solid #e4e4e7">${rec.type || '—'}</td>
+        <td style="padding:.75rem;text-align:center;color:#18181b;border-right:1px solid #e4e4e7">${rec.empName || '—'}</td>
+        <td style="padding:.75rem;text-align:center;color:#18181b;border-right:1px solid #e4e4e7">${rec.hrid || '—'}</td>
+        <td style="padding:.75rem;text-align:center;color:#18181b;border-right:1px solid #e4e4e7">
+          <a href="mailto:${rec.email}" style="color:#0284c7;text-decoration:none;word-break:break-all">${rec.email || '—'}</a>
+        </td>
+        <td style="padding:.75rem;text-align:center;color:#18181b">${rec.date || '—'}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    container.style.display = 'block';
+    empty.style.display = 'none';
+  } catch(_) {}
+}
+
+// Initialize violations log on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => vLogRefresh(), 1000);
+});
