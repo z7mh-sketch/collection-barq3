@@ -94,6 +94,7 @@ body {
 /* ========== Search ========== */
 .search-input {
   background: #1a1a1a;
+  color: #f4f4f5;
   border: 1.5px solid #3f3f46;
   border-radius: .75rem;
   padding: .52rem 2.4rem .52rem 1rem;
@@ -1160,10 +1161,10 @@ html[dir="ltr"] #tasksWidget {
 }
 .vf-vrow-wrap { flex-wrap:wrap; }
 .vf-chk { width:17px; height:17px; accent-color:#FBBF24; flex-shrink:0; cursor:pointer; }
-.vf-chk-label { font-size:.85rem; cursor:pointer; flex-shrink:0; line-height:1.4; }
-.vf-num { width:72px !important; text-align:center; }
-.vf-select { width:auto !important; padding-inline-end:.5rem !important; }
-.vf-txt { font-size:.85rem; flex-shrink:0; opacity:.9; }
+.vf-chk-label { font-size:.85rem; cursor:pointer; flex-shrink:0; line-height:1.4; color:#e4e4e7; }
+.vf-num { width:72px !important; text-align:center; color:#f4f4f5 !important; }
+.vf-select { width:auto !important; padding-inline-end:.5rem !important; color:#f4f4f5 !important; background:#1a1a1a !important; }
+.vf-txt { font-size:.85rem; flex-shrink:0; opacity:.9; color:#e4e4e7; }
 .vf-dur-text { flex:1; min-width:160px; }
 
 /* Day/Month group (no year) */
@@ -1180,6 +1181,7 @@ html[dir="ltr"] #tasksWidget {
   padding:.25rem .35rem !important;
   border:none !important; background:transparent !important;
   text-align:center; font-weight:600;
+  color:#f4f4f5 !important;
 }
 .vf-dm-sel:focus { outline:1px solid #FBBF24; outline-offset:1px; border-radius:.3rem; }
 .vf-dm-sep { font-weight:700; opacity:.6; }
