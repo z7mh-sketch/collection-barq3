@@ -1209,17 +1209,24 @@ function vfPickEmployee(emp) {
 function vfOpenEmailModal() {
   _vfEmailData = _vfCollectData();
   _vfEmailLang = 'ar';
-  _vfEmailTpl  = 'late';
+
+  // Auto-detect violation type from checked checkboxes
+  const chkMap = { vfChkLate:'late', vfChkEarly:'early', vfChkAbsent:'absent', vfChkOther:'other' };
+  _vfEmailTpl = 'late'; // default
+  for (const [chkId, tplKey] of Object.entries(chkMap)) {
+    if (document.getElementById(chkId)?.checked) { _vfEmailTpl = tplKey; break; }
+  }
 
   // Build template radio options
   const container = document.getElementById('vfEmailTemplates');
   container.innerHTML = '';
-  Object.entries(VF_EMAIL_SCRIPTS).forEach(([key, tpl], idx) => {
+  Object.entries(VF_EMAIL_SCRIPTS).forEach(([key, tpl]) => {
+    const isSelected = key === _vfEmailTpl;
     const wrap = document.createElement('label');
     wrap.style.cssText = 'display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border:1.5px solid #27272a;border-radius:.65rem;cursor:pointer;transition:border-color .15s;user-select:none';
-    if (idx === 0) wrap.style.borderColor = '#FBBF24';
+    if (isSelected) wrap.style.borderColor = '#FBBF24';
     wrap.innerHTML = `
-      <input type="radio" name="vfEmailTpl" value="${key}" ${idx === 0 ? 'checked' : ''} style="accent-color:#FBBF24;width:16px;height:16px;flex-shrink:0">
+      <input type="radio" name="vfEmailTpl" value="${key}" ${isSelected ? 'checked' : ''} style="accent-color:#FBBF24;width:16px;height:16px;flex-shrink:0">
       <span>
         <strong style="display:block;font-size:.88rem">${tpl.label_ar}</strong>
         <span style="color:#71717a;font-size:.77rem">${tpl.label_en}</span>
