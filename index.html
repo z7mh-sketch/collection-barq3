@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605290521" />
+  <link rel="stylesheet" href="css/styles.css?v=202605290527" />
 </head>
 
 <body>
@@ -530,324 +530,6 @@
     </div>
   </div>
 
-  <!-- ============ HR-FLOW MODAL ============ -->
-  <div id="hfModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.85)">
-    <div class="modal-box w-full max-w-xl max-h-[92vh] overflow-y-auto" style="padding:1.75rem">
-
-      <!-- Header -->
-      <div class="modal-header" style="margin-bottom:1.4rem">
-        <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-users" style="color:#FBBF24"></i> HR-FLOW
-        </h4>
-        <button onclick="document.getElementById('hfModal').classList.add('hidden')" class="modal-close">✕</button>
-      </div>
-
-      <!-- بحث عن موظف -->
-      <div style="margin-bottom:1.1rem">
-        <label class="vf-label" style="display:block;margin-bottom:.4rem">اختر الموظف *</label>
-        <div style="position:relative">
-          <input id="hfSearch" type="text" class="search-input" style="width:100%" placeholder="ابحث باسم الموظف أو رقمه..." oninput="hfFilterList()" />
-          <div id="hfDropdown" style="display:none;position:absolute;top:110%;right:0;left:0;background:#1e293b;border:1.5px solid #334155;border-radius:.6rem;max-height:200px;overflow-y:auto;z-index:999"></div>
-        </div>
-      </div>
-
-      <!-- الحقول (تظهر بعد اختيار موظف) -->
-      <div id="hfFields" style="display:none">
-
-        <!-- بيانات الموظف (auto) -->
-        <div style="background:#0f1f35;border:1.5px solid #1e3a5f;border-radius:.75rem;padding:1rem;margin-bottom:1.1rem">
-          <p style="font-size:.72rem;color:#64748b;margin-bottom:.6rem;font-weight:600">بيانات الموظف — تعبّأ تلقائياً</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem">
-            <div>
-              <p style="font-size:.7rem;color:#64748b;margin-bottom:.2rem">Employee Name</p>
-              <p id="hfDispName" style="color:#f4f4f5;font-size:.88rem;font-weight:600"></p>
-            </div>
-            <div>
-              <p style="font-size:.7rem;color:#64748b;margin-bottom:.2rem">Employee ID</p>
-              <p id="hfDispHrid" style="color:#FBBF24;font-size:.88rem;font-weight:600"></p>
-            </div>
-            <div style="grid-column:1/-1">
-              <p style="font-size:.7rem;color:#64748b;margin-bottom:.2rem">Employee Email</p>
-              <p id="hfDispEmail" style="color:#94a3b8;font-size:.85rem"></p>
-            </div>
-            <div style="grid-column:1/-1">
-              <p style="font-size:.7rem;color:#64748b;margin-bottom:.2rem">Line Manager</p>
-              <p id="hfDispMgr" style="color:#94a3b8;font-size:.85rem"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Status Type -->
-        <div style="margin-bottom:1rem">
-          <label class="vf-label" style="display:block;margin-bottom:.4rem">Status Type *</label>
-          <select id="hfStatusType" class="search-input vf-dm-sel" style="width:100%">
-            <option value="">— اختر —</option>
-            <option>Lateness</option>
-            <option>OP Early Leave</option>
-            <option>Technical issue</option>
-            <option>Resignation</option>
-            <option>Forget Log out</option>
-            <option>No show</option>
-            <option>Sick Leave</option>
-            <option>Overtime day off</option>
-            <option>Overtime Weekday</option>
-            <option>Unplanned Leave</option>
-            <option>Exam Leave</option>
-            <option>Early Leave</option>
-            <option>Annual Leave</option>
-            <option>Termination</option>
-            <option>Death Notice</option>
-            <option>End Of Contract</option>
-            <option>Medical Companion Leave</option>
-            <option>Marriage Leave</option>
-            <option>Hajj Leave</option>
-            <option>paternity leave</option>
-            <option>Warning Letter</option>
-            <option>Adherence Exception</option>
-          </select>
-        </div>
-
-        <!-- Start / End Date -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
-          <div>
-            <label class="vf-label" style="display:block;margin-bottom:.4rem">Start Date *</label>
-            <input id="hfStartDate" type="date" class="search-input vf-num" style="width:100%" />
-          </div>
-          <div>
-            <label class="vf-label" style="display:block;margin-bottom:.4rem">End Date *</label>
-            <input id="hfEndDate" type="date" class="search-input vf-num" style="width:100%" />
-          </div>
-        </div>
-
-        <!-- Start / End Time (datetime) -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
-          <div>
-            <label class="vf-label" style="display:block;margin-bottom:.4rem">Start Time</label>
-            <input id="hfStartTime" type="datetime-local" class="search-input vf-num" style="width:100%" />
-          </div>
-          <div>
-            <label class="vf-label" style="display:block;margin-bottom:.4rem">End Time</label>
-            <input id="hfEndTime" type="datetime-local" class="search-input vf-num" style="width:100%" />
-          </div>
-        </div>
-
-        <!-- Comment -->
-        <div style="margin-bottom:1rem">
-          <label class="vf-label" style="display:block;margin-bottom:.4rem">Comment</label>
-          <textarea id="hfComment" class="search-input" rows="3" style="width:100%;resize:vertical;font-family:inherit" placeholder="Enter value here"></textarea>
-        </div>
-
-        <!-- Attachments -->
-        <div style="margin-bottom:1.25rem">
-          <label class="vf-label" style="display:block;margin-bottom:.4rem">Attachments</label>
-          <label style="display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;background:#1e293b;border:1.5px dashed #334155;border-radius:.6rem;padding:.6rem 1rem;transition:border-color .15s"
-            onmouseover="this.style.borderColor='#FBBF24'" onmouseout="this.style.borderColor='#334155'">
-            <i class="fa-solid fa-paperclip" style="color:#FBBF24"></i>
-            <span id="hfFileLabel" style="color:#94a3b8;font-size:.83rem">Add attachments</span>
-            <input id="hfAttachments" type="file" multiple style="display:none" onchange="hfUpdateFileLabel()" />
-          </label>
-        </div>
-
-        <!-- رسالة خطأ / نجاح -->
-        <div id="hfMsg" style="display:none;border-radius:.6rem;padding:.7rem 1rem;margin-bottom:1rem;font-size:.82rem"></div>
-
-        <!-- أزرار -->
-        <div style="display:flex;gap:.75rem;justify-content:flex-end">
-          <button onclick="document.getElementById('hfModal').classList.add('hidden')" class="contact-btn">إلغاء</button>
-          <button id="hfSubmitBtn" onclick="hfSubmit()" class="escalation-btn" style="background:linear-gradient(135deg,#059669,#10b981);border-color:transparent;min-width:120px">
-            <i class="fa-solid fa-paper-plane"></i> إرسال
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-  // ═══════════════════════════════════════
-  //  HR-FLOW — Full Form + SharePoint REST
-  // ═══════════════════════════════════════
-  const HF_SITE = 'https://globalfinancingsolutions.sharepoint.com/sites/test';
-  const HF_LIST = 'HRFLOW';
-  const HF_FORM_URL = "https://globalfinancingsolutions.sharepoint.com/sites/test/_layouts/15/listforms.aspx?cid=M2JjMjdiZWUtMjAxOC00OTgwLThmNTItOTcyZjY2YjAwZmI5&nav=M2Q3MGI2YjUtOWE3ZC00NTM2LTkyM2ItOTZmMTZiODFkMWFi&LOF=1";
-  let _hfSelected = null;
-  let _hfEmpsCache = [];
-
-  function openHrFlowModal() {
-    _hfSelected = null;
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('hfSearch').value = '';
-    document.getElementById('hfDropdown').style.display = 'none';
-    document.getElementById('hfFields').style.display = 'none';
-    document.getElementById('hfMsg').style.display = 'none';
-    document.getElementById('hfStartDate').value = today;
-    document.getElementById('hfEndDate').value   = today;
-    document.getElementById('hfStartTime').value  = '';
-    document.getElementById('hfEndTime').value    = '';
-    document.getElementById('hfStatusType').value = '';
-    document.getElementById('hfComment').value    = '';
-    document.getElementById('hfAttachments').value = '';
-    document.getElementById('hfFileLabel').textContent = 'Add attachments';
-    document.getElementById('hfSubmitBtn').disabled = false;
-    document.getElementById('hfSubmitBtn').innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال';
-    document.getElementById('hfModal').classList.remove('hidden');
-    setTimeout(() => document.getElementById('hfSearch').focus(), 150);
-  }
-
-  function _hfGetAllEmps() {
-    if (typeof VF_EMPLOYEES === 'undefined') return [];
-    const email = (localStorage.getItem('userEmail') || '').toLowerCase();
-    return (email && VF_EMPLOYEES[email]) ? VF_EMPLOYEES[email] : Object.values(VF_EMPLOYEES).flat();
-  }
-
-  function hfFilterList() {
-    const q = document.getElementById('hfSearch').value.trim().toLowerCase();
-    const dd = document.getElementById('hfDropdown');
-    const emps = _hfGetAllEmps();
-    const filtered = q ? emps.filter(e => e.name.toLowerCase().includes(q) || (e.hrid||'').includes(q)) : emps;
-    if (!filtered.length) { dd.style.display = 'none'; return; }
-    _hfEmpsCache = filtered.slice(0, 40);
-    dd.innerHTML = _hfEmpsCache.map((e, i) => `
-      <div data-hfi="${i}" style="padding:.65rem 1rem;cursor:pointer;border-bottom:1px solid #1e293b;transition:background .1s"
-        onmouseover="this.style.background='#1e3a5f'" onmouseout="this.style.background=''">
-        <span style="color:#f4f4f5;font-size:.88rem">${e.name}</span>
-        <span style="color:#64748b;font-size:.75rem;margin-right:.5rem">${e.hrid||''}</span>
-      </div>`).join('');
-    dd.onclick = ev => { const r = ev.target.closest('[data-hfi]'); if(r) hfSelectEmp(_hfEmpsCache[+r.dataset.hfi]); };
-    dd.style.display = 'block';
-  }
-
-  function hfSelectEmp(emp) {
-    _hfSelected = emp;
-    const mgr = (localStorage.getItem('userEmail') || '');
-    document.getElementById('hfSearch').value       = emp.name;
-    document.getElementById('hfDropdown').style.display = 'none';
-    document.getElementById('hfDispName').textContent  = emp.name;
-    document.getElementById('hfDispHrid').textContent  = emp.hrid  || '—';
-    document.getElementById('hfDispEmail').textContent = emp.email || '—';
-    document.getElementById('hfDispMgr').textContent   = mgr;
-    document.getElementById('hfFields').style.display  = 'block';
-    document.getElementById('hfMsg').style.display = 'none';
-  }
-
-  async function hfSubmit() {
-    if (!_hfSelected) return;
-    const status = document.getElementById('hfStatusType').value;
-    const startDate = document.getElementById('hfStartDate').value;
-    const endDate   = document.getElementById('hfEndDate').value;
-    if (!status)    { hfShowMsg('اختر Status Type', 'err'); return; }
-    if (!startDate) { hfShowMsg('اختر Start Date', 'err'); return; }
-    if (!endDate)   { hfShowMsg('اختر End Date', 'err'); return; }
-
-    const btn = document.getElementById('hfSubmitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
-
-    try {
-      // 1. Form digest
-      const digestRes = await fetch(`${HF_SITE}/_api/contextinfo`, {
-        method: 'POST', credentials: 'include',
-        headers: { 'Accept': 'application/json;odata=verbose', 'Content-Type': 'application/json;odata=verbose' }
-      });
-      if (!digestRes.ok) throw new Error('digest');
-      const digestJson = await digestRes.json();
-      const digest = digestJson.d.GetContextWebInformation.FormDigestValue;
-
-      // 2. Resolve employee user in SharePoint
-      const toUser = async (email) => {
-        const r = await fetch(`${HF_SITE}/_api/web/ensureuser`, {
-          method: 'POST', credentials: 'include',
-          headers: { 'Accept':'application/json;odata=verbose','Content-Type':'application/json;odata=verbose','X-RequestDigest':digest },
-          body: JSON.stringify({ logonName: `i:0#.f|membership|${email}` })
-        });
-        const j = await r.json();
-        return j.d.Id;
-      };
-
-      const empEmail = _hfSelected.email || '';
-      const mgrEmail = localStorage.getItem('userEmail') || '';
-      const [empId, mgrId] = await Promise.all([toUser(empEmail), toUser(mgrEmail)]);
-
-      // 3. Build item
-      const startTime = document.getElementById('hfStartTime').value;   // datetime-local → "2026-05-29T08:00"
-      const endTime   = document.getElementById('hfEndTime').value;
-      const comment   = document.getElementById('hfComment').value;
-      const item = {
-        '__metadata': { 'type': `SP.Data.${HF_LIST}ListItem` },
-        'Employee_x0020_NameId':  empId,
-        'Employee_x0020_EmailId': empId,
-        'Employee_x0020_ID':      _hfSelected.hrid || '',
-        'Line_x0020_Manager':     mgrEmail,
-        'Status_x0020_Type':      status,
-        'Start_x0020_Date':       new Date(startDate).toISOString(),
-        'End_x0020_Date':         new Date(endDate).toISOString(),
-      };
-      if (startTime) item['Start_x0020_Time'] = new Date(startTime).toISOString();
-      if (endTime)   item['End_x0020_Time']   = new Date(endTime).toISOString();
-      if (comment)   item['Comment']           = comment;
-
-      // 4. POST to list → get new item ID
-      const res = await fetch(`${HF_SITE}/_api/web/lists/getbytitle('${HF_LIST}')/items`, {
-        method: 'POST', credentials: 'include',
-        headers: { 'Accept':'application/json;odata=verbose','Content-Type':'application/json;odata=verbose','X-RequestDigest':digest },
-        body: JSON.stringify(item)
-      });
-      if (!res.ok) {
-        const e = await res.json().catch(()=>({}));
-        throw new Error(e?.error?.message?.value || `HTTP ${res.status}`);
-      }
-      const newItem = await res.json();
-      const newItemId = newItem.d.ID;
-
-      // 5. رفع المرفقات (إن وجدت)
-      const files = document.getElementById('hfAttachments').files;
-      for (const file of files) {
-        const ab = await file.arrayBuffer();
-        await fetch(
-          `${HF_SITE}/_api/web/lists/getbytitle('${HF_LIST}')/items(${newItemId})/AttachmentFiles/add(FileName='${encodeURIComponent(file.name)}')`,
-          { method:'POST', credentials:'include',
-            headers:{ 'Accept':'application/json;odata=verbose','X-RequestDigest':digest,'Content-Length':file.size },
-            body: ab }
-        );
-      }
-
-      hfShowMsg('✅ تم إرسال HR-FLOW بنجاح!', 'ok');
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> تم الإرسال';
-      setTimeout(() => document.getElementById('hfModal').classList.add('hidden'), 2000);
-
-    } catch(err) {
-      console.warn('HR-FLOW REST failed:', err.message);
-      // Fallback: فتح SharePoint مع ما يمكن تمريره
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال';
-      hfShowMsg('⚠️ تعذّر الإرسال المباشر — سيُفتح النموذج في SharePoint', 'warn');
-      setTimeout(() => { window.open(HF_FORM_URL, '_blank', 'noopener'); }, 1500);
-    }
-  }
-
-  function hfShowMsg(txt, type) {
-    const el = document.getElementById('hfMsg');
-    const styles = {
-      ok:   'background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#86efac',
-      err:  'background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);color:#fca5a5',
-      warn: 'background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:#fde68a'
-    };
-    el.style.cssText = styles[type] + ';border-radius:.6rem;padding:.7rem 1rem;margin-bottom:1rem;font-size:.82rem';
-    el.textContent = txt;
-    el.style.display = 'block';
-  }
-
-  function hfUpdateFileLabel() {
-    const files = document.getElementById('hfAttachments').files;
-    const lbl = document.getElementById('hfFileLabel');
-    lbl.textContent = files.length ? `${files.length} ملف${files.length > 1 ? '' : ''} مختار` : 'Add attachments';
-  }
-
-  document.getElementById('hfModal').addEventListener('click', function(e) {
-    if (e.target === this) this.classList.add('hidden');
-  });
-  </script>
-
   <!-- ============ LEADERS MODAL ============ -->
   <div id="leadersModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
     <div class="modal-box w-full max-w-6xl max-h-[90vh] overflow-y-auto">
@@ -990,17 +672,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605290521"></script>
-  <script src="js/data.js?v=202605290521"></script>
-  <script src="js/i18n.js?v=202605290521"></script>
-  <script src="js/render.js?v=202605290521"></script>
-  <script src="js/search.js?v=202605290521"></script>
-  <script src="js/presence.js?v=202605290521"></script>
-  <script src="js/animations.js?v=202605290521"></script>
+  <script type="module" src="js/auth.js?v=202605290527"></script>
+  <script src="js/data.js?v=202605290527"></script>
+  <script src="js/i18n.js?v=202605290527"></script>
+  <script src="js/render.js?v=202605290527"></script>
+  <script src="js/search.js?v=202605290527"></script>
+  <script src="js/presence.js?v=202605290527"></script>
+  <script src="js/animations.js?v=202605290527"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605290521"></script>
+  <script src="js/pdf-forms.js?v=202605290527"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -1277,3 +959,4 @@
   </script>
 </body>
 </html>
+

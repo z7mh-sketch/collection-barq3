@@ -157,11 +157,8 @@ function renderEscalationQuickLinks() {
     const iconHtml = link.img
       ? `<img src="${escapeHtml(link.img)}" alt="${escapeHtml(link.label)}" class="quick-img" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-${escapeHtml(link.icon)}\\'></i>'" />`
       : `<i class="fa-solid fa-${escapeHtml(link.icon)}"></i>`;
-    const parentCardAttr = link.hrflow
-      ? `href="#" onclick="openHrFlowModal();return false;"`
-      : `href="${escapeHtml(link.url)}" target="_blank" rel="noopener"`;
     const parentCard = `
-      <a class="quick-card" ${parentCardAttr}>
+      <a class="quick-card" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
         <div class="quick-icon">${iconHtml}</div>
         <span>${escapeHtml(link.label)}</span>
       </a>`;
