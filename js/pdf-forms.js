@@ -1397,6 +1397,15 @@ function _vfViolationType(lang) {
   return lang === 'ar' ? 'أخرى' : 'Other';
 }
 
+// شعار البرق الرسمي كـ SVG داخلي (ذهبي) — يُستخدم كبصمة في الجدول
+function _vfLogoSVG(size) {
+  const s = size || 22;
+  return `<svg width="${s}" height="${s}" viewBox="4 4 36.5 36.5" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle">`
+    + `<path fill="#FBBF24" d="M 28.43 20.734 C 26.031 20.734 24.75 19.219 24.75 16.418 L 24.75 15.043 L 22.137 15.043 L 22.137 16.652 C 22.137 18.75 22.582 20.008 23.676 21.082 C 24.117 21.527 24.699 21.969 25.074 22.133 L 25.074 22.184 C 24.699 22.344 24.117 22.789 23.676 23.234 C 22.582 24.309 22.137 25.566 22.137 27.664 L 22.137 34.172 L 24.75 34.172 L 24.75 27.902 C 24.75 25.102 26.031 23.59 28.43 23.59 L 29.223 23.59 L 29.223 20.738 L 28.43 20.738 Z"/>`
+    + `<path fill="#FBBF24" d="M 20.59 23.227 C 20.148 22.785 19.566 22.34 19.191 22.176 L 19.191 22.129 C 19.566 21.965 20.148 21.52 20.59 21.078 C 21.684 20 22.129 18.746 22.129 16.645 L 22.129 10.137 L 19.516 10.137 L 19.516 16.406 C 19.516 19.207 18.234 20.719 15.836 20.719 L 15.043 20.719 L 15.043 23.57 L 15.836 23.57 C 18.234 23.57 19.516 25.082 19.516 27.883 L 19.516 29.258 L 22.129 29.258 L 22.129 27.652 C 22.129 25.551 21.684 24.297 20.59 23.223 Z"/>`
+    + `</svg>`;
+}
+
 // صفوف تفاصيل المخالفة (مشتركة بين النص والـ HTML)
 function _vfDetailsRows(lang) {
   const d = _vfEmailData || {};
@@ -1435,7 +1444,7 @@ function _vfDetailsTableHTML(lang) {
       </tr>
       ${trs}
       <tr>
-        <td colspan="2" style="background:#1a1a1a;color:#FBBF24;padding:9px 16px;font-size:16px;font-weight:700;text-align:center;line-height:1">&#9733;</td>
+        <td colspan="2" style="background:#1a1a1a;padding:8px 16px;text-align:center;line-height:0">${_vfLogoSVG(22)}</td>
       </tr>
     </table>`;
 }
