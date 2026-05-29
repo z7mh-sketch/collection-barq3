@@ -492,6 +492,9 @@ async function _vfFillPdf(data) {
     const bytes = await newPdf.save();
 
     const blob = new Blob([bytes], { type: 'application/pdf' });
+    // حفظ الـ blob عالمياً عشان نرفقه في الإيميل
+    window._vfPdfBlob = blob;
+
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href = url; a.download = 'violation-filled.pdf'; a.click();
@@ -1278,13 +1281,32 @@ function vfShowEmailPreview() {
   document.getElementById('vfEmailPreviewModal').classList.remove('hidden');
 }
 
-function vfDoSendEmail() {
+async function vfDoSendEmail() {
   const { to, subject, body } = window._vfMailSend || {};
-  const mailto = `mailto:${encodeURIComponent(to || '')}?subject=${encodeURIComponent(subject || '')}&body=${encodeURIComponent(body || '')}`;
-  window.location.href = mailto;
-  setTimeout(() => {
+
+  function closeModals() {
     ['vfEmailPreviewModal','vfEmailModal'].forEach(id => {
       document.getElementById(id)?.classList.add('hidden');
     });
-  }, 600);
+  }
+
+  // ── محاولة Web Share API مع الملف مرفقاً ──
+  if (window._vfPdfBlob && navigator.canShare) {
+    const file = new File([window._vfPdfBlob], 'violation-form.pdf', { type: 'application/pdf' });
+    if (navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: subject || 'نموذج مخالفة', text: (to ? 'إلى: ' + to + '\n\n' : '') + (body || '') });
+        closeModals();
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return; // المستخدم ألغى
+        // خطأ آخر — نكمل للـ fallback
+      }
+    }
+  }
+
+  // ── Fallback: mailto (بدون مرفق) ──
+  const mailto = `mailto:${encodeURIComponent(to || '')}?subject=${encodeURIComponent(subject || '')}&body=${encodeURIComponent(body || '')}`;
+  window.location.href = mailto;
+  setTimeout(closeModals, 600);
 }
