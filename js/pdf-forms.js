@@ -420,12 +420,12 @@ const VF_FILL_COORDS = {
   vf_emp_name:  { x: 760, y: 485 },
   vf_job_title: { x: 760, y: 523 },
   vf_hrid:      { x: 760, y: 561 },
-  // تواريخ المخالفات: يوم وشهر منفصلين، نفس السطر
-  late:   { y: 684, day_x: 903, mon_x: 850 },
-  early:  { y: 717, day_x: 906, mon_x: 853 },
-  absent: { y: 765, day_x: 841, mon_x: 803 },
-  early_dur:   { x: 455, y: 717 },
-  absent_days: { x: 500, y: 765 },
+  // تواريخ المخالفات: يوم وشهر منفصلين، نفس السطر (مُعايَرة بصرياً على فراغات النموذج)
+  late:   { y: 704, day_x: 900, mon_x: 848 },
+  early:  { y: 737, day_x: 977, mon_x: 927 },
+  absent: { y: 770, day_x: 841, mon_x: 804 },
+  early_dur:   { x: 741, y: 737 },
+  absent_days: { x: 979, y: 770 },
   consequence: { x: 720, y: 904 },
   signature:   { x: 860, y: 1006 },
   chk_late:    { x: 1276, y: 684 },
