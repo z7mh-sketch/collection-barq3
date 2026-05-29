@@ -1078,21 +1078,21 @@ const VF_EMAIL_SCRIPTS = {
 
 أخي / أختي {emp_name}،
 
-نود إحاطتكم علماً بأنه تم رصد غياب بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
+نود إحاطتكم علماً بأنه تم رصد تأخير بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
 
-يرجى مراجعة إدارة الموارد البشرية للاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
+يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
 
 وتفضلوا بقبول فائق الاحترام والتقدير،
-المشرف المباشر`,
+{manager}`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that a late attendance violation has been recorded on {date}.
 
-Kindly review the attached violation form and sign it accordingly. Please contact HR for further details.
+Kindly review the attached violation form and sign it accordingly.
 
 Best regards,
-Direct Supervisor`
+{manager}`
   },
   absent: {
     label_ar: 'مخالفة غياب',
@@ -1104,19 +1104,19 @@ Direct Supervisor`
 
 نود إحاطتكم علماً بأنه تم رصد حالة غياب بتاريخ {date}، وقد تم احتساب مخالفة غياب.
 
-يرجى مراجعة إدارة الموارد البشرية للاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
+يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
 
 وتفضلوا بقبول فائق الاحترام والتقدير،
-المشرف المباشر`,
+{manager}`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that an absence violation has been recorded on {date}.
 
-Kindly review the attached violation form and sign it accordingly. Please contact HR for further details.
+Kindly review the attached violation form and sign it accordingly.
 
 Best regards,
-Direct Supervisor`
+{manager}`
   },
   exit: {
     label_ar: 'مخالفة خروج غير مصرّح',
@@ -1126,21 +1126,21 @@ Direct Supervisor`
 
 أخي / أختي {emp_name}،
 
-نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن المشرف المباشر في الفلور، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
+نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن قائد الفريق المباشر في الفلور بتاريخ {date}، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
 
-يرجى مراجعة إدارة الموارد البشرية للاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
+يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
 
 وتفضلوا بقبول فائق الاحترام والتقدير،
-المشرف المباشر`,
+{manager}`,
     en:
 `Dear {emp_name},
 
-This is to formally inform you that an unauthorized departure from the client site was recorded without the direct supervisor's approval on {date}. An unauthorized exit violation has been issued accordingly.
+This is to formally inform you that an unauthorized departure from the client site was recorded without the team leader's approval on {date}. An unauthorized exit violation has been issued accordingly.
 
-Kindly review the attached violation form and sign it accordingly. Please contact HR for further details.
+Kindly review the attached violation form and sign it accordingly.
 
 Best regards,
-Direct Supervisor`
+{manager}`
   },
   other: {
     label_ar: 'أخرى (نص حر)',
@@ -1336,15 +1336,38 @@ function vfEmailSetLang(lang) {
   vfEmailUpdateBody();
 }
 
+// اسم القائد المباشر (التيم ليدر) = المستخدم المسجّل دخوله — يُوضع كتوقيع في كل إيميل
+function _vfManagerName() {
+  let email = '';
+  try { email = (localStorage.getItem('userEmail') || '').toLowerCase(); } catch (_) {}
+  // 1) مطابقة الإيميل مع قائمة الليدرز في data.js
+  try {
+    if (typeof leaders !== 'undefined' && Array.isArray(leaders) && email) {
+      const L = leaders.find(l => ((l.contacts && l.contacts.email) || '').toLowerCase() === email);
+      if (L && L.name) return L.name;
+    }
+  } catch (_) {}
+  // 2) presenceName لو كان اسماً حقيقياً
+  try {
+    const pn = localStorage.getItem('presenceName');
+    if (pn && pn.trim() && pn !== 'Developer') return pn.trim();
+  } catch (_) {}
+  // 3) اشتقاق من الإيميل كحل أخير
+  if (email) return email.split('@')[0].replace(/\.c$/, '');
+  return '';
+}
+
 function vfEmailUpdateBody() {
   const tpl  = VF_EMAIL_SCRIPTS[_vfEmailTpl];
   if (!tpl) return;
   const d    = _vfEmailData || {};
   const date = d.vf_late_date || d.vf_early_date || d.vf_absent_date || '';
+  const mgr  = _vfManagerName();
   let body   = tpl[_vfEmailLang] || '';
   body = body
     .replace(/\{emp_name\}/g, d.vf_emp_name || '...')
-    .replace(/\{date\}/g,     date           || '...');
+    .replace(/\{date\}/g,     date           || '...')
+    .replace(/\{manager\}/g,  mgr            || '...');
   const ta = document.getElementById('vfEmailBody');
   ta.value = body;
   ta.setAttribute('dir', _vfEmailLang === 'ar' ? 'rtl' : 'ltr');
@@ -1416,13 +1439,15 @@ function vfDoSendEmail() {
   }
 
   const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'new';
-  const qs = `?to=${encodeURIComponent(to||'')}&subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
-  if (method === 'new') {
-    // Outlook الجديد — ms-outlook:// protocol
-    window.location.href = `ms-outlook://compose${qs}`;
+  const eSubj = encodeURIComponent(subject || '');
+  const eBody = encodeURIComponent(body || '');
+  if (method === 'classic') {
+    // Outlook الكلاسيكي / أي برنامج بريد افتراضي — mailto:
+    window.location.href = `mailto:${to || ''}?subject=${eSubj}&body=${eBody}`;
   } else {
-    // Outlook الكلاسيكي — mailto: (الإيميل بدون تشفير لأنه قبل الـ ?)
-    window.location.href = `mailto:${to||''}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
+    // Outlook الويب — رابط إنشاء رسالة يشتغل في أي متصفح مسجّل دخول Office 365
+    const webUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(to || '')}&subject=${eSubj}&body=${eBody}`;
+    window.open(webUrl, '_blank', 'noopener');
   }
 
 
