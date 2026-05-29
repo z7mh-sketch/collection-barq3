@@ -1240,6 +1240,66 @@ function vfOpenEmailModal() {
 
   vfEmailUpdateBody();
   document.getElementById('vfEmailModal').classList.remove('hidden');
+
+  // ── Autocomplete for email input ──
+  setTimeout(() => _vfAttachEmailAC(), 80);
+}
+
+function _vfAttachEmailAC() {
+  const input = document.getElementById('vfEmailTo');
+  if (!input || input._acAttached) return;
+  input._acAttached = true;
+
+  // Build flat list of all employees across all leaders
+  const allEmps = [];
+  Object.values(VF_EMPLOYEES).forEach(list => {
+    list.forEach(e => { if (e.email) allEmps.push(e); });
+  });
+
+  // Create dropdown container
+  const dropdown = document.createElement('div');
+  dropdown.id = 'vfEmailAC';
+  dropdown.style.cssText = `
+    position:absolute; z-index:9999; background:#1c1917;
+    border:1.5px solid #3f3f46; border-radius:.55rem;
+    max-height:200px; overflow-y:auto;
+    box-shadow:0 8px 24px rgba(0,0,0,.6);
+    display:none; width:100%;
+  `;
+  input.parentElement.style.position = 'relative';
+  input.parentElement.appendChild(dropdown);
+
+  function showSuggestions(q) {
+    dropdown.innerHTML = '';
+    if (!q || q.length < 2) { dropdown.style.display = 'none'; return; }
+    const hits = allEmps.filter(e =>
+      e.email.toLowerCase().includes(q.toLowerCase()) ||
+      e.name.toLowerCase().includes(q.toLowerCase())
+    ).slice(0, 8);
+    if (!hits.length) { dropdown.style.display = 'none'; return; }
+    hits.forEach(e => {
+      const item = document.createElement('div');
+      item.style.cssText = 'padding:.45rem .75rem;cursor:pointer;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid #27272a;';
+      item.innerHTML = `
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.82rem;color:#f4f4f5;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</div>
+          <div style="font-size:.73rem;color:#71717a;direction:ltr">${e.email}</div>
+        </div>`;
+      item.addEventListener('mousedown', ev => {
+        ev.preventDefault();
+        input.value = e.email;
+        dropdown.style.display = 'none';
+      });
+      item.addEventListener('mouseover', () => item.style.background = 'rgba(255,255,255,.07)');
+      item.addEventListener('mouseout',  () => item.style.background = '');
+      dropdown.appendChild(item);
+    });
+    dropdown.style.display = 'block';
+  }
+
+  input.addEventListener('input', () => showSuggestions(input.value));
+  input.addEventListener('focus', () => showSuggestions(input.value));
+  input.addEventListener('blur',  () => setTimeout(() => { dropdown.style.display = 'none'; }, 150));
 }
 
 function vfEmailSetLang(lang) {
