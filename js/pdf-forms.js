@@ -1341,7 +1341,7 @@ function vfShowEmailPreview() {
   document.getElementById('vfEmailPreviewModal').classList.remove('hidden');
 }
 
-async function vfDoSendEmail() {
+function vfDoSendEmail() {
   const { to, subject, body } = window._vfMailSend || {};
 
   function closeModals() {
@@ -1350,25 +1350,24 @@ async function vfDoSendEmail() {
     });
   }
 
-  // قراءة الاختيار من المستخدم
-  const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'share';
+  const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'new';
+  const qs = `?to=${encodeURIComponent(to||'')}&subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
 
-  if (method === 'share' && window._vfPdfBlob && navigator.canShare) {
-    // ── Web Share API مع الملف مرفقاً ──
-    const file = new File([window._vfPdfBlob], 'violation-form.pdf', { type: 'application/pdf' });
-    if (navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({ files: [file], title: subject || 'نموذج مخالفة', text: (to ? 'إلى: ' + to + '\n\n' : '') + (body || '') });
-        closeModals();
-        return;
-      } catch (e) {
-        if (e.name === 'AbortError') return;
-      }
-    }
+  if (method === 'new') {
+    // Outlook الجديد — ms-outlook: protocol
+    window.location.href = `ms-outlook://compose${qs}`;
+  } else {
+    // Outlook الكلاسيكي — mailto:
+    window.location.href = `mailto:${encodeURIComponent(to||'')}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
   }
 
-  // ── mailto الكلاسيكي ──
-  const mailto = `mailto:${encodeURIComponent(to || '')}?subject=${encodeURIComponent(subject || '')}&body=${encodeURIComponent(body || '')}`;
-  window.location.href = mailto;
-  setTimeout(closeModals, 600);
+  setTimeout(closeModals, 800);
+}
+
+function vfRedownloadPdf() {
+  if (!window._vfPdfBlob) { alert('لا يوجد ملف محفوظ — أعد تحميل النموذج أولاً.'); return; }
+  const url = URL.createObjectURL(window._vfPdfBlob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'violation-form.pdf'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
