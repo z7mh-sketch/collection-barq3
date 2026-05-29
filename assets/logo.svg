@@ -1,19 +1,26 @@
-<svg viewBox="0 0 40 40" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="4 4 36.5 36.5" width="40" height="40" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g" x1="20" y1="0" x2="20" y2="40" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#FFFDE7"/>
-      <stop offset="25%"  stop-color="#FBBF24"/>
-      <stop offset="100%" stop-color="#78350F" stop-opacity="0.2"/>
-    </linearGradient>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+    <radialGradient id="barqGold" cx="50%" cy="40%" r="68%">
+      <stop offset="0%"   stop-color="#FFF6CC"/>
+      <stop offset="42%"  stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#E08F0B"/>
+    </radialGradient>
+    <filter id="barqGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="b1"/>
+      <feFlood flood-color="#FBBF24" flood-opacity="0.95"/>
+      <feComposite in2="b1" operator="in" result="glow1"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3.6" result="b2"/>
+      <feFlood flood-color="#FFD24A" flood-opacity="0.55"/>
+      <feComposite in2="b2" operator="in" result="glow2"/>
       <feMerge>
-        <feMergeNode in="blur"/>
+        <feMergeNode in="glow2"/>
+        <feMergeNode in="glow1"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <!-- 4-pointed sparkle star matching the logo shape -->
-  <path d="M20,1 L23.5,16.5 L39,20 L23.5,23.5 L20,39 L16.5,23.5 L1,20 L16.5,16.5 Z"
-        fill="url(#g)" filter="url(#glow)"/>
+  <g filter="url(#barqGlow)" fill="url(#barqGold)">
+    <path d="M 28.43 20.734 C 26.031 20.734 24.75 19.219 24.75 16.418 L 24.75 15.043 L 22.137 15.043 L 22.137 16.652 C 22.137 18.75 22.582 20.008 23.676 21.082 C 24.117 21.527 24.699 21.969 25.074 22.133 L 25.074 22.184 C 24.699 22.344 24.117 22.789 23.676 23.234 C 22.582 24.309 22.137 25.566 22.137 27.664 L 22.137 34.172 L 24.75 34.172 L 24.75 27.902 C 24.75 25.102 26.031 23.59 28.43 23.59 L 29.223 23.59 L 29.223 20.738 L 28.43 20.738 Z"/>
+    <path d="M 20.59 23.227 C 20.148 22.785 19.566 22.34 19.191 22.176 L 19.191 22.129 C 19.566 21.965 20.148 21.52 20.59 21.078 C 21.684 20 22.129 18.746 22.129 16.645 L 22.129 10.137 L 19.516 10.137 L 19.516 16.406 C 19.516 19.207 18.234 20.719 15.836 20.719 L 15.043 20.719 L 15.043 23.57 L 15.836 23.57 C 18.234 23.57 19.516 25.082 19.516 27.883 L 19.516 29.258 L 22.129 29.258 L 22.129 27.652 C 22.129 25.551 21.684 24.297 20.59 23.223 Z"/>
+  </g>
 </svg>
