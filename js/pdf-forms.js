@@ -1354,6 +1354,48 @@ function _vfViolationDate() {
   return year ? `${dm}/${year}` : dm;
 }
 
+// نوع المخالفة المختار (نص حسب اللغة)
+function _vfViolationType(lang) {
+  const chkMap = {
+    vfChkLate:   { ar:'تأخير',     en:'Late Arrival' },
+    vfChkEarly:  { ar:'خروج مبكر', en:'Early Exit' },
+    vfChkAbsent: { ar:'غياب',      en:'Absence' },
+    vfChkOther:  { ar:'أخرى',      en:'Other' }
+  };
+  for (const [chkId, labels] of Object.entries(chkMap)) {
+    if (document.getElementById(chkId)?.checked) return lang === 'ar' ? labels.ar : labels.en;
+  }
+  return lang === 'ar' ? 'أخرى' : 'Other';
+}
+
+// جدول تفاصيل المخالفة كنص يُلحق بالإيميل
+function _vfDetailsTable(lang) {
+  const d    = _vfEmailData || {};
+  const rows = lang === 'ar'
+    ? [
+        ['نوع المخالفة',  _vfViolationType('ar')],
+        ['اسم الموظف',    d.vf_emp_name || ''],
+        ['الرقم الوظيفي', d.vf_hrid || ''],
+        ['تاريخ المخالفة', _vfViolationDate() || '']
+      ]
+    : [
+        ['Violation Type', _vfViolationType('en')],
+        ['Employee Name',  d.vf_emp_name || ''],
+        ['HR ID',          d.vf_hrid || ''],
+        ['Violation Date', _vfViolationDate() || '']
+      ];
+  const title = lang === 'ar' ? 'تفاصيل المخالفة:' : 'Violation Details:';
+  const h1 = lang === 'ar' ? 'البند' : 'Field';
+  const h2 = lang === 'ar' ? 'التفاصيل' : 'Details';
+  const lines = [
+    title,
+    `| ${h1} | ${h2} |`,
+    `|---|---|`,
+    ...rows.map(([k, v]) => `| ${k} | ${v || '...'} |`)
+  ];
+  return '\n\n' + lines.join('\n');
+}
+
 function vfEmailUpdateBody() {
   const tpl  = VF_EMAIL_SCRIPTS[_vfEmailTpl];
   if (!tpl) return;
@@ -1369,6 +1411,11 @@ function vfEmailUpdateBody() {
   // ✓ For Hussein/Hassan: keep greeting flexible "أخي / أختي"
   if (_vfEmailLang === 'ar' && mgr && /حسن|hussein|hassan/i.test(mgr)) {
     body = body.replace(/أخي /g, 'أخي / أختي ');
+  }
+
+  // ✓ إلحاق جدول تفاصيل المخالفة (ما عدا قالب "أخرى")
+  if (_vfEmailTpl !== 'other') {
+    body += _vfDetailsTable(_vfEmailLang);
   }
 
   const ta = document.getElementById('vfEmailBody');
