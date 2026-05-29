@@ -497,6 +497,24 @@
           <span style="color:#FBBF24;font-size:.85rem"><i class="fa-solid fa-file-pdf"></i> violation-filled.pdf</span>
           <span id="vfAttachHint" style="color:#22c55e;font-size:.75rem;margin-right:.5rem">✓ سيُرفق تلقائياً</span>
         </div>
+        <!-- اختيار طريقة الإرسال -->
+        <div style="background:#111;border:1.5px solid #27272a;border-radius:.7rem;padding:.85rem 1rem;display:flex;flex-direction:column;gap:.55rem">
+          <p style="font-size:.78rem;color:#71717a;margin-bottom:.15rem">طريقة الإرسال:</p>
+          <label style="display:flex;align-items:center;gap:.65rem;cursor:pointer;padding:.4rem .5rem;border-radius:.45rem;border:1.5px solid #3f3f46;transition:border-color .15s" id="vfSendOpt1Lbl">
+            <input type="radio" name="vfSendMethod" value="share" checked style="accent-color:#FBBF24;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt1Lbl').style.borderColor='#FBBF24';document.getElementById('vfSendOpt2Lbl').style.borderColor='#3f3f46'">
+            <span>
+              <strong style="display:block;font-size:.85rem;color:#f4f4f5">🆕 إرسال مع مرفق تلقائي</strong>
+              <span style="font-size:.73rem;color:#71717a">يفتح نافذة المشاركة مع الـ PDF مرفقاً</span>
+            </span>
+          </label>
+          <label style="display:flex;align-items:center;gap:.65rem;cursor:pointer;padding:.4rem .5rem;border-radius:.45rem;border:1.5px solid #3f3f46;transition:border-color .15s" id="vfSendOpt2Lbl">
+            <input type="radio" name="vfSendMethod" value="mailto" style="accent-color:#FBBF24;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt2Lbl').style.borderColor='#FBBF24';document.getElementById('vfSendOpt1Lbl').style.borderColor='#3f3f46'">
+            <span>
+              <strong style="display:block;font-size:.85rem;color:#f4f4f5">📧 الإيميل الكلاسيكي (Outlook)</strong>
+              <span style="font-size:.73rem;color:#71717a">يفتح Outlook مباشرة مع النص جاهز</span>
+            </span>
+          </label>
+        </div>
         <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;padding-top:.25rem">
           <button onclick="document.getElementById('vfEmailPreviewModal').classList.add('hidden')" class="contact-btn"><i class="fa-solid fa-pen"></i> تعديل</button>
           <button onclick="vfDoSendEmail()" class="escalation-btn" style="background:linear-gradient(135deg,#059669,#10b981);border-color:transparent">

@@ -1350,8 +1350,11 @@ async function vfDoSendEmail() {
     });
   }
 
-  // ── محاولة Web Share API مع الملف مرفقاً ──
-  if (window._vfPdfBlob && navigator.canShare) {
+  // قراءة الاختيار من المستخدم
+  const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'share';
+
+  if (method === 'share' && window._vfPdfBlob && navigator.canShare) {
+    // ── Web Share API مع الملف مرفقاً ──
     const file = new File([window._vfPdfBlob], 'violation-form.pdf', { type: 'application/pdf' });
     if (navigator.canShare({ files: [file] })) {
       try {
@@ -1359,13 +1362,12 @@ async function vfDoSendEmail() {
         closeModals();
         return;
       } catch (e) {
-        if (e.name === 'AbortError') return; // المستخدم ألغى
-        // خطأ آخر — نكمل للـ fallback
+        if (e.name === 'AbortError') return;
       }
     }
   }
 
-  // ── Fallback: mailto (بدون مرفق) ──
+  // ── mailto الكلاسيكي ──
   const mailto = `mailto:${encodeURIComponent(to || '')}?subject=${encodeURIComponent(subject || '')}&body=${encodeURIComponent(body || '')}`;
   window.location.href = mailto;
   setTimeout(closeModals, 600);
