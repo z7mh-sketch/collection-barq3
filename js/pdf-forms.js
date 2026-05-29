@@ -1080,13 +1080,13 @@ const VF_EMAIL_SCRIPTS = {
 
 نود إحاطتكم علماً بأنه تم رصد تأخير بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
 
-يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.`,
+لو سمحت، يرجى الاطلاع على تفاصيل المخالفة والتوقيع على الإفادة المرفقة وإعادتها في أسرع وقت ممكن.`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that a late attendance violation has been recorded on {date}.
 
-Kindly review the attached violation form and sign it accordingly.`
+Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
   absent: {
     label_ar: 'مخالفة غياب',
@@ -1098,13 +1098,13 @@ Kindly review the attached violation form and sign it accordingly.`
 
 نود إحاطتكم علماً بأنه تم رصد حالة غياب بتاريخ {date}، وقد تم احتساب مخالفة غياب.
 
-يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.`,
+لو سمحت، يرجى الاطلاع على تفاصيل المخالفة والتوقيع على الإفادة المرفقة وإعادتها في أسرع وقت ممكن.`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that an absence violation has been recorded on {date}.
 
-Kindly review the attached violation form and sign it accordingly.`
+Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
   exit: {
     label_ar: 'مخالفة خروج غير مصرّح',
@@ -1116,13 +1116,13 @@ Kindly review the attached violation form and sign it accordingly.`
 
 نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن قائد الفريق المباشر في الفلور بتاريخ {date}، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
 
-يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.`,
+لو سمحت، يرجى الاطلاع على تفاصيل المخالفة والتوقيع على الإفادة المرفقة وإعادتها في أسرع وقت ممكن.`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that an unauthorized departure from the client site was recorded without the team leader's approval on {date}. An unauthorized exit violation has been issued accordingly.
 
-Kindly review the attached violation form and sign it accordingly.`
+Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
   other: {
     label_ar: 'أخرى (نص حر)',
@@ -1421,7 +1421,6 @@ function _vfDetailsTableHTML(lang) {
   const dir   = ar ? 'rtl' : 'ltr';
   const align = ar ? 'right' : 'left';
   const title = ar ? 'تفاصيل المخالفة' : 'Violation Details';
-  const stamp = ar ? 'Collection Barq · فريق القروب' : 'Collection Barq · Group Team';
   const rows  = _vfDetailsRows(lang);
 
   const trs = rows.map((r, i) => `
@@ -1436,7 +1435,7 @@ function _vfDetailsTableHTML(lang) {
       </tr>
       ${trs}
       <tr>
-        <td colspan="2" style="background:#1a1a1a;color:#FBBF24;padding:9px 16px;font-size:12px;font-weight:700;text-align:center;letter-spacing:.6px">${stamp}</td>
+        <td colspan="2" style="background:#1a1a1a;color:#FBBF24;padding:9px 16px;font-size:16px;font-weight:700;text-align:center;line-height:1">&#9733;</td>
       </tr>
     </table>`;
 }
