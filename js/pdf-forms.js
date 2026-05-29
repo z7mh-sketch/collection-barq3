@@ -1348,8 +1348,47 @@ function vfShowEmailPreview() {
   document.getElementById('vfEmailPreviewModal').classList.remove('hidden');
 }
 
+// ─── حفظ سجل المخالفة في localStorage ───
+function _vfSaveViolationLog() {
+  try {
+    const data = _vfCollectData();
+    const lang = _vfEmailLang || 'ar';
+
+    // تحديد نوع المخالفة
+    const chkMap = {
+      vfChkLate:   { ar:'تأخير',       en:'Late Arrival' },
+      vfChkEarly:  { ar:'خروج مبكر',   en:'Early Exit' },
+      vfChkAbsent: { ar:'غياب',        en:'Absence' },
+      vfChkOther:  { ar:'أخرى',        en:'Other' }
+    };
+    let vType = lang === 'ar' ? 'أخرى' : 'Other';
+    for (const [chkId, labels] of Object.entries(chkMap)) {
+      if (document.getElementById(chkId)?.checked) {
+        vType = lang === 'ar' ? labels.ar : labels.en;
+        break;
+      }
+    }
+
+    const record = {
+      empName:  data.vf_emp_name || '',
+      hrid:     data.vf_hrid     || '',
+      date:     data.vf_date     || new Date().toISOString().split('T')[0],
+      type:     vType,
+      lang:     lang,
+      savedAt:  new Date().toISOString()
+    };
+
+    const existing = JSON.parse(localStorage.getItem('barq_violations_v1') || '[]');
+    existing.unshift(record);                 // الأحدث أولاً
+    localStorage.setItem('barq_violations_v1', JSON.stringify(existing));
+  } catch(_) {}
+}
+
 function vfDoSendEmail() {
   const { to, subject, body } = window._vfMailSend || {};
+
+  // حفظ سجل المخالفة
+  _vfSaveViolationLog();
 
   function closeModals() {
     ['vfEmailPreviewModal','vfEmailModal'].forEach(id => {
@@ -1357,16 +1396,9 @@ function vfDoSendEmail() {
     });
   }
 
-  const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'new';
-  const qs = `?to=${encodeURIComponent(to||'')}&subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
+  // mailto — يفتح تطبيق الإيميل الافتراضي
+  window.location.href = `mailto:${encodeURIComponent(to||'')}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
 
-  if (method === 'new') {
-    // Outlook الجديد — ms-outlook: protocol
-    window.location.href = `ms-outlook://compose${qs}`;
-  } else {
-    // Outlook الكلاسيكي — mailto:
-    window.location.href = `mailto:${encodeURIComponent(to||'')}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
-  }
 
   setTimeout(closeModals, 800);
 }
