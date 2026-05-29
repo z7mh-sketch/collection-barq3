@@ -404,6 +404,8 @@ ${violHtml}
     iframe.contentWindow.focus();
     iframe.contentWindow.print();
     setTimeout(() => document.body.removeChild(iframe), 1500);
+    // فتح مودال الإيميل تلقائياً بعد الطباعة
+    setTimeout(() => vfOpenEmailModal(), 900);
   };
 }
 
@@ -494,6 +496,9 @@ async function _vfFillPdf(data) {
     const a    = document.createElement('a');
     a.href = url; a.download = 'violation-filled.pdf'; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 3000);
+
+    // ── فتح مودال الإيميل تلقائياً بعد تحميل الـ PDF ──
+    setTimeout(() => vfOpenEmailModal(), 800);
 
   } catch (err) {
     console.error('PDF fill error:', err);
