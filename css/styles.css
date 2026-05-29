@@ -1252,7 +1252,31 @@ html[dir="ltr"] #tasksWidget {
 .vf-vrow-wrap { flex-wrap:wrap; }
 .vf-chk { width:17px; height:17px; accent-color:#FBBF24; flex-shrink:0; cursor:pointer; }
 .vf-chk-label { font-size:.85rem; cursor:pointer; flex-shrink:0; line-height:1.4; color:#e4e4e7; }
-.vf-num { width:72px !important; text-align:center; color:#f4f4f5 !important; }
+.vf-num {
+  width: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+  text-align: center;
+  color: #f4f4f5 !important;
+  flex: 0 0 72px !important;
+  box-sizing: border-box !important;
+}
+input[type="number"].vf-num {
+  color: #f4f4f5 !important;
+  -moz-appearance: textfield;
+  font-weight: 600;
+}
+input[type="number"].vf-num::-webkit-outer-spin-button,
+input[type="number"].vf-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  height: auto;
+  opacity: 1;
+  color: #FBBF24;
+}
+input[type="number"].vf-num::placeholder {
+  color: #71717a !important;
+}
 .vf-select { width:auto !important; padding-inline-end:.5rem !important; color:#f4f4f5 !important; background:#1a1a1a !important; }
 .vf-txt { font-size:.85rem; flex-shrink:0; opacity:.9; color:#e4e4e7; }
 .vf-dur-text { flex:1; min-width:160px; }
