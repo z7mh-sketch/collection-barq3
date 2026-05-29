@@ -1110,9 +1110,6 @@ html[dir="ltr"] #tasksWidget {
 
 /* Priority picker popup */
 .tw-pri-picker {
-  position: absolute;
-  right: -.25rem;
-  top: 1.1rem;
   background: #1c1917;
   border: 1.5px solid #52525b;
   border-radius: .6rem;
