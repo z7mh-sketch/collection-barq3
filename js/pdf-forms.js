@@ -1397,10 +1397,10 @@ function _vfViolationType(lang) {
   return lang === 'ar' ? 'أخرى' : 'Other';
 }
 
-// جدول تفاصيل المخالفة كنص يُلحق بالإيميل
-function _vfDetailsTable(lang) {
-  const d    = _vfEmailData || {};
-  const rows = lang === 'ar'
+// صفوف تفاصيل المخالفة (مشتركة بين النص والـ HTML)
+function _vfDetailsRows(lang) {
+  const d = _vfEmailData || {};
+  return lang === 'ar'
     ? [
         ['نوع المخالفة',  _vfViolationType('ar')],
         ['اسم الموظف',    d.vf_emp_name || ''],
@@ -1413,16 +1413,32 @@ function _vfDetailsTable(lang) {
         ['HR ID',          d.vf_hrid || ''],
         ['Violation Date', _vfViolationDate() || '']
       ];
-  const title = lang === 'ar' ? 'تفاصيل المخالفة:' : 'Violation Details:';
-  const h1 = lang === 'ar' ? 'البند' : 'Field';
-  const h2 = lang === 'ar' ? 'التفاصيل' : 'Details';
-  const lines = [
-    title,
-    `| ${h1} | ${h2} |`,
-    `|---|---|`,
-    ...rows.map(([k, v]) => `| ${k} | ${v || '...'} |`)
-  ];
-  return '\n\n' + lines.join('\n');
+}
+
+// جدول HTML احترافي ملوّن بألوان الموقع + بصمة القروب — يُلصق داخل الإيميل
+function _vfDetailsTableHTML(lang) {
+  const ar    = lang === 'ar';
+  const dir   = ar ? 'rtl' : 'ltr';
+  const align = ar ? 'right' : 'left';
+  const title = ar ? 'تفاصيل المخالفة' : 'Violation Details';
+  const stamp = ar ? 'Collection Barq · فريق القروب' : 'Collection Barq · Group Team';
+  const rows  = _vfDetailsRows(lang);
+
+  const trs = rows.map((r, i) => `
+      <tr style="background:${i % 2 ? '#ffffff' : '#fffaf0'}">
+        <td style="padding:10px 16px;border:1px solid #f3e0a6;color:#7a5c00;font-weight:700;white-space:nowrap;text-align:${align}">${r[0]}</td>
+        <td style="padding:10px 16px;border:1px solid #f3e0a6;color:#18181b;text-align:${align}">${r[1] || '—'}</td>
+      </tr>`).join('');
+
+  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:460px;border:2px solid #FBBF24;margin:8px 0">
+      <tr>
+        <td colspan="2" style="background:#FBBF24;color:#1a1a1a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
+      </tr>
+      ${trs}
+      <tr>
+        <td colspan="2" style="background:#1a1a1a;color:#FBBF24;padding:9px 16px;font-size:12px;font-weight:700;text-align:center;letter-spacing:.6px">${stamp}</td>
+      </tr>
+    </table>`;
 }
 
 function vfEmailUpdateBody() {
@@ -1440,11 +1456,6 @@ function vfEmailUpdateBody() {
   // ✓ For Hussein/Hassan: keep greeting flexible "أخي / أختي"
   if (_vfEmailLang === 'ar' && mgr && /حسن|hussein|hassan/i.test(mgr)) {
     body = body.replace(/أخي /g, 'أخي / أختي ');
-  }
-
-  // ✓ إلحاق جدول تفاصيل المخالفة (ما عدا قالب "أخرى")
-  if (_vfEmailTpl !== 'other') {
-    body += _vfDetailsTable(_vfEmailLang);
   }
 
   const ta = document.getElementById('vfEmailBody');
@@ -1469,8 +1480,59 @@ function vfShowEmailPreview() {
   document.getElementById('vfPrevSubject').textContent = subj;
   document.getElementById('vfPrevBody').textContent    = body;
 
+  // جدول التفاصيل الملوّن (ما عدا قالب "أخرى")
+  const tblWrap = document.getElementById('vfPrevTableWrap');
+  if (tblWrap) {
+    if (isOther) {
+      tblWrap.style.display = 'none';
+    } else {
+      tblWrap.style.display = '';
+      document.getElementById('vfPrevTable').innerHTML = _vfDetailsTableHTML(_vfEmailLang);
+    }
+  }
+
   window._vfMailSend = { to, subject: subj, body };
   document.getElementById('vfEmailPreviewModal').classList.remove('hidden');
+}
+
+// نسخ الجدول منسّقاً (HTML) للصقه داخل الإيميل مع الحفاظ على التنسيق والألوان
+async function vfCopyDetailsTable(btn) {
+  const html = _vfDetailsTableHTML(_vfEmailLang);
+  const plain = _vfDetailsRows(_vfEmailLang).map(r => `${r[0]}: ${r[1] || '—'}`).join('\n');
+  let ok = false;
+  try {
+    if (navigator.clipboard && window.ClipboardItem) {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/html':  new Blob([html],  { type: 'text/html' }),
+        'text/plain': new Blob([plain], { type: 'text/plain' })
+      })]);
+      ok = true;
+    }
+  } catch (_) {}
+  if (!ok) {
+    // طريقة بديلة: تحديد عنصر مؤقت ونسخه
+    try {
+      const tmp = document.createElement('div');
+      tmp.setAttribute('contenteditable', 'true');
+      tmp.style.cssText = 'position:fixed;left:-9999px;top:0';
+      tmp.innerHTML = html;
+      document.body.appendChild(tmp);
+      const range = document.createRange();
+      range.selectNodeContents(tmp);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      ok = document.execCommand('copy');
+      sel.removeAllRanges();
+      tmp.remove();
+    } catch (_) {}
+  }
+  if (btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = ok ? '<i class="fa-solid fa-check"></i> تم النسخ — الصقه في الإيميل'
+                       : '<i class="fa-solid fa-triangle-exclamation"></i> تعذّر النسخ';
+    setTimeout(() => { btn.innerHTML = orig; }, 2200);
+  }
 }
 
 // ─── حفظ سجل المخالفة في localStorage ───
