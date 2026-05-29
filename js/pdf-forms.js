@@ -1396,8 +1396,13 @@ function vfDoSendEmail() {
     });
   }
 
-  // mailto — يفتح تطبيق الإيميل الافتراضي
-  window.location.href = `mailto:${encodeURIComponent(to||'')}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
+  const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'new';
+  const qs = `?to=${encodeURIComponent(to||'')}&subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
+  if (method === 'new') {
+    window.location.href = `ms-outlook://compose${qs}`;
+  } else {
+    window.location.href = `mailto:${encodeURIComponent(to||'')}?subject=${encodeURIComponent(subject||'')}&body=${encodeURIComponent(body||'')}`;
+  }
 
 
   setTimeout(closeModals, 800);
