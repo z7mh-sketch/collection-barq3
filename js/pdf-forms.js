@@ -414,8 +414,28 @@ ${violHtml}
 //  لتفعيله: 1) حدد مواضع الحقول عبر زر "تحديد مواضع الحقول"
 //           2) غيّر VF_PDF_FILL إلى true في أعلى هذا الملف
 // ─────────────────────────────────────────────
+// ── إحداثيات الإلصاق المعايَرة بصرياً (canvas 1530×1980 عند VF_FILL_SCALE=2.5) ──
+const VF_FILL_COORDS = {
+  vf_date:      { x: 760, y: 448 },
+  vf_emp_name:  { x: 760, y: 485 },
+  vf_job_title: { x: 760, y: 523 },
+  vf_hrid:      { x: 760, y: 561 },
+  // تواريخ المخالفات: يوم وشهر منفصلين، نفس السطر
+  late:   { y: 684, day_x: 903, mon_x: 850 },
+  early:  { y: 717, day_x: 906, mon_x: 853 },
+  absent: { y: 765, day_x: 841, mon_x: 803 },
+  early_dur:   { x: 455, y: 717 },
+  absent_days: { x: 500, y: 765 },
+  consequence: { x: 720, y: 904 },
+  signature:   { x: 860, y: 1006 },
+  chk_late:    { x: 1276, y: 684 },
+  chk_early:   { x: 1276, y: 717 },
+  chk_absent:  { x: 1276, y: 765 },
+  chk_other:   { x: 1276, y: 798 },
+};
+
 async function _vfFillPdf(data) {
-  const coords = _vfLoadCoords() || VF_DEFAULT_COORDS;
+  const C = VF_FILL_COORDS;
 
   try {
     // رسم الـ PDF على canvas
@@ -432,54 +452,53 @@ async function _vfFillPdf(data) {
     // كتابة النصوص — المرساة = مركز النقطة أفقياً + وسط ارتفاع السطر عمودياً
     const fontSize = Math.round(vp.height * 0.012);
     ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#0a2a8c';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    const FULL_DATE  = new Set(['vf_date']);
-    const SHORT_DATE = new Set(['vf_late_date','vf_early_date','vf_absent_date']);
-    // Map violation-specific fields to their checkbox; skip writing if unchecked.
-    const CHK_GATE = {
-      vf_late_date:   'chk_late',
-      vf_early_date:  'chk_early',
-      vf_early_dur:   'chk_early',
-      vf_absent_days: 'chk_absent',
-      vf_absent_date: 'chk_absent',
+
+    // ── الجدول العلوي ──
+    if (data.vf_date)      ctx.fillText(_vfFmtDate(String(data.vf_date)), C.vf_date.x, C.vf_date.y);
+    if (data.vf_emp_name)  ctx.fillText(String(data.vf_emp_name),  C.vf_emp_name.x,  C.vf_emp_name.y);
+    if (data.vf_job_title) ctx.fillText(String(data.vf_job_title), C.vf_job_title.x, C.vf_job_title.y);
+    if (data.vf_hrid)      ctx.fillText(String(data.vf_hrid),      C.vf_hrid.x,      C.vf_hrid.y);
+
+    // ── تواريخ المخالفات: تقسيم "DD MM" → يوم + شهر في خانتين منفصلتين ──
+    const writeDate = (val, pos) => {
+      if (!val) return;
+      const p = String(val).trim().split(/\s+/);
+      const day = p[0] || '', mon = p[1] || '';
+      if (day) ctx.fillText(day, pos.day_x, pos.y);
+      if (mon) ctx.fillText(mon, pos.mon_x, pos.y);
     };
-    VF_FIELDS.forEach(field => {
-      const gate = CHK_GATE[field];
-      if (gate && !data[gate]) return;
-      const pos = coords[field];
-      if (!pos || !data[field]) return;
-      const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
-      const py = pos.canvasY !== undefined ? pos.canvasY : (pos.yPct !== undefined ? pos.yPct * vp.height : pos.y);
-      const val = FULL_DATE.has(field)  ? _vfFmtDate(String(data[field]))
-                : SHORT_DATE.has(field) ? _vfFmtDateShort(String(data[field]))
-                : String(data[field]);
-      ctx.fillText(val, px, py);
-    });
+    if (data.chk_late)   writeDate(data.vf_late_date,   C.late);
+    if (data.chk_early) {
+      writeDate(data.vf_early_date, C.early);
+      if (data.vf_early_dur) ctx.fillText(String(data.vf_early_dur), C.early_dur.x, C.early_dur.y);
+    }
+    if (data.chk_absent) {
+      writeDate(data.vf_absent_date, C.absent);
+      if (data.vf_absent_days) ctx.fillText(String(data.vf_absent_days), C.absent_days.x, C.absent_days.y);
+    }
+
+    // ── الأثر المترتب ──
+    if (data.vf_consequence) ctx.fillText(String(data.vf_consequence), C.consequence.x, C.consequence.y);
 
     // ── علامات الصح (✓) لكل مخالفة مختارة ──
-    const tickSize = Math.round(vp.height * 0.022);
+    const tickSize = Math.round(vp.height * 0.016);
     ctx.font = `bold ${tickSize}px Tahoma, Arial, sans-serif`;
     VF_CHECK_FIELDS.forEach(name => {
-      if (!data[name]) return;
-      const pos = coords[name];
-      if (!pos) return;
-      const px = pos.canvasX !== undefined ? pos.canvasX : (pos.xPct !== undefined ? pos.xPct * vp.width  : pos.x);
-      const py = pos.canvasY !== undefined ? pos.canvasY : (pos.yPct !== undefined ? pos.yPct * vp.height : pos.y);
-      ctx.fillText('✓', px, py);
+      if (!data[name] || !C[name]) return;
+      ctx.fillText('✓', C[name].x, C[name].y);
     });
     ctx.font = `${fontSize}px Tahoma, Arial, sans-serif`;
 
     // التوقيع
     const sigUrl = _vfSigUrl();
-    if (sigUrl && coords['vf_signature']) {
-      const sp   = coords['vf_signature'];
-      const sx   = sp.canvasX !== undefined ? sp.canvasX : (sp.xPct !== undefined ? sp.xPct * vp.width  : sp.x);
-      const sy   = sp.canvasY !== undefined ? sp.canvasY : (sp.yPct !== undefined ? sp.yPct * vp.height : sp.y);
+    if (sigUrl && C.signature) {
+      const sp   = C.signature;
       const img  = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
       const sigW = vp.width * 0.12, sigH = sigW * 0.3;
-      ctx.drawImage(img, sx - sigW / 2, sy - sigH / 2, sigW, sigH);
+      ctx.drawImage(img, sp.x - sigW / 2, sp.y - sigH / 2, sigW, sigH);
     }
 
     // تحويل canvas → PDF وتحميله
