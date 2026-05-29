@@ -749,13 +749,39 @@
       inp.placeholder = isEN ? 'Note title...' : 'عنوان النوت...';
     }
 
+    // priority: 0=high(red), 1=medium(orange), 2=low(green), null=none
+    const PRI_COLORS = ['#ef4444','#f97316','#22c55e'];
+    const PRI_LABELS = ['غاية في الأهمية','مهم','غير مهم'];
+
     function render() {
-      const pg   = data.pages[data.page]?.tasks || [];
-      const body = document.getElementById('twBody');
+      const tasks = data.pages[data.page]?.tasks || [];
+      const body  = document.getElementById('twBody');
       body.innerHTML = '';
-      pg.forEach((task, idx) => {
+
+      // Sort by priority for display (stable: keep original order within same priority)
+      const sorted = tasks
+        .map((t, i) => ({ ...t, _i: i }))
+        .sort((a, b) => (a.priority ?? 9) - (b.priority ?? 9));
+
+      sorted.forEach(task => {
+        const idx = task._i;
+        const pri = task.priority ?? null;
+
         const row = document.createElement('div');
         row.className = 'tw-task' + (task.done ? ' done' : '');
+        if (pri !== null) row.dataset.pri = pri;
+
+        // ── Priority dot button ──
+        const priBtn = document.createElement('button');
+        priBtn.className = 'tw-pri' + (pri !== null ? ' tw-pri-' + pri : '');
+        priBtn.title = pri !== null ? PRI_LABELS[pri] : 'تحديد الأهمية';
+        priBtn.addEventListener('click', () => {
+          // cycle: null→0→1→2→null
+          const cur = data.pages[data.page].tasks[idx].priority ?? null;
+          const next = cur === null ? 0 : cur === 2 ? null : cur + 1;
+          data.pages[data.page].tasks[idx].priority = next;
+          save(); render();
+        });
 
         const chk = document.createElement('div');
         chk.className = 'tw-chk';
@@ -789,6 +815,7 @@
           save(); render();
         });
 
+        row.appendChild(priBtn);
         row.appendChild(chk);
         row.appendChild(el);
         row.appendChild(del);
