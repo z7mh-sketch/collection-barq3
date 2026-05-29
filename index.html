@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605290519" />
+  <link rel="stylesheet" href="css/styles.css?v=202605290521" />
 </head>
 
 <body>
@@ -597,6 +597,13 @@
             <option>Annual Leave</option>
             <option>Termination</option>
             <option>Death Notice</option>
+            <option>End Of Contract</option>
+            <option>Medical Companion Leave</option>
+            <option>Marriage Leave</option>
+            <option>Hajj Leave</option>
+            <option>paternity leave</option>
+            <option>Warning Letter</option>
+            <option>Adherence Exception</option>
           </select>
         </div>
 
@@ -612,22 +619,33 @@
           </div>
         </div>
 
-        <!-- Start / End Time -->
+        <!-- Start / End Time (datetime) -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
           <div>
             <label class="vf-label" style="display:block;margin-bottom:.4rem">Start Time</label>
-            <input id="hfStartTime" type="time" class="search-input vf-num" style="width:100%" />
+            <input id="hfStartTime" type="datetime-local" class="search-input vf-num" style="width:100%" />
           </div>
           <div>
             <label class="vf-label" style="display:block;margin-bottom:.4rem">End Time</label>
-            <input id="hfEndTime" type="time" class="search-input vf-num" style="width:100%" />
+            <input id="hfEndTime" type="datetime-local" class="search-input vf-num" style="width:100%" />
           </div>
         </div>
 
         <!-- Comment -->
-        <div style="margin-bottom:1.25rem">
+        <div style="margin-bottom:1rem">
           <label class="vf-label" style="display:block;margin-bottom:.4rem">Comment</label>
-          <textarea id="hfComment" class="search-input" rows="3" style="width:100%;resize:vertical;font-family:inherit" placeholder="ملاحظات إضافية..."></textarea>
+          <textarea id="hfComment" class="search-input" rows="3" style="width:100%;resize:vertical;font-family:inherit" placeholder="Enter value here"></textarea>
+        </div>
+
+        <!-- Attachments -->
+        <div style="margin-bottom:1.25rem">
+          <label class="vf-label" style="display:block;margin-bottom:.4rem">Attachments</label>
+          <label style="display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;background:#1e293b;border:1.5px dashed #334155;border-radius:.6rem;padding:.6rem 1rem;transition:border-color .15s"
+            onmouseover="this.style.borderColor='#FBBF24'" onmouseout="this.style.borderColor='#334155'">
+            <i class="fa-solid fa-paperclip" style="color:#FBBF24"></i>
+            <span id="hfFileLabel" style="color:#94a3b8;font-size:.83rem">Add attachments</span>
+            <input id="hfAttachments" type="file" multiple style="display:none" onchange="hfUpdateFileLabel()" />
+          </label>
         </div>
 
         <!-- رسالة خطأ / نجاح -->
@@ -664,10 +682,12 @@
     document.getElementById('hfMsg').style.display = 'none';
     document.getElementById('hfStartDate').value = today;
     document.getElementById('hfEndDate').value   = today;
-    document.getElementById('hfStartTime').value = '';
-    document.getElementById('hfEndTime').value   = '';
+    document.getElementById('hfStartTime').value  = '';
+    document.getElementById('hfEndTime').value    = '';
     document.getElementById('hfStatusType').value = '';
-    document.getElementById('hfComment').value   = '';
+    document.getElementById('hfComment').value    = '';
+    document.getElementById('hfAttachments').value = '';
+    document.getElementById('hfFileLabel').textContent = 'Add attachments';
     document.getElementById('hfSubmitBtn').disabled = false;
     document.getElementById('hfSubmitBtn').innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال';
     document.getElementById('hfModal').classList.remove('hidden');
@@ -749,7 +769,7 @@
       const [empId, mgrId] = await Promise.all([toUser(empEmail), toUser(mgrEmail)]);
 
       // 3. Build item
-      const startTime = document.getElementById('hfStartTime').value;
+      const startTime = document.getElementById('hfStartTime').value;   // datetime-local → "2026-05-29T08:00"
       const endTime   = document.getElementById('hfEndTime').value;
       const comment   = document.getElementById('hfComment').value;
       const item = {
@@ -762,25 +782,38 @@
         'Start_x0020_Date':       new Date(startDate).toISOString(),
         'End_x0020_Date':         new Date(endDate).toISOString(),
       };
-      if (startTime) item['Start_x0020_Time'] = new Date(`${startDate}T${startTime}`).toISOString();
-      if (endTime)   item['End_x0020_Time']   = new Date(`${endDate}T${endTime}`).toISOString();
+      if (startTime) item['Start_x0020_Time'] = new Date(startTime).toISOString();
+      if (endTime)   item['End_x0020_Time']   = new Date(endTime).toISOString();
       if (comment)   item['Comment']           = comment;
 
-      // 4. POST to list
+      // 4. POST to list → get new item ID
       const res = await fetch(`${HF_SITE}/_api/web/lists/getbytitle('${HF_LIST}')/items`, {
         method: 'POST', credentials: 'include',
         headers: { 'Accept':'application/json;odata=verbose','Content-Type':'application/json;odata=verbose','X-RequestDigest':digest },
         body: JSON.stringify(item)
       });
-
-      if (res.ok) {
-        hfShowMsg('✅ تم إرسال HR-FLOW بنجاح!', 'ok');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> تم الإرسال';
-        setTimeout(() => document.getElementById('hfModal').classList.add('hidden'), 2000);
-      } else {
+      if (!res.ok) {
         const e = await res.json().catch(()=>({}));
         throw new Error(e?.error?.message?.value || `HTTP ${res.status}`);
       }
+      const newItem = await res.json();
+      const newItemId = newItem.d.ID;
+
+      // 5. رفع المرفقات (إن وجدت)
+      const files = document.getElementById('hfAttachments').files;
+      for (const file of files) {
+        const ab = await file.arrayBuffer();
+        await fetch(
+          `${HF_SITE}/_api/web/lists/getbytitle('${HF_LIST}')/items(${newItemId})/AttachmentFiles/add(FileName='${encodeURIComponent(file.name)}')`,
+          { method:'POST', credentials:'include',
+            headers:{ 'Accept':'application/json;odata=verbose','X-RequestDigest':digest,'Content-Length':file.size },
+            body: ab }
+        );
+      }
+
+      hfShowMsg('✅ تم إرسال HR-FLOW بنجاح!', 'ok');
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> تم الإرسال';
+      setTimeout(() => document.getElementById('hfModal').classList.add('hidden'), 2000);
 
     } catch(err) {
       console.warn('HR-FLOW REST failed:', err.message);
@@ -802,6 +835,12 @@
     el.style.cssText = styles[type] + ';border-radius:.6rem;padding:.7rem 1rem;margin-bottom:1rem;font-size:.82rem';
     el.textContent = txt;
     el.style.display = 'block';
+  }
+
+  function hfUpdateFileLabel() {
+    const files = document.getElementById('hfAttachments').files;
+    const lbl = document.getElementById('hfFileLabel');
+    lbl.textContent = files.length ? `${files.length} ملف${files.length > 1 ? '' : ''} مختار` : 'Add attachments';
   }
 
   document.getElementById('hfModal').addEventListener('click', function(e) {
@@ -951,17 +990,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605290519"></script>
-  <script src="js/data.js?v=202605290519"></script>
-  <script src="js/i18n.js?v=202605290519"></script>
-  <script src="js/render.js?v=202605290519"></script>
-  <script src="js/search.js?v=202605290519"></script>
-  <script src="js/presence.js?v=202605290519"></script>
-  <script src="js/animations.js?v=202605290519"></script>
+  <script type="module" src="js/auth.js?v=202605290521"></script>
+  <script src="js/data.js?v=202605290521"></script>
+  <script src="js/i18n.js?v=202605290521"></script>
+  <script src="js/render.js?v=202605290521"></script>
+  <script src="js/search.js?v=202605290521"></script>
+  <script src="js/presence.js?v=202605290521"></script>
+  <script src="js/animations.js?v=202605290521"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605290519"></script>
+  <script src="js/pdf-forms.js?v=202605290521"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
