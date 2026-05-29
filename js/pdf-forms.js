@@ -1357,11 +1357,26 @@ function _vfManagerName() {
   return '';
 }
 
+// تاريخ المخالفة المختارة (حسب نوعها) — لا علاقة له بتاريخ اليوم
+// يُرجِع DD/MM/YYYY (السنة من حقل تاريخ النموذج vf_date)
+function _vfViolationDate() {
+  const d = _vfEmailData || {};
+  const map = { late: 'vf_late_date', exit: 'vf_early_date', absent: 'vf_absent_date' };
+  const raw = (d[map[_vfEmailTpl]] || '').trim();
+  if (!raw) return '';
+  const p   = raw.split(/\s+/);
+  const day = p[0] || '', mon = p[1] || '';
+  let year  = '';
+  if (d.vf_date && d.vf_date.includes('-')) year = d.vf_date.split('-')[0];
+  const dm  = [day, mon].filter(Boolean).join('/');
+  return year ? `${dm}/${year}` : dm;
+}
+
 function vfEmailUpdateBody() {
   const tpl  = VF_EMAIL_SCRIPTS[_vfEmailTpl];
   if (!tpl) return;
   const d    = _vfEmailData || {};
-  const date = d.vf_late_date || d.vf_early_date || d.vf_absent_date || '';
+  const date = _vfViolationDate();
   const mgr  = _vfManagerName();
   let body   = tpl[_vfEmailLang] || '';
   body = body
@@ -1378,9 +1393,13 @@ function vfShowEmailPreview() {
   const body = (document.getElementById('vfEmailBody')?.value || '').trim();
   const d    = _vfEmailData || {};
   const name = d.vf_emp_name || '...';
+  const meta = VF_EMAIL_SCRIPTS[_vfEmailTpl] || {};
+  const isOther = _vfEmailTpl === 'other';
+  const typeLabel = isOther ? '' : ((_vfEmailLang === 'ar' ? meta.label_ar : meta.label_en) || '');
+  const vdate = _vfViolationDate();
   const subj = _vfEmailLang === 'ar'
-    ? `إشعار مخالفة — ${name}`
-    : `Violation Notice — ${name}`;
+    ? `إشعار ${typeLabel || 'مخالفة'} — ${name}${vdate ? ` — بتاريخ ${vdate}` : ''}`
+    : `${typeLabel || 'Violation'} Notice — ${name}${vdate ? ` — ${vdate}` : ''}`;
 
   document.getElementById('vfPrevTo').textContent      = to      || '(لم يُحدد بعد)';
   document.getElementById('vfPrevSubject').textContent = subj;
