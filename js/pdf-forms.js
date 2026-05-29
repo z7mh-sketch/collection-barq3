@@ -1076,23 +1076,17 @@ const VF_EMAIL_SCRIPTS = {
     ar:
 `السلام عليكم ورحمة الله وبركاته،
 
-أخي / أختي {emp_name}،
+أخي {emp_name}،
 
 نود إحاطتكم علماً بأنه تم رصد تأخير بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
 
-يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
-
-وتفضلوا بقبول فائق الاحترام والتقدير،
-{manager}`,
+يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that a late attendance violation has been recorded on {date}.
 
-Kindly review the attached violation form and sign it accordingly.
-
-Best regards,
-{manager}`
+Kindly review the attached violation form and sign it accordingly.`
   },
   absent: {
     label_ar: 'مخالفة غياب',
@@ -1100,23 +1094,17 @@ Best regards,
     ar:
 `السلام عليكم ورحمة الله وبركاته،
 
-أخي / أختي {emp_name}،
+أخي {emp_name}،
 
 نود إحاطتكم علماً بأنه تم رصد حالة غياب بتاريخ {date}، وقد تم احتساب مخالفة غياب.
 
-يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
-
-وتفضلوا بقبول فائق الاحترام والتقدير،
-{manager}`,
+يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that an absence violation has been recorded on {date}.
 
-Kindly review the attached violation form and sign it accordingly.
-
-Best regards,
-{manager}`
+Kindly review the attached violation form and sign it accordingly.`
   },
   exit: {
     label_ar: 'مخالفة خروج غير مصرّح',
@@ -1124,23 +1112,17 @@ Best regards,
     ar:
 `السلام عليكم ورحمة الله وبركاته،
 
-أخي / أختي {emp_name}،
+أخي {emp_name}،
 
 نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن قائد الفريق المباشر في الفلور بتاريخ {date}، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
 
-يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.
-
-وتفضلوا بقبول فائق الاحترام والتقدير،
-{manager}`,
+يرجى الاطلاع على تفاصيل المخالفة والتوقيع على النموذج المرفق.`,
     en:
 `Dear {emp_name},
 
 This is to formally inform you that an unauthorized departure from the client site was recorded without the team leader's approval on {date}. An unauthorized exit violation has been issued accordingly.
 
-Kindly review the attached violation form and sign it accordingly.
-
-Best regards,
-{manager}`
+Kindly review the attached violation form and sign it accordingly.`
   },
   other: {
     label_ar: 'أخرى (نص حر)',
@@ -1383,6 +1365,12 @@ function vfEmailUpdateBody() {
     .replace(/\{emp_name\}/g, d.vf_emp_name || '...')
     .replace(/\{date\}/g,     date           || '...')
     .replace(/\{manager\}/g,  mgr            || '...');
+
+  // ✓ For Hussein/Hassan: keep greeting flexible "أخي / أختي"
+  if (_vfEmailLang === 'ar' && mgr && /حسن|hussein|hassan/i.test(mgr)) {
+    body = body.replace(/أخي /g, 'أخي / أختي ');
+  }
+
   const ta = document.getElementById('vfEmailBody');
   ta.value = body;
   ta.setAttribute('dir', _vfEmailLang === 'ar' ? 'rtl' : 'ltr');
