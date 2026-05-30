@@ -1306,8 +1306,15 @@ input[type="number"].vf-num::placeholder {
   border:none !important; background:transparent !important;
   text-align:center; font-weight:600;
   color:#f4f4f5 !important;
+  color-scheme: dark;
 }
 .vf-dm-sel:focus { outline:1px solid #FBBF24; outline-offset:1px; border-radius:.3rem; }
+/* Readable dropdown options (avoid white-on-white on Windows) */
+.vf-dm-sel option,
+select.search-input option {
+  background:#1a1a1a;
+  color:#f4f4f5;
+}
 .vf-dm-sep { font-weight:700; opacity:.6; }
 :not(.dark) .vf-dm { background: rgba(0,0,0,.04); }
 

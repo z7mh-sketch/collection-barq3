@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605300428" />
+  <link rel="stylesheet" href="css/styles.css?v=202605301923" />
 </head>
 
 <body>
@@ -362,13 +362,14 @@
         <div class="mb-4">
           <label class="vf-label" id="vfLblVType">نوع المخالفة</label>
           <div class="vf-violations">
-            <div class="vf-vrow" data-vfrow="late">
+            <div class="vf-vrow vf-vrow-wrap" data-vfrow="late">
               <input type="checkbox" id="vfChkLate" class="vf-chk" />
               <label for="vfChkLate" class="vf-chk-label" id="vfLblLate">مخالفة التأخير في الحضور لمقر العمل بتاريخ:</label>
               <div class="vf-dm" data-for="vfLatDate">
                 <select id="vfLatDay"   class="search-input vf-dm-sel" aria-label="يوم"></select>
                 <select id="vfLatMonth" class="search-input vf-dm-sel" aria-label="شهر"></select>
               </div>
+              <input type="text" id="vfLateDur" class="search-input vf-dur-text" placeholder="مدة التأخير (مثال: 15 دقيقة)" />
             </div>
             <div class="vf-vrow vf-vrow-wrap" data-vfrow="early">
               <input type="checkbox" id="vfChkEarly" class="vf-chk" />
@@ -699,17 +700,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605300428"></script>
-  <script src="js/data.js?v=202605300428"></script>
-  <script src="js/i18n.js?v=202605300428"></script>
-  <script src="js/render.js?v=202605300428"></script>
-  <script src="js/search.js?v=202605300428"></script>
-  <script src="js/presence.js?v=202605300428"></script>
-  <script src="js/animations.js?v=202605300428"></script>
+  <script type="module" src="js/auth.js?v=202605301923"></script>
+  <script src="js/data.js?v=202605301923"></script>
+  <script src="js/i18n.js?v=202605301923"></script>
+  <script src="js/render.js?v=202605301923"></script>
+  <script src="js/search.js?v=202605301923"></script>
+  <script src="js/presence.js?v=202605301923"></script>
+  <script src="js/animations.js?v=202605301923"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605300428"></script>
+  <script src="js/pdf-forms.js?v=202605301923"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">

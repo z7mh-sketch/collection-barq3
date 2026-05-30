@@ -322,6 +322,7 @@ function _vfCollectData() {
     vf_hrid:        v('vfHRID'),
     chk_late:       g('vfChkLate').checked,
     vf_late_date:   dm('vfLatDay', 'vfLatMonth'),
+    vf_late_dur:    v('vfLateDur'),
     chk_early:      g('vfChkEarly').checked,
     vf_early_date:  dm('vfEarlyDay', 'vfEarlyMonth'),
     vf_early_dur:   v('vfEarlyDur'),
@@ -344,7 +345,7 @@ function _vfPrintHtml(data) {
 
   const rows = [];
   if (data.chk_late)
-    rows.push(`&#9745; ${L.late} ${data.vf_late_date}`);
+    rows.push(`&#9745; ${L.late} ${data.vf_late_date}${data.vf_late_dur ? ` &mdash; ${L.forDur} ${data.vf_late_dur}` : ''}`);
   if (data.chk_early)
     rows.push(`&#9745; ${L.earlyLeave} ${data.vf_early_date} &mdash; ${L.forDur} ${data.vf_early_dur}`);
   if (data.chk_absent)
@@ -1410,7 +1411,8 @@ function _vfLogoSVG(size) {
 function _vfDetailsRows(lang) {
   const d = _vfEmailData || {};
   const empEmail = (document.getElementById('vfEmailTo')?.value || '').trim();
-  return lang === 'ar'
+  const lateDur = (d.vf_late_dur || '').trim();
+  const rows = lang === 'ar'
     ? [
         ['نوع المخالفة',  _vfViolationType('ar')],
         ['اسم الموظف',    d.vf_emp_name || ''],
@@ -1425,6 +1427,10 @@ function _vfDetailsRows(lang) {
         ['Employee Email', empEmail],
         ['Violation Date', _vfViolationDate() || '']
       ];
+  if (lateDur) {
+    rows.push(lang === 'ar' ? ['مدة التأخير', lateDur] : ['Late Duration', lateDur]);
+  }
+  return rows;
 }
 
 // جدول HTML احترافي ملوّن بألوان الموقع + بصمة القروب — يُلصق داخل الإيميل
