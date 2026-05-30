@@ -1411,7 +1411,8 @@ function _vfLogoSVG(size) {
 function _vfDetailsRows(lang) {
   const d = _vfEmailData || {};
   const empEmail = (document.getElementById('vfEmailTo')?.value || '').trim();
-  const lateDur = (d.vf_late_dur || '').trim();
+  const lateDur  = (d.vf_late_dur || '').trim();
+  const earlyDur = (d.vf_early_dur || '').trim();
   const rows = lang === 'ar'
     ? [
         ['نوع المخالفة',  _vfViolationType('ar')],
@@ -1430,6 +1431,9 @@ function _vfDetailsRows(lang) {
   if (lateDur) {
     rows.push(lang === 'ar' ? ['مدة التأخير', lateDur] : ['Late Duration', lateDur]);
   }
+  if (earlyDur) {
+    rows.push(lang === 'ar' ? ['مدة الخروج المبكر', earlyDur] : ['Early Exit Duration', earlyDur]);
+  }
   return rows;
 }
 
@@ -1442,18 +1446,18 @@ function _vfDetailsTableHTML(lang) {
   const rows  = _vfDetailsRows(lang);
 
   const trs = rows.map((r, i) => `
-      <tr style="background:${i % 2 ? '#ffffff' : '#fffaf0'}">
-        <td style="padding:10px 16px;border:1px solid #f3e0a6;color:#7a5c00;font-weight:700;white-space:nowrap;text-align:${align}">${r[0]}</td>
-        <td style="padding:10px 16px;border:1px solid #f3e0a6;color:#18181b;text-align:${align}">${r[1] || '—'}</td>
+      <tr style="background:${i % 2 ? '#1e293b' : '#0f172a'}">
+        <td style="padding:10px 16px;border:1px solid rgba(251,191,36,.22);color:#FBBF24;font-weight:700;white-space:nowrap;text-align:${align}">${r[0]}</td>
+        <td style="padding:10px 16px;border:1px solid rgba(251,191,36,.22);color:#f4f4f5;text-align:${align}">${r[1] || '—'}</td>
       </tr>`).join('');
 
-  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:460px;border:2px solid #FBBF24;margin:8px 0">
+  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:460px;border:2px solid #FBBF24;margin:8px 0;background:#0f172a">
       <tr>
-        <td colspan="2" style="background:#FBBF24;color:#1a1a1a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
+        <td colspan="2" style="background:#FBBF24;color:#0f172a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
       </tr>
       ${trs}
       <tr>
-        <td colspan="2" style="background:#1a1a1a;padding:8px 16px;text-align:center;line-height:0">${_vfLogoSVG(22)}</td>
+        <td colspan="2" style="background:#0b1120;padding:8px 16px;text-align:center;line-height:0">${_vfLogoSVG(22)}</td>
       </tr>
     </table>`;
 }
