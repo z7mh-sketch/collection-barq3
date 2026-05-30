@@ -50,6 +50,17 @@ function deriveName(user, userData, approvalData) {
       || 'مستخدم';
 }
 
+async function revealAdminLink(user) {
+  // يظهر رابط لوحة الإدارة فقط لمن هو admin فعلاً في Firestore (admins/{uid})
+  try {
+    const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+    if (adminDoc.exists()) {
+      const link = document.getElementById('adminLink');
+      if (link) link.style.display = 'inline-flex';
+    }
+  } catch (_) {}
+}
+
 function grantAccess(user, userData, approvalData) {
   // تعيين اسم الحضور من بيانات تسجيل الدخول — مرة واحدة، بدون سؤال المستخدم
   try {
@@ -63,6 +74,7 @@ function grantAccess(user, userData, approvalData) {
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity .35s';
   setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);
+  revealAdminLink(user);
 }
 
 onAuthStateChanged(auth, async (user) => {
