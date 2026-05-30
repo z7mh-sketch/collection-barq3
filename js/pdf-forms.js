@@ -7,6 +7,16 @@ const VF_PDF_URL     = 'pdfs/violation.pdf';
 const VF_COORDS_KEY  = 'barq_vf_coords_v6'; // v5 = direct canvas px + live preview
 const VF_FILL_SCALE  = 2.5; // render scale for fill (higher = sharper text)
 
+// ── تحميل النموذج فاضي (PDF الأصلي بدون تعبئة) — مشترك لكل النماذج ──
+function downloadBlankPdf(url, filename){
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || url.split('/').pop();
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 // ── حقول الفورم وترتيبها للإلصاق ──
 const VF_FIELDS = [
   'vf_date', 'vf_emp_name', 'vf_job_title', 'vf_hrid',
