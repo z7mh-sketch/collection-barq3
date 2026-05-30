@@ -165,6 +165,22 @@
       margin-top: .35rem;
     }
 
+    /* Search */
+    .admin-search-wrap { margin-bottom: 1rem; }
+    .admin-search {
+      width: 100%;
+      padding: .65rem .95rem;
+      background: #1a1a1a;
+      border: 1.5px solid #27272a;
+      border-radius: .65rem;
+      color: #f4f4f5;
+      font-family: inherit;
+      font-size: .9rem;
+      outline: none;
+    }
+    .admin-search:focus { border-color: #FBBF24; }
+    .admin-search::placeholder { color: #52525b; }
+
     /* Tabs */
     .tabs {
       display: flex;
@@ -341,28 +357,38 @@
 
       <div class="stats-bar">
         <div class="stat-card stat-main">
-          <div class="stat-num" id="statEntered">0</div>
-          <div class="stat-label">دخلوا الموقع</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="statAccess">0</div>
-          <div class="stat-label">لهم وصول</div>
-        </div>
-        <div class="stat-card">
           <div class="stat-num" id="statToday">0</div>
-          <div class="stat-label">جدد اليوم</div>
+          <div class="stat-label">دخلوا اليوم</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statWeek">0</div>
+          <div class="stat-label">هذا الأسبوع</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statMonth">0</div>
+          <div class="stat-label">هذا الشهر</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statEntered">0</div>
+          <div class="stat-label">الإجمالي</div>
         </div>
       </div>
 
+      <div class="admin-search-wrap">
+        <input id="adminSearch" type="search" class="admin-search" placeholder="ابحث بالاسم أو البريد..." autocomplete="off" oninput="filterUsers(this.value)">
+      </div>
+
       <div class="tabs">
-        <button class="tab active" data-tab="pending"  onclick="switchTab('pending')">معلّقة <span class="count" id="countPending">0</span></button>
+        <button class="tab active" data-tab="all"      onclick="switchTab('all')">الكل <span class="count" id="countAll">0</span></button>
+        <button class="tab"        data-tab="pending"  onclick="switchTab('pending')">معلّقة <span class="count" id="countPending">0</span></button>
         <button class="tab"        data-tab="approved" onclick="switchTab('approved')">معتمدة <span class="count" id="countApproved">0</span></button>
         <button class="tab"        data-tab="rejected" onclick="switchTab('rejected')">مرفوضة <span class="count" id="countRejected">0</span></button>
       </div>
 
       <div id="loadingState" class="empty"><span class="spinner"></span> جاري التحميل...</div>
 
-      <div id="panelPending"  class="panel active"><div class="user-list" id="listPending"></div></div>
+      <div id="panelAll"      class="panel active"><div class="user-list" id="listAll"></div></div>
+      <div id="panelPending"  class="panel"><div class="user-list" id="listPending"></div></div>
       <div id="panelApproved" class="panel"><div class="user-list" id="listApproved"></div></div>
       <div id="panelRejected" class="panel"><div class="user-list" id="listRejected"></div></div>
     </div>
@@ -466,21 +492,32 @@
         approved.sort(byDateDesc);
         rejected.sort(byDateDesc);
 
-        renderList('listPending',  pending,  'pending');
-        renderList('listApproved', approved, 'approved');
-        renderList('listRejected', rejected, 'rejected');
+        const allSorted = all.slice().sort(byDateDesc);
 
+        renderList('listAll',      allSorted, 'all');
+        renderList('listPending',  pending,   'pending');
+        renderList('listApproved', approved,  'approved');
+        renderList('listRejected', rejected,  'rejected');
+
+        document.getElementById('countAll').textContent      = all.length;
         document.getElementById('countPending').textContent  = pending.length;
         document.getElementById('countApproved').textContent = approved.length;
         document.getElementById('countRejected').textContent = rejected.length;
 
         // ── Stats bar ──
         // كل من سجّل في الموقع دخل فعلاً (التسجيل يتطلب تسجيل دخول @barq.com)
+        const now = Date.now();
         const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0);
-        const todayCount = all.filter(u => (u.createdAt?.seconds || 0) * 1000 >= startOfToday.getTime()).length;
-        document.getElementById('statEntered').textContent = all.length;
-        document.getElementById('statAccess').textContent  = approved.length;
+        const weekAgo  = now - 7  * 24 * 60 * 60 * 1000;
+        const monthAgo = now - 30 * 24 * 60 * 60 * 1000;
+        const ms = u => (u.createdAt?.seconds || 0) * 1000;
+        const todayCount = all.filter(u => ms(u) >= startOfToday.getTime()).length;
+        const weekCount  = all.filter(u => ms(u) >= weekAgo).length;
+        const monthCount = all.filter(u => ms(u) >= monthAgo).length;
         document.getElementById('statToday').textContent   = todayCount;
+        document.getElementById('statWeek').textContent    = weekCount;
+        document.getElementById('statMonth').textContent   = monthCount;
+        document.getElementById('statEntered').textContent = all.length;
 
         document.getElementById('loadingState').style.display = 'none';
       } catch (err) {
@@ -495,30 +532,44 @@
       return d.toLocaleString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
+    const STATUS_LABEL = { pending: 'معلّق', approved: 'معتمد', rejected: 'مرفوض' };
+
     function renderList(containerId, users, type) {
       const container = document.getElementById(containerId);
       if (users.length === 0) {
-        container.innerHTML = `<div class="empty">لا توجد طلبات ${type === 'pending' ? 'معلّقة' : type === 'approved' ? 'معتمدة' : 'مرفوضة'}</div>`;
+        const what = type === 'all' ? 'مستخدمون' : type === 'pending' ? 'طلبات معلّقة' : type === 'approved' ? 'طلبات معتمدة' : 'طلبات مرفوضة';
+        container.innerHTML = `<div class="empty">لا يوجد ${what}</div>`;
         return;
       }
-      container.innerHTML = users.map(u => `
-        <div class="user-item" data-uid="${u.id}">
+      container.innerHTML = users.map(u => {
+        const st = u.status || 'pending';
+        const showButtons = type === 'pending' || (type === 'all' && st === 'pending');
+        const actions = showButtons
+          ? `<button class="btn-action btn-approve" onclick="approveUser('${u.id}')">موافقة</button>
+             <button class="btn-action btn-reject"  onclick="rejectUser('${u.id}')">رفض</button>`
+          : `<span class="status-pill status-${st}">${STATUS_LABEL[st] || st}</span>`;
+        const name  = escapeHtml(u.name || '—');
+        const email = escapeHtml(u.email || '');
+        return `
+        <div class="user-item" data-uid="${u.id}" data-search="${(name + ' ' + email).toLowerCase()}">
           <div class="user-info-block">
-            <div class="user-name">${escapeHtml(u.name || '—')}</div>
-            <div class="user-email">${escapeHtml(u.email || '')}</div>
+            <div class="user-name">${name}</div>
+            <div class="user-email">${email}</div>
             <div class="user-date">${formatDate(u.createdAt)}</div>
           </div>
-          <div class="user-actions">
-            ${type === 'pending' ? `
-              <button class="btn-action btn-approve" onclick="approveUser('${u.id}')">موافقة</button>
-              <button class="btn-action btn-reject"  onclick="rejectUser('${u.id}')">رفض</button>
-            ` : `
-              <span class="status-pill status-${type}">${type === 'approved' ? 'معتمد' : 'مرفوض'}</span>
-            `}
-          </div>
-        </div>
-      `).join('');
+          <div class="user-actions">${actions}</div>
+        </div>`;
+      }).join('');
     }
+
+    // ── البحث بالاسم أو البريد داخل اللوحة المعروضة ──
+    window.filterUsers = function(q) {
+      const term = (q || '').trim().toLowerCase();
+      document.querySelectorAll('.panel.active .user-item').forEach(item => {
+        const hay = item.getAttribute('data-search') || '';
+        item.style.display = (!term || hay.includes(term)) ? '' : 'none';
+      });
+    };
 
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -565,6 +616,8 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+      const search = document.getElementById('adminSearch');
+      if (search) filterUsers(search.value);
     };
   </script>
 </body>
