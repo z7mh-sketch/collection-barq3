@@ -300,7 +300,7 @@ function _vfSigUrl() {
     if (!name) return null;
     const c = document.createElement('canvas'); c.width = 500; c.height = 110;
     const ctx = c.getContext('2d');
-    ctx.font = "italic 42px 'Segoe Script', 'Brush Script MT', 'Lucida Handwriting', cursive";
+    ctx.font = "italic 38px Georgia, serif";
     ctx.fillStyle = '#111'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(name, 250, 55);
     return c.toDataURL();
