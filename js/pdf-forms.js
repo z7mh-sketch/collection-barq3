@@ -1409,17 +1409,20 @@ function _vfLogoSVG(size) {
 // صفوف تفاصيل المخالفة (مشتركة بين النص والـ HTML)
 function _vfDetailsRows(lang) {
   const d = _vfEmailData || {};
+  const empEmail = (document.getElementById('vfEmailTo')?.value || '').trim();
   return lang === 'ar'
     ? [
         ['نوع المخالفة',  _vfViolationType('ar')],
         ['اسم الموظف',    d.vf_emp_name || ''],
         ['الرقم الوظيفي', d.vf_hrid || ''],
+        ['إيميل الموظف',  empEmail],
         ['تاريخ المخالفة', _vfViolationDate() || '']
       ]
     : [
         ['Violation Type', _vfViolationType('en')],
         ['Employee Name',  d.vf_emp_name || ''],
         ['HR ID',          d.vf_hrid || ''],
+        ['Employee Email', empEmail],
         ['Violation Date', _vfViolationDate() || '']
       ];
 }
