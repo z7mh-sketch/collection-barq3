@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605310044" />
+  <link rel="stylesheet" href="css/styles.css?v=202605310056" />
 </head>
 
 <body>
@@ -518,20 +518,9 @@
           <div><label class="vf-label">رقم الهوية / الإقامة <span style="color:#71717a;font-weight:400">(اختياري)</span></label><input type="text" id="rfIqama" class="search-input" style="width:100%" /></div>
           <div><label class="vf-label">القسم – المشروع</label><input type="text" id="rfDept" class="search-input" style="width:100%" value="CCS" /></div>
         </div>
-        <!-- سبب الاستقالة -->
-        <div class="mb-4">
-          <label class="vf-label">سبب الاستقالة</label>
-          <textarea id="rfReason" class="search-input" style="width:100%;height:90px;resize:vertical" placeholder="اكتب سبب الاستقالة..."></textarea>
-        </div>
+        <!-- ملاحظة: سبب الاستقالة وتاريخ تقديمها يتركان فارغين (يعبّئهما الموظف) -->
         <!-- التواريخ -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-          <div>
-            <label class="vf-label">تاريخ تقديم الاستقالة</label>
-            <div style="display:flex;gap:.4rem">
-              <select id="rfResignDay" class="search-input" style="flex:1" aria-label="يوم"></select>
-              <select id="rfResignMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
-            </div>
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label class="vf-label">تاريخ آخر يوم عمل</label>
             <div style="display:flex;gap:.4rem">
@@ -547,10 +536,10 @@
             </div>
           </div>
         </div>
-        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> يوم/شهر فقط — السنة (2026) مطبوعة مسبقاً في النموذج. اترك التاريخ فارغاً إذا ما تبيه.</p>
+        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> يوم/شهر فقط — السنة (2026) مطبوعة مسبقاً. سبب الاستقالة وتاريخ تقديمها يُتركان فارغين ليعبّئهما الموظف.</p>
         <!-- المدير المباشر -->
         <div class="mb-4">
-          <label class="vf-label">اسم المدير المباشر <span style="color:#71717a;font-weight:400">(تلقائي)</span></label>
+          <label class="vf-label">اسم المدير المباشر <span style="color:#71717a;font-weight:400">(تلقائي — يُكتب عربي وإنجليزي)</span></label>
           <input type="text" id="rfMgrName" class="search-input" style="width:100%" />
         </div>
         <div class="mb-4">
@@ -816,18 +805,18 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605310044"></script>
-  <script src="js/data.js?v=202605310044"></script>
-  <script src="js/i18n.js?v=202605310044"></script>
-  <script src="js/render.js?v=202605310044"></script>
-  <script src="js/search.js?v=202605310044"></script>
-  <script src="js/presence.js?v=202605310044"></script>
-  <script src="js/animations.js?v=202605310044"></script>
+  <script type="module" src="js/auth.js?v=202605310056"></script>
+  <script src="js/data.js?v=202605310056"></script>
+  <script src="js/i18n.js?v=202605310056"></script>
+  <script src="js/render.js?v=202605310056"></script>
+  <script src="js/search.js?v=202605310056"></script>
+  <script src="js/presence.js?v=202605310056"></script>
+  <script src="js/animations.js?v=202605310056"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605310044"></script>
-  <script src="js/resign-forms.js?v=202605310044"></script>
+  <script src="js/pdf-forms.js?v=202605310056"></script>
+  <script src="js/resign-forms.js?v=202605310056"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">

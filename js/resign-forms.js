@@ -32,8 +32,9 @@ const RF_DEFAULT_COORDS = {
   reason_l1:   { xPct: 0.880, yPct: 0.270 },
   lastday_day: { xPct: 0.810, yPct: 0.386 },
   lastday_mon: { xPct: 0.746, yPct: 0.386 },
-  // ── إجراءات المدير المباشر ──
-  mgr_name:        { xPct: 0.560, yPct: 0.672 },
+  // ── إجراءات المدير المباشر (الاسم يُكتب قرب التسمية العربية واليمنى/الإنجليزية اليسرى) ──
+  mgr_name_ar:     { xPct: 0.660, yPct: 0.672 },
+  mgr_name_en:     { xPct: 0.440, yPct: 0.672 },
   mgr_sig:         { xPct: 0.560, yPct: 0.705 },
   mgr_date_day_en: { xPct: 0.173, yPct: 0.739 },
   mgr_date_mon_en: { xPct: 0.239, yPct: 0.739 },
@@ -51,7 +52,7 @@ const RF_FIELD_LABELS = {
   emp_sig: 'توقيع الموظف',
   reason_l1: 'سبب الاستقالة (بداية)',
   lastday_day: 'آخر يوم عمل (يوم)', lastday_mon: 'آخر يوم عمل (شهر)',
-  mgr_name: 'اسم المدير المباشر',
+  mgr_name_ar: 'اسم المدير (عربي)', mgr_name_en: 'اسم المدير (إنجليزي)',
   mgr_sig: 'توقيع المدير المباشر',
   mgr_date_day_en: 'تاريخ المدير يوم (EN)', mgr_date_mon_en: 'تاريخ المدير شهر (EN)',
   mgr_date_day_ar: 'تاريخ المدير يوم (AR)', mgr_date_mon_ar: 'تاريخ المدير شهر (AR)',
@@ -159,6 +160,7 @@ function rfPickEmployee(emp) {
 //  الفورم
 // ─────────────────────────────────────────────
 let _rfSigMode = 'draw', _rfDrawing = false, _rfLX = 0, _rfLY = 0;
+let _rfMgrEn = ''; // اسم المدير بالإنجليزي (للجهة المقابلة)
 
 function _rfPopulateDM() {
   const fill = (sel, n) => {
@@ -173,25 +175,41 @@ function _rfPopulateDM() {
       sel.appendChild(o);
     }
   };
-  ['rfResignDay', 'rfLastDay', 'rfMgrDay'].forEach(id => fill(document.getElementById(id), 31));
-  ['rfResignMonth', 'rfLastMonth', 'rfMgrMonth'].forEach(id => fill(document.getElementById(id), 12));
+  ['rfLastDay', 'rfMgrDay'].forEach(id => fill(document.getElementById(id), 31));
+  ['rfLastMonth', 'rfMgrMonth'].forEach(id => fill(document.getElementById(id), 12));
+}
+
+// اسم المدير المباشر (الليدر) بالعربي والإنجليزي حسب إيميله من قائمة data.js — بدون أي اختلاق
+function _rfManagerNames() {
+  let email = '';
+  try { email = (localStorage.getItem('userEmail') || '').toLowerCase(); } catch (_) {}
+  let ar = '', en = '';
+  try {
+    if (typeof leaders !== 'undefined' && Array.isArray(leaders) && email) {
+      const L = leaders.find(l => ((l.contacts && l.contacts.email) || '').toLowerCase() === email);
+      if (L) { ar = L.name || ''; en = L.name_en || L.name || ''; }
+    }
+  } catch (_) {}
+  if (!ar) { const m = (typeof _vfManagerName === 'function') ? _vfManagerName() : ''; ar = m; }
+  if (!en) en = ar;
+  return { ar, en };
 }
 
 function openResignForm() {
   _rfPopulateDM();
-  // اسم المدير المباشر = الليدر (تلقائي)
-  const mgr = (typeof _vfManagerName === 'function') ? _vfManagerName() : '';
+  // اسم المدير المباشر = الليدر (تلقائي) — عربي للعرض، والإنجليزي يُحفظ للجهة المقابلة
+  const names = _rfManagerNames();
+  _rfMgrEn = names.en;
   const mgrEl = document.getElementById('rfMgrName');
-  if (mgrEl) mgrEl.value = mgr || '';
+  if (mgrEl) mgrEl.value = names.ar || '';
   // القسم الافتراضي
   const deptEl = document.getElementById('rfDept');
   if (deptEl && !deptEl.value) deptEl.value = 'CCS';
-  // التواريخ الافتراضية = اليوم (الاستقالة + تاريخ المدير)؛ آخر يوم عمل يُترك فاضي
+  // تاريخ المدير المباشر = اليوم؛ تاريخ تقديم الاستقالة وآخر يوم عمل يُتركان فارغين
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const sv = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-  sv('rfResignDay', dd); sv('rfResignMonth', mm);
   sv('rfMgrDay', dd);    sv('rfMgrMonth', mm);
   // زر المواضع (أداة ضبط) — ظاهر مؤقتاً للمعايرة
   document.getElementById('resignFormModal').classList.remove('hidden');
@@ -289,10 +307,9 @@ function _rfCollectData() {
     hrid:     v('rfHRID'),
     iqama:    v('rfIqama'),
     dept:     v('rfDept'),
-    resign_day: v('rfResignDay'), resign_mon: v('rfResignMonth'),
-    reason:   v('rfReason'),
     lastday_day: v('rfLastDay'), lastday_mon: v('rfLastMonth'),
-    mgr_name: v('rfMgrName'),
+    mgr_name_ar: v('rfMgrName'),
+    mgr_name_en: _rfMgrEn || v('rfMgrName'),
     mgr_day:  v('rfMgrDay'), mgr_mon: v('rfMgrMonth'),
   };
 }
@@ -359,22 +376,19 @@ async function _rfFillPdf(data) {
       ctx.fillText(String(text), p.xPct * W, p.yPct * H);
     };
 
-    // بيانات الموظف (الجهتين)
+    // بيانات الموظف (الجهتين) — الرقم الوظيفي من قائمة الموظفين (بدون اختلاق)
     put('emp_name_en', data.emp_name); put('emp_name_ar', data.emp_name);
     put('hrid_en', data.hrid);         put('hrid_ar', data.hrid);
     put('iqama_en', data.iqama);       put('iqama_ar', data.iqama);
     put('dept_en', data.dept);         put('dept_ar', data.dept);
-    // تاريخ تقديم الاستقالة (الجهتين)
-    put('resign_day_en', data.resign_day); put('resign_mon_en', data.resign_mon);
-    put('resign_day_ar', data.resign_day); put('resign_mon_ar', data.resign_mon);
+    // تاريخ تقديم الاستقالة وسبب الاستقالة: يُتركان فارغين (يعبّئهما الموظف بنفسه)
     // آخر يوم عمل
     put('lastday_day', data.lastday_day); put('lastday_mon', data.lastday_mon);
-    // المدير المباشر
-    put('mgr_name', data.mgr_name);
+    // اسم المدير المباشر: عربي قرب التسمية العربية، وإنجليزي في الجهة المقابلة
+    put('mgr_name_ar', data.mgr_name_ar);
+    put('mgr_name_en', data.mgr_name_en);
     put('mgr_date_day_en', data.mgr_day); put('mgr_date_mon_en', data.mgr_mon);
     put('mgr_date_day_ar', data.mgr_day); put('mgr_date_mon_ar', data.mgr_mon);
-    // سبب الاستقالة (لفّ متعدد الأسطر)
-    if (data.reason) _rfDrawReason(ctx, data.reason, C.reason_l1, W, H);
 
     // توقيع المدير المباشر (تلقائي)
     const sigUrl = _rfSigUrl();
