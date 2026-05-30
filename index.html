@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605302131" />
+  <link rel="stylesheet" href="css/styles.css?v=202605302138" />
 </head>
 
 <body>
@@ -523,8 +523,8 @@
         <div style="background:#1c1917;border:1px solid #3f3f46;border-radius:.65rem;padding:.85rem">
           <p style="color:#71717a;font-size:.8rem;margin-bottom:.4rem"><i class="fa-solid fa-paperclip"></i> المرفقات:</p>
           <span style="color:#FBBF24;font-size:.85rem"><i class="fa-solid fa-file-pdf"></i> violation-filled.pdf</span>
-          <span id="vfAttachHint" style="color:#f59e0b;font-size:.75rem;margin-right:.5rem">↓ حمّله ثم أرفقه يدوياً</span>
-          <p style="color:#71717a;font-size:.72rem;margin-top:.6rem;line-height:1.6"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> يُحمَّل نموذج المخالفة (PDF) على جهازك، ثم أرفقه يدوياً في الرسالة من مكان التحميل قبل الإرسال.</p>
+          <span id="vfAttachHint" style="color:#22c55e;font-size:.75rem;margin-right:.5rem"><i class="fa-solid fa-circle-check"></i> مرفق تلقائياً</span>
+          <p style="color:#71717a;font-size:.72rem;margin-top:.6rem;line-height:1.6"><i class="fa-solid fa-circle-check" style="color:#22c55e"></i> نموذج المخالفة (PDF) مرفق تلقائياً داخل الرسالة — جاهز للإرسال مباشرة.</p>
         </div>
         <!-- طريقة الإرسال -->
         <div style="background:#111;border:1.5px solid #27272a;border-radius:.7rem;padding:.85rem 1rem;display:flex;gap:.75rem">
@@ -532,7 +532,7 @@
             <input type="radio" name="vfSendMethod" value="ready" checked style="accent-color:#FBBF24;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt1Lbl').style.borderColor='#FBBF24';document.getElementById('vfSendOpt2Lbl').style.borderColor='#3f3f46'">
             <span>
               <strong style="display:block;font-size:.85rem;color:#f4f4f5">Outlook على الكمبيوتر <span style="color:#22c55e;font-size:.7rem">(موصى به)</span></strong>
-              <span style="font-size:.72rem;color:#71717a">رسالة جاهزة — الجدول بالألوان، وأرفق الـ PDF يدوياً بعد تحميله</span>
+              <span style="font-size:.72rem;color:#71717a">رسالة جاهزة — الجدول بالألوان، والـ PDF مرفق تلقائياً</span>
             </span>
           </label>
           <label style="flex:1;display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.5rem .75rem;border-radius:.5rem;border:1.5px solid #3f3f46;transition:border-color .15s" id="vfSendOpt2Lbl">
@@ -546,7 +546,7 @@
         <!-- تنبيه المرفق -->
         <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:.6rem;padding:.65rem .9rem;display:flex;align-items:center;gap:.65rem">
           <i class="fa-solid fa-paperclip" style="color:#FBBF24;font-size:1rem;flex-shrink:0"></i>
-          <span style="font-size:.78rem;color:#d4d4d8">في وضع <strong style="color:#FBBF24">الكمبيوتر</strong> الـ PDF مرفق داخل الرسالة تلقائياً. في وضع <strong style="color:#FBBF24">الويب</strong> حمّله وأرفقه يدوياً.</span>
+          <span style="font-size:.78rem;color:#d4d4d8">في وضع <strong style="color:#FBBF24">الكمبيوتر</strong> الـ PDF مرفق داخل الرسالة تلقائياً وجاهز للإرسال. في وضع <strong style="color:#FBBF24">الويب</strong> فقط يلزم تحميله وإرفاقه يدوياً.</span>
           <button onclick="vfRedownloadPdf()" title="تحميل مجدداً" style="background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:.4rem;padding:.25rem .55rem;color:#FBBF24;font-size:.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0"><i class="fa-solid fa-download"></i> تحميل الـ PDF</button>
         </div>
         <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;padding-top:.25rem">
@@ -701,17 +701,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605302131"></script>
-  <script src="js/data.js?v=202605302131"></script>
-  <script src="js/i18n.js?v=202605302131"></script>
-  <script src="js/render.js?v=202605302131"></script>
-  <script src="js/search.js?v=202605302131"></script>
-  <script src="js/presence.js?v=202605302131"></script>
-  <script src="js/animations.js?v=202605302131"></script>
+  <script type="module" src="js/auth.js?v=202605302138"></script>
+  <script src="js/data.js?v=202605302138"></script>
+  <script src="js/i18n.js?v=202605302138"></script>
+  <script src="js/render.js?v=202605302138"></script>
+  <script src="js/search.js?v=202605302138"></script>
+  <script src="js/presence.js?v=202605302138"></script>
+  <script src="js/animations.js?v=202605302138"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605302131"></script>
+  <script src="js/pdf-forms.js?v=202605302138"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
