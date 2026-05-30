@@ -1522,18 +1522,20 @@ function _vfDetailsTableHTML(lang, forEmail) {
     const bg = i % 2 ? '#1e293b' : '#0f172a';
     return `
       <tr>
-        <td bgcolor="${bg}" width="180" style="width:180px;background-color:${bg};padding:10px 16px;border:1px solid #4a3f1a;color:#FBBF24;font-weight:700;white-space:nowrap;text-align:${align}">${r[0]}</td>
-        <td bgcolor="${bg}" style="background-color:${bg};padding:10px 16px;border:1px solid #4a3f1a;color:#f4f4f5;text-align:${align}">${r[1] || '—'}</td>
+        <td bgcolor="${bg}" style="background-color:${bg};padding:8px 16px 2px;border:1px solid #4a3f1a;border-bottom:none;color:#FBBF24;font-weight:700;text-align:${align};font-size:13px">${r[0]}</td>
+      </tr>
+      <tr>
+        <td bgcolor="${bg}" style="background-color:${bg};padding:2px 16px 10px;border:1px solid #4a3f1a;border-top:none;color:#f4f4f5;text-align:${align};font-size:15px">${r[1] || '—'}</td>
       </tr>`;
   }).join('');
 
-  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#0f172a" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:680px;border:2px solid #FBBF24;margin:8px 0;background-color:#0f172a">
+  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#0f172a" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:420px;border:2px solid #FBBF24;margin:8px 0;background-color:#0f172a">
       <tr>
-        <td colspan="2" bgcolor="#FBBF24" style="background-color:#FBBF24;color:#0f172a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
+        <td bgcolor="#FBBF24" style="background-color:#FBBF24;color:#0f172a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
       </tr>
       ${trs}
       <tr>
-        <td colspan="2" bgcolor="#0b1120" style="background-color:#0b1120;padding:8px 16px;text-align:center">${_vfLogoImg(forEmail)}</td>
+        <td bgcolor="#0b1120" style="background-color:#0b1120;padding:8px 16px;text-align:center">${_vfLogoImg(forEmail)}</td>
       </tr>
     </table>`;
 }
