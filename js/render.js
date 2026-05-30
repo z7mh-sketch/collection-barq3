@@ -138,9 +138,10 @@ function renderPdfLinks() {
     const iconHtml = link.img
       ? `<img src="${escapeHtml(link.img)}" alt="${escapeHtml(displayLabel)}" class="quick-img" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-${escapeHtml(link.icon)}\\'></i>'" />`
       : `<i class="fa-solid fa-${escapeHtml(link.icon)}"></i>`;
-    const isViolation = link.url === '/pdfs/violation.pdf';
-    const clickAttr = isViolation
+    const clickAttr = link.url === '/pdfs/violation.pdf'
       ? `href="#" onclick="openVfLaunch();return false;"`
+      : link.url === '/pdfs/resignation.pdf'
+      ? `href="#" onclick="openRfLaunch();return false;"`
       : `href="${escapeHtml(link.url)}" download`;
     return `
       <a class="quick-card" ${clickAttr}>
