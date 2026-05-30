@@ -1580,6 +1580,109 @@ function _vfSaveViolationLog() {
   } catch(_) {}
 }
 
+// ── بناء جسم الإيميل HTML الكامل: نص الرسالة + الجدول الملوّن ──
+function _vfEscapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function _vfBuildEmailHTML() {
+  const ar       = _vfEmailLang === 'ar';
+  const bodyText = (document.getElementById('vfEmailBody')?.value || '').trim();
+  const safe     = _vfEscapeHtml(bodyText).replace(/\n/g, '<br>');
+  const table    = _vfEmailTpl === 'other' ? '' : _vfDetailsTableHTML(_vfEmailLang);
+  return `<div dir="${ar ? 'rtl' : 'ltr'}" style="font-family:Tajawal,Arial,sans-serif;font-size:14px;color:#18181b;line-height:1.8;text-align:${ar ? 'right' : 'left'}">`
+    + `<p style="margin:0 0 14px">${safe}</p>`
+    + table
+    + `</div>`;
+}
+// UTF-8 → base64 (يدعم العربية)
+function _vfB64Utf8(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+// تقسيم base64 لأسطر 76 حرف (متطلب MIME)
+function _vfWrap76(b64) {
+  return b64.replace(/(.{76})/g, '$1\r\n');
+}
+function _vfBlobToB64(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload  = () => resolve(String(r.result).split(',')[1] || '');
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+}
+
+// موزّع الإرسال: يقرأ الطريقة المختارة ويوجّه للمسار المناسب
+function vfSend() {
+  const method = document.querySelector('input[name="vfSendMethod"]:checked')?.value || 'ready';
+  if (method === 'web') { vfDoSendEmail(); }
+  else { vfSendReadyEmail(); }
+}
+
+// يبني ملف .eml جاهز (X-Unsent) يفتحه Outlook كرسالة جاهزة للإرسال
+// مع الجدول الملوّن داخل النص + ملف الـ PDF مُرفقاً تلقائياً.
+async function vfSendReadyEmail() {
+  const { to, subject } = window._vfMailSend || {};
+  _vfSaveViolationLog();
+
+  const CRLF    = '\r\n';
+  const htmlB64 = _vfWrap76(_vfB64Utf8(_vfBuildEmailHTML()));
+  const subjEnc = '=?UTF-8?B?' + _vfB64Utf8(subject || '') + '?=';
+
+  let pdfB64 = '';
+  try { if (window._vfPdfBlob) pdfB64 = await _vfBlobToB64(window._vfPdfBlob); } catch (_) {}
+
+  let eml;
+  if (pdfB64) {
+    const B = 'BARQ_' + Date.now();
+    eml = [
+      'To: ' + (to || ''),
+      'Subject: ' + subjEnc,
+      'X-Unsent: 1',
+      'MIME-Version: 1.0',
+      'Content-Type: multipart/mixed; boundary="' + B + '"',
+      '',
+      '--' + B,
+      'Content-Type: text/html; charset="utf-8"',
+      'Content-Transfer-Encoding: base64',
+      '',
+      htmlB64,
+      '--' + B,
+      'Content-Type: application/pdf; name="violation-filled.pdf"',
+      'Content-Transfer-Encoding: base64',
+      'Content-Disposition: attachment; filename="violation-filled.pdf"',
+      '',
+      _vfWrap76(pdfB64),
+      '--' + B + '--',
+      ''
+    ].join(CRLF);
+  } else {
+    eml = [
+      'To: ' + (to || ''),
+      'Subject: ' + subjEnc,
+      'X-Unsent: 1',
+      'MIME-Version: 1.0',
+      'Content-Type: text/html; charset="utf-8"',
+      'Content-Transfer-Encoding: base64',
+      '',
+      htmlB64,
+      ''
+    ].join(CRLF);
+  }
+
+  const blob = new Blob([eml], { type: 'message/rfc822' });
+  const url  = URL.createObjectURL(blob);
+  const nm   = (((_vfEmailData || {}).vf_emp_name) || 'violation')
+                 .replace(/[^\w؀-ۿ \-]/g, '').trim() || 'violation';
+  const a    = document.createElement('a');
+  a.href = url; a.download = nm + '.eml'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+
+  setTimeout(() => {
+    ['vfEmailPreviewModal', 'vfEmailModal'].forEach(id =>
+      document.getElementById(id)?.classList.add('hidden'));
+  }, 600);
+}
+
 function vfDoSendEmail() {
   const { to, subject, body } = window._vfMailSend || {};
 
