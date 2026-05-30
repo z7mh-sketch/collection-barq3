@@ -165,6 +165,31 @@
       margin-top: .35rem;
     }
 
+    /* Last login banner */
+    .last-login-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(251,191,36,.06), #111);
+      border: 1px solid rgba(251,191,36,.3);
+      border-radius: .85rem;
+      padding: .85rem 1.25rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .last-login-banner .ll-label {
+      font-size: .85rem;
+      color: #FBBF24;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .last-login-banner .ll-value { font-size: .9rem; color: #f4f4f5; font-weight: 600; display: flex; align-items: baseline; gap: .65rem; flex-wrap: wrap; }
+    .last-login-banner .ll-name { color: #FBBF24; }
+    .last-login-banner .ll-time { color: #a1a1aa; font-size: .82rem; }
+
     /* Search */
     .admin-search-wrap { margin-bottom: 1rem; }
     .admin-search {
@@ -374,6 +399,11 @@
         </div>
       </div>
 
+      <div class="last-login-banner" id="lastLoginBanner">
+        <div class="ll-label">&#9201; آخر دخول للموقع</div>
+        <div class="ll-value"><span class="ll-name" id="lastLoginName">—</span><span class="ll-time" id="lastLoginTime"></span></div>
+      </div>
+
       <div class="admin-search-wrap">
         <input id="adminSearch" type="search" class="admin-search" placeholder="ابحث بالاسم أو البريد..." autocomplete="off" oninput="filterUsers(this.value)">
       </div>
@@ -518,6 +548,13 @@
         document.getElementById('statWeek').textContent    = weekCount;
         document.getElementById('statMonth').textContent   = monthCount;
         document.getElementById('statEntered').textContent = all.length;
+
+        // ── آخر دخول للموقع (أحدث تسجيل) ──
+        const latest = allSorted[0];
+        if (latest) {
+          document.getElementById('lastLoginName').textContent = latest.name || latest.email || '—';
+          document.getElementById('lastLoginTime').textContent = formatDate(latest.createdAt);
+        }
 
         document.getElementById('loadingState').style.display = 'none';
       } catch (err) {
