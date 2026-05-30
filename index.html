@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605300314" />
+  <link rel="stylesheet" href="css/styles.css?v=202605300322" />
 </head>
 
 <body>
@@ -699,22 +699,22 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605300314"></script>
-  <script src="js/data.js?v=202605300314"></script>
-  <script src="js/i18n.js?v=202605300314"></script>
-  <script src="js/render.js?v=202605300314"></script>
-  <script src="js/search.js?v=202605300314"></script>
-  <script src="js/presence.js?v=202605300314"></script>
-  <script src="js/animations.js?v=202605300314"></script>
+  <script type="module" src="js/auth.js?v=202605300322"></script>
+  <script src="js/data.js?v=202605300322"></script>
+  <script src="js/i18n.js?v=202605300322"></script>
+  <script src="js/render.js?v=202605300322"></script>
+  <script src="js/search.js?v=202605300322"></script>
+  <script src="js/presence.js?v=202605300322"></script>
+  <script src="js/animations.js?v=202605300322"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605300314"></script>
+  <script src="js/pdf-forms.js?v=202605300322"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
     <!-- thin re-open strip, visible only when panel is closed -->
-    <button id="tasksToggleBtn" onclick="twToggle()" title="إظهار المهام">📝</button>
+    <button id="tasksToggleBtn" title="إظهار المهام — اسحب لأعلى/أسفل لتحريكه">📝</button>
     <div id="tasksWidget">
       <div class="tw-header">
         <input id="twTitleInput" class="tw-title-input" placeholder="عنوان النوت..." autocomplete="off" />
@@ -965,13 +965,75 @@
       panel.style.top = Math.max(0, Math.round(bottom)) + 'px';
     }
 
+    // ── Draggable toggle strip — move the 📝 strip up/down, position persisted ──
+    const TOGGLE_Y_KEY = 'barq_toggle_y';
+    function applyTogglePos() {
+      const btn = document.getElementById('tasksToggleBtn');
+      if (!btn) return;
+      const isLTR = document.documentElement.dir === 'ltr';
+      const saved = parseFloat(localStorage.getItem(TOGGLE_Y_KEY));
+      if (isNaN(saved)) return;
+      const h = btn.offsetHeight || 80;
+      const y = Math.max(0, Math.min(saved, window.innerHeight - h));
+      btn.style.position = 'fixed';
+      btn.style.alignSelf = 'auto';
+      btn.style.top = y + 'px';
+      btn.style.left = isLTR ? 'auto' : '0';
+      btn.style.right = isLTR ? '0' : 'auto';
+      btn.style.zIndex = '400';
+    }
+    function initToggleDrag() {
+      const btn = document.getElementById('tasksToggleBtn');
+      if (!btn) return;
+      let dragging = false, moved = false, startY = 0, startTop = 0;
+      btn.style.touchAction = 'none';
+      btn.style.cursor = 'grab';
+      btn.addEventListener('pointerdown', (e) => {
+        dragging = true; moved = false;
+        startY = e.clientY;
+        startTop = btn.getBoundingClientRect().top;
+        btn.style.cursor = 'grabbing';
+        try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+      btn.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dy = e.clientY - startY;
+        if (Math.abs(dy) > 4) moved = true;
+        if (!moved) return;
+        const h = btn.offsetHeight || 80;
+        const top = Math.max(0, Math.min(startTop + dy, window.innerHeight - h));
+        const isLTR = document.documentElement.dir === 'ltr';
+        btn.style.position = 'fixed';
+        btn.style.alignSelf = 'auto';
+        btn.style.top = top + 'px';
+        btn.style.left = isLTR ? 'auto' : '0';
+        btn.style.right = isLTR ? '0' : 'auto';
+        btn.style.zIndex = '400';
+      });
+      function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        btn.style.cursor = 'grab';
+        try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
+        if (moved) localStorage.setItem(TOGGLE_Y_KEY, String(parseFloat(btn.style.top) || 0));
+      }
+      btn.addEventListener('pointerup', endDrag);
+      btn.addEventListener('pointercancel', endDrag);
+      btn.addEventListener('click', (e) => {
+        if (moved) { e.preventDefault(); e.stopImmediatePropagation(); moved = false; return; }
+        window.twToggle();
+      });
+    }
+
     load();
     document.addEventListener('DOMContentLoaded', () => {
       applyOpen();
       render();
       positionPanel();
+      initToggleDrag();
+      applyTogglePos();
       window.addEventListener('scroll', positionPanel, { passive: true });
-      window.addEventListener('resize', positionPanel);
+      window.addEventListener('resize', () => { positionPanel(); applyTogglePos(); });
       const ti = document.getElementById('twTitleInput');
       if (ti) ti.addEventListener('input', () => {
         data.pages[data.page].title = ti.value;
