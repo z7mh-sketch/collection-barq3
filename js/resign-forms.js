@@ -9,35 +9,36 @@
 
 const RF_PDF_URL    = 'pdfs/resignation.pdf';
 const RF_FILL_SCALE = 2.5;
-const RF_COORDS_KEY = 'barq_rf_coords_v1';
+const RF_COORDS_KEY = 'barq_rf_coords_v2'; // v2 = معايرة دقيقة من طبقة نصّ الـ PDF
 
 // إحداثيات افتراضية (نِسَب 0..1 من أبعاد الكانفس) — تُضبط عبر أداة "تحديد المواضع"
 const RF_DEFAULT_COORDS = {
+  // ── معايرة من طبقة نصّ الـ PDF الفعلية 2026-05-31 (إحداثيات دقيقة) ──
   // ── بيانات الموظف (الإنجليزي يسار / العربي يمين) ──
-  emp_name_en: { xPct: 0.300, yPct: 0.497 },
-  emp_name_ar: { xPct: 0.590, yPct: 0.497 },
-  hrid_en:     { xPct: 0.300, yPct: 0.520 },
-  hrid_ar:     { xPct: 0.590, yPct: 0.520 },
-  iqama_en:    { xPct: 0.300, yPct: 0.543 },
-  iqama_ar:    { xPct: 0.590, yPct: 0.543 },
-  dept_en:     { xPct: 0.300, yPct: 0.566 },
-  dept_ar:     { xPct: 0.590, yPct: 0.566 },
-  resign_day_en: { xPct: 0.250, yPct: 0.589 },
-  resign_mon_en: { xPct: 0.300, yPct: 0.589 },
-  resign_day_ar: { xPct: 0.600, yPct: 0.589 },
-  resign_mon_ar: { xPct: 0.555, yPct: 0.589 },
-  emp_sig:     { xPct: 0.300, yPct: 0.612 },
-  // ── صندوق سبب الاستقالة + آخر يوم عمل ──
-  reason_l1:   { xPct: 0.890, yPct: 0.278 },
-  lastday_day: { xPct: 0.330, yPct: 0.427 },
-  lastday_mon: { xPct: 0.285, yPct: 0.427 },
+  emp_name_en: { xPct: 0.320, yPct: 0.463 },
+  emp_name_ar: { xPct: 0.600, yPct: 0.463 },
+  hrid_en:     { xPct: 0.260, yPct: 0.483 },
+  hrid_ar:     { xPct: 0.600, yPct: 0.483 },
+  iqama_en:    { xPct: 0.270, yPct: 0.503 },
+  iqama_ar:    { xPct: 0.600, yPct: 0.503 },
+  dept_en:     { xPct: 0.300, yPct: 0.523 },
+  dept_ar:     { xPct: 0.600, yPct: 0.523 },
+  resign_day_en: { xPct: 0.255, yPct: 0.543 },
+  resign_mon_en: { xPct: 0.310, yPct: 0.543 },
+  resign_day_ar: { xPct: 0.747, yPct: 0.543 },
+  resign_mon_ar: { xPct: 0.685, yPct: 0.543 },
+  emp_sig:     { xPct: 0.300, yPct: 0.560 },
+  // ── صندوق سبب الاستقالة + آخر يوم عمل (أعلى النموذج) ──
+  reason_l1:   { xPct: 0.880, yPct: 0.270 },
+  lastday_day: { xPct: 0.810, yPct: 0.386 },
+  lastday_mon: { xPct: 0.746, yPct: 0.386 },
   // ── إجراءات المدير المباشر ──
-  mgr_name:        { xPct: 0.460, yPct: 0.716 },
-  mgr_sig:         { xPct: 0.460, yPct: 0.756 },
-  mgr_date_day_en: { xPct: 0.250, yPct: 0.793 },
-  mgr_date_mon_en: { xPct: 0.300, yPct: 0.793 },
-  mgr_date_day_ar: { xPct: 0.600, yPct: 0.793 },
-  mgr_date_mon_ar: { xPct: 0.555, yPct: 0.793 },
+  mgr_name:        { xPct: 0.560, yPct: 0.672 },
+  mgr_sig:         { xPct: 0.560, yPct: 0.705 },
+  mgr_date_day_en: { xPct: 0.173, yPct: 0.739 },
+  mgr_date_mon_en: { xPct: 0.239, yPct: 0.739 },
+  mgr_date_day_ar: { xPct: 0.820, yPct: 0.739 },
+  mgr_date_mon_ar: { xPct: 0.755, yPct: 0.739 },
 };
 
 const RF_FIELD_LABELS = {
@@ -311,9 +312,9 @@ function _rfDrawReason(ctx, text, start, W, H) {
   if (!start) return;
   const rightX  = start.xPct * W;            // الحافة اليمنى للكتابة
   const topY    = start.yPct * H;
-  const maxW    = W * 0.80;                   // أقصى عرض للسطر
-  const lineH   = Math.round(H * 0.020);
-  const fs      = Math.round(H * 0.0115);
+  const maxW    = W * 0.82;                   // أقصى عرض للسطر
+  const lineH   = Math.round(H * 0.0133);     // مطابق لتباعد أسطر النموذج المطبوعة
+  const fs      = Math.round(H * 0.0105);
   ctx.save();
   ctx.font = `${fs}px Tahoma, Arial, sans-serif`;
   ctx.fillStyle = '#0a2a8c';
