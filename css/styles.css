@@ -609,25 +609,24 @@ header.site-header {
   position: relative;
 }
 /*
-  Cuban / Curb chain tile (22×30px):
-  Two flat ovals rotated in OPPOSITE directions (±42°) — like real curb chain links.
-  Link A (rotated +42°) is IN FRONT → drawn last, full opacity.
-  Link B (rotated -42°) is BEHIND   → top arc dimmed (0.18), bottom arc full.
-  No background-color masks → works on any background.
+  Matrix-style digital rain (22×120px tile):
+  Two narrow columns of tiny monospace glyphs (digits + letters),
+  white-ish + green, falling top→bottom forever via background-position.
+  Rows spaced evenly (15px) so the tile repeats seamlessly.
 */
 .sub-conn-line::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='76'%3E%3C!-- Link 1: +42 FRONT (يمين) --%3E%3Cellipse cx='11' cy='9' rx='9' ry='3.5' fill='none' stroke='%23FBBF24' stroke-width='3.2' stroke-linecap='round' transform='rotate(42,11,9)'/%3E%3C!-- Link 2: +42 BACK (يمين) --%3E%3Cpath d='M 2 28 A 9 3.5 0 0 1 20 28' fill='none' stroke='%23FBBF24' stroke-width='3.2' stroke-linecap='round' opacity='0.18' transform='rotate(42,11,28)'/%3E%3Cpath d='M 20 28 A 9 3.5 0 0 1 2 28' fill='none' stroke='%23FBBF24' stroke-width='3.2' stroke-linecap='round' transform='rotate(42,11,28)'/%3E%3C!-- Link 3: -42 FRONT (يسار) --%3E%3Cellipse cx='11' cy='47' rx='9' ry='3.5' fill='none' stroke='%23FBBF24' stroke-width='3.2' stroke-linecap='round' transform='rotate(-42,11,47)'/%3E%3C!-- Link 4: -42 BACK (يسار) --%3E%3Cpath d='M 2 66 A 9 3.5 0 0 1 20 66' fill='none' stroke='%23FBBF24' stroke-width='3.2' stroke-linecap='round' opacity='0.18' transform='rotate(-42,11,66)'/%3E%3Cpath d='M 20 66 A 9 3.5 0 0 1 2 66' fill='none' stroke='%23FBBF24' stroke-width='3.2' stroke-linecap='round' transform='rotate(-42,11,66)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='120'%3E%3Cg font-family='monospace' font-size='8' font-weight='700'%3E%3Ctext x='3' y='10' fill='%23e6fff0'%3E1%3C/text%3E%3Ctext x='13' y='6' fill='%2322c55e'%3E0%3C/text%3E%3Ctext x='3' y='25' fill='%2316a34a' opacity='.6'%3E7%3C/text%3E%3Ctext x='13' y='21' fill='%234ade80'%3E9%3C/text%3E%3Ctext x='3' y='40' fill='%2322c55e'%3EX%3C/text%3E%3Ctext x='13' y='36' fill='%23bbf7d0'%3E1%3C/text%3E%3Ctext x='3' y='55' fill='%2315803d' opacity='.55'%3E4%3C/text%3E%3Ctext x='13' y='51' fill='%2322c55e'%3EA%3C/text%3E%3Ctext x='3' y='70' fill='%2386efac'%3E0%3C/text%3E%3Ctext x='13' y='66' fill='%2316a34a' opacity='.7'%3EZ%3C/text%3E%3Ctext x='3' y='85' fill='%2322c55e'%3E9%3C/text%3E%3Ctext x='13' y='81' fill='%23ffffff'%3E1%3C/text%3E%3Ctext x='3' y='100' fill='%2315803d' opacity='.5'%3E3%3C/text%3E%3Ctext x='13' y='96' fill='%2322c55e'%3E7%3C/text%3E%3Ctext x='3' y='115' fill='%234ade80'%3E8%3C/text%3E%3Ctext x='13' y='111' fill='%2316a34a' opacity='.65'%3E5%3C/text%3E%3C/g%3E%3C/svg%3E");
   background-repeat: repeat-y;
-  background-size: 22px 76px;
-  animation: chainDrop 2.5s linear infinite;
+  background-size: 22px 120px;
+  animation: dataRain 3s linear infinite;
 }
-@keyframes chainDrop {
-  from { background-position: 0 0;    }
-  to   { background-position: 0 76px; }
+@keyframes dataRain {
+  from { background-position: 0 0;     }
+  to   { background-position: 0 120px; }
 }
 
 @keyframes dropArrow {
