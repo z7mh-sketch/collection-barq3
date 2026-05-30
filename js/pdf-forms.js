@@ -1085,13 +1085,13 @@ const VF_EMAIL_SCRIPTS = {
 
 الموظف {emp_name}،
 
-نود إحاطتكم علماً بأنه تم رصد تأخير بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
+نود إحاطتكم علماً بأنه تم رصد تأخير بتاريخ {date}{dur}، وقد تم بذلك احتساب مخالفة تأخير.
 
 يرجى الاطلاع على تفاصيل المخالفة والتوقيع على الإفادة المرفقة وإعادتها في أسرع وقت ممكن.`,
     en:
 `Dear {emp_name},
 
-Please be informed that a late attendance violation has been recorded on {date}.
+Please be informed that a late attendance violation has been recorded on {date}{dur}.
 
 Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
@@ -1121,13 +1121,13 @@ Kindly review the violation details, sign the attached form, and send it back at
 
 الموظف {emp_name}،
 
-نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن قائد الفريق المباشر في الفلور بتاريخ {date}، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
+نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن قائد الفريق المباشر في الفلور بتاريخ {date}{dur}، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
 
 يرجى الاطلاع على تفاصيل المخالفة والتوقيع على الإفادة المرفقة وإعادتها في أسرع وقت ممكن.`,
     en:
 `Dear {emp_name},
 
-Please be informed that an unauthorized departure from the client site was recorded without the team leader's approval on {date}. An unauthorized exit violation has been issued accordingly.
+Please be informed that an unauthorized departure from the client site was recorded without the team leader's approval on {date}{dur}. An unauthorized exit violation has been issued accordingly.
 
 Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
@@ -1487,9 +1487,16 @@ function vfEmailUpdateBody() {
   const date = _vfViolationDate();
   const mgr  = _vfManagerName();
   let body   = tpl[_vfEmailLang] || '';
+
+  // مدة التأخير / الخروج المبكر تُدرَج ضمن نص الرسالة عند توفرها
+  const durVal = (_vfEmailTpl === 'late'  ? (d.vf_late_dur  || '') :
+                  _vfEmailTpl === 'exit'  ? (d.vf_early_dur || '') : '').trim();
+  const durTxt = durVal ? (_vfEmailLang === 'ar' ? ` لمدة ${durVal}` : ` for a duration of ${durVal}`) : '';
+
   body = body
     .replace(/\{emp_name\}/g, d.vf_emp_name || '...')
     .replace(/\{date\}/g,     date           || '...')
+    .replace(/\{dur\}/g,      durTxt)
     .replace(/\{manager\}/g,  mgr            || '...');
 
   const ta = document.getElementById('vfEmailBody');
