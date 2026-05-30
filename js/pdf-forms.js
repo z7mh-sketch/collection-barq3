@@ -441,6 +441,33 @@ const VF_FILL_COORDS = {
   chk_other:   { x: 1276, y: 798 },
 };
 
+// نوع المخالفة بالعربي حسب اختيار الليدر (من صناديق الاختيار)
+function _vfViolationTypeLabel(data) {
+  const d = data || {};
+  if (d.chk_late)   return 'مخالفة تأخير';
+  if (d.chk_early)  return 'مخالفة خروج مبكر';
+  if (d.chk_absent) return 'مخالفة غياب';
+  if (d.chk_other)  return 'مخالفة';
+  return 'مخالفة';
+}
+
+// تنظيف اسم الملف من الرموز غير المسموحة
+function _vfSafeFileName(s) {
+  return String(s || '').replace(/[^\w؀-ۿ \-]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+// اسم ملف الإيميل: "نوع المخالفة - اسم الموظف"
+function _vfEmailFileBase(data) {
+  const emp = (data || {}).vf_emp_name || '';
+  return _vfSafeFileName(_vfViolationTypeLabel(data) + (emp ? ' - ' + emp : '')) || 'مخالفة';
+}
+
+// اسم ملف الـ PDF: "نموذج نوع المخالفة - اسم الموظف"
+function _vfPdfFileBase(data) {
+  const emp = (data || {}).vf_emp_name || '';
+  return _vfSafeFileName('نموذج ' + _vfViolationTypeLabel(data) + (emp ? ' - ' + emp : '')) || 'نموذج مخالفة';
+}
+
 async function _vfFillPdf(data) {
   const C = VF_FILL_COORDS;
 
@@ -523,7 +550,7 @@ async function _vfFillPdf(data) {
 
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href = url; a.download = 'violation-filled.pdf'; a.click();
+    a.href = url; a.download = _vfPdfFileBase(data) + '.pdf'; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 3000);
 
     // ── فتح مودال الإيميل تلقائياً بعد تحميل الـ PDF ──
@@ -1143,6 +1170,26 @@ let _vfEmailData = null;
 let _vfEmailLang = 'ar';
 let _vfEmailTpl  = 'late';
 
+// اسم نوع المخالفة المختار في الإيميل (عربي)
+function _vfEmailTypeLabel() {
+  const meta = VF_EMAIL_SCRIPTS[_vfEmailTpl] || {};
+  return meta.label_ar || 'مخالفة';
+}
+// اسم ملف الإيميل: "نوع المخالفة - اسم الموظف"
+function _vfEmailName() {
+  const emp = _vfSafeFileName((_vfEmailData || {}).vf_emp_name || '');
+  return _vfSafeFileName(_vfEmailTypeLabel() + (emp ? ' - ' + emp : '')) || 'مخالفة';
+}
+// اسم ملف الـ PDF المرفق: "نموذج نوع المخالفة - اسم الموظف"
+function _vfPdfName() {
+  const emp = _vfSafeFileName((_vfEmailData || {}).vf_emp_name || '');
+  return _vfSafeFileName('نموذج ' + _vfEmailTypeLabel() + (emp ? ' - ' + emp : '')) || 'نموذج مخالفة';
+}
+// ترميز اسم الملف العربي لرؤوس MIME (RFC 2047)
+function _vfMimeFn(name) {
+  return /[^\x00-\x7F]/.test(name) ? ('=?UTF-8?B?' + _vfB64Utf8(name) + '?=') : name;
+}
+
 // ─────────────────────────────────────────────
 //  Step 0 — Launch modal
 // ─────────────────────────────────────────────
@@ -1698,9 +1745,9 @@ async function vfSendReadyEmail() {
       '--' + B,
       relatedPart,
       '--' + B,
-      'Content-Type: application/pdf; name="violation-filled.pdf"',
+      'Content-Type: application/pdf; name="' + _vfMimeFn(_vfPdfName() + '.pdf') + '"',
       'Content-Transfer-Encoding: base64',
-      'Content-Disposition: attachment; filename="violation-filled.pdf"',
+      'Content-Disposition: attachment; filename="' + _vfMimeFn(_vfPdfName() + '.pdf') + '"',
       '',
       _vfWrap76(pdfB64),
       '--' + B + '--',
@@ -1719,8 +1766,7 @@ async function vfSendReadyEmail() {
 
   const blob = new Blob([eml], { type: 'message/rfc822' });
   const url  = URL.createObjectURL(blob);
-  const nm   = (((_vfEmailData || {}).vf_emp_name) || 'violation')
-                 .replace(/[^\w؀-ۿ \-]/g, '').trim() || 'violation';
+  const nm   = _vfEmailName();
   const a    = document.createElement('a');
   a.href = url; a.download = nm + '.eml'; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
@@ -1763,6 +1809,6 @@ function vfRedownloadPdf() {
   if (!window._vfPdfBlob) { alert('لا يوجد ملف محفوظ — أعد تحميل النموذج أولاً.'); return; }
   const url = URL.createObjectURL(window._vfPdfBlob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'violation-form.pdf'; a.click();
+  a.href = url; a.download = _vfPdfName() + '.pdf'; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
 }
