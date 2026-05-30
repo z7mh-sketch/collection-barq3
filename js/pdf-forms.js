@@ -1084,7 +1084,7 @@ const VF_EMAIL_SCRIPTS = {
     en:
 `Dear {emp_name},
 
-This is to formally inform you that a late attendance violation has been recorded on {date}.
+Please be informed that a late attendance violation has been recorded on {date}.
 
 Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
@@ -1102,7 +1102,7 @@ Kindly review the violation details, sign the attached form, and send it back at
     en:
 `Dear {emp_name},
 
-This is to formally inform you that an absence violation has been recorded on {date}.
+Please be informed that an absence violation has been recorded on {date}.
 
 Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
@@ -1120,7 +1120,7 @@ Kindly review the violation details, sign the attached form, and send it back at
     en:
 `Dear {emp_name},
 
-This is to formally inform you that an unauthorized departure from the client site was recorded without the team leader's approval on {date}. An unauthorized exit violation has been issued accordingly.
+Please be informed that an unauthorized departure from the client site was recorded without the team leader's approval on {date}. An unauthorized exit violation has been issued accordingly.
 
 Kindly review the violation details, sign the attached form, and send it back at your earliest convenience.`
   },
