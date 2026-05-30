@@ -1413,6 +1413,15 @@ function _vfLogoSVG(size) {
     + `</svg>`;
 }
 
+// شعار برق PNG (base64) — يظهر في Outlook الذي لا يدعم SVG داخل الإيميل
+const VF_LOGO_PNG_B64 = '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';
+
+// شعار للجدول: img من PNG — cid في الإيميل، data-URI في المعاينة والنسخ
+function _vfLogoImg(forEmail) {
+  const src = forEmail ? 'cid:barqlogo' : ('data:image/png;base64,' + VF_LOGO_PNG_B64);
+  return `<img src="${src}" width="24" height="24" alt="Barq" style="display:inline-block;vertical-align:middle;border:0" />`;
+}
+
 // صفوف تفاصيل المخالفة (مشتركة بين النص والـ HTML)
 function _vfDetailsRows(lang) {
   const d = _vfEmailData || {};
@@ -1444,7 +1453,7 @@ function _vfDetailsRows(lang) {
 }
 
 // جدول HTML احترافي ملوّن بألوان الموقع + بصمة القروب — يُلصق داخل الإيميل
-function _vfDetailsTableHTML(lang) {
+function _vfDetailsTableHTML(lang, forEmail) {
   const ar    = lang === 'ar';
   const dir   = ar ? 'rtl' : 'ltr';
   const align = ar ? 'right' : 'left';
@@ -1466,7 +1475,7 @@ function _vfDetailsTableHTML(lang) {
       </tr>
       ${trs}
       <tr>
-        <td colspan="2" bgcolor="#0b1120" style="background-color:#0b1120;padding:8px 16px;text-align:center;line-height:0">${_vfLogoSVG(22)}</td>
+        <td colspan="2" bgcolor="#0b1120" style="background-color:#0b1120;padding:8px 16px;text-align:center">${_vfLogoImg(forEmail)}</td>
       </tr>
     </table>`;
 }
@@ -1601,11 +1610,11 @@ function _vfSaveViolationLog() {
 function _vfEscapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-function _vfBuildEmailHTML() {
+function _vfBuildEmailHTML(forEmail) {
   const ar       = _vfEmailLang === 'ar';
   const bodyText = (document.getElementById('vfEmailBody')?.value || '').trim();
   const safe     = _vfEscapeHtml(bodyText).replace(/\n/g, '<br>');
-  const table    = _vfEmailTpl === 'other' ? '' : _vfDetailsTableHTML(_vfEmailLang);
+  const table    = _vfEmailTpl === 'other' ? '' : _vfDetailsTableHTML(_vfEmailLang, forEmail);
   return `<div dir="${ar ? 'rtl' : 'ltr'}" style="font-family:Tajawal,Arial,sans-serif;font-size:14px;color:#18181b;line-height:1.8;text-align:${ar ? 'right' : 'left'}">`
     + `<p style="margin:0 0 14px">${safe}</p>`
     + table
@@ -1642,11 +1651,32 @@ async function vfSendReadyEmail() {
   _vfSaveViolationLog();
 
   const CRLF    = '\r\n';
-  const htmlB64 = _vfWrap76(_vfB64Utf8(_vfBuildEmailHTML()));
+  const htmlB64 = _vfWrap76(_vfB64Utf8(_vfBuildEmailHTML(true)));
+  const logoB64 = _vfWrap76(VF_LOGO_PNG_B64);
   const subjEnc = '=?UTF-8?B?' + _vfB64Utf8(subject || '') + '?=';
 
   let pdfB64 = '';
   try { if (window._vfPdfBlob) pdfB64 = await _vfBlobToB64(window._vfPdfBlob); } catch (_) {}
+
+  // الجزء related: HTML + شعار برق مضمّن (cid:barqlogo) — يضمن ظهور الشعار في Outlook
+  const R = 'BARQrel_' + Date.now();
+  const relatedPart = [
+    'Content-Type: multipart/related; boundary="' + R + '"',
+    '',
+    '--' + R,
+    'Content-Type: text/html; charset="utf-8"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    htmlB64,
+    '--' + R,
+    'Content-Type: image/png; name="barq-logo.png"',
+    'Content-Transfer-Encoding: base64',
+    'Content-ID: <barqlogo>',
+    'Content-Disposition: inline; filename="barq-logo.png"',
+    '',
+    logoB64,
+    '--' + R + '--'
+  ].join(CRLF);
 
   let eml;
   if (pdfB64) {
@@ -1659,10 +1689,7 @@ async function vfSendReadyEmail() {
       'Content-Type: multipart/mixed; boundary="' + B + '"',
       '',
       '--' + B,
-      'Content-Type: text/html; charset="utf-8"',
-      'Content-Transfer-Encoding: base64',
-      '',
-      htmlB64,
+      relatedPart,
       '--' + B,
       'Content-Type: application/pdf; name="violation-filled.pdf"',
       'Content-Transfer-Encoding: base64',
@@ -1678,10 +1705,7 @@ async function vfSendReadyEmail() {
       'Subject: ' + subjEnc,
       'X-Unsent: 1',
       'MIME-Version: 1.0',
-      'Content-Type: text/html; charset="utf-8"',
-      'Content-Transfer-Encoding: base64',
-      '',
-      htmlB64,
+      relatedPart,
       ''
     ].join(CRLF);
   }
