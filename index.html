@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202605300310" />
+  <link rel="stylesheet" href="css/styles.css?v=202605300314" />
 </head>
 
 <body>
@@ -699,17 +699,17 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202605300310"></script>
-  <script src="js/data.js?v=202605300310"></script>
-  <script src="js/i18n.js?v=202605300310"></script>
-  <script src="js/render.js?v=202605300310"></script>
-  <script src="js/search.js?v=202605300310"></script>
-  <script src="js/presence.js?v=202605300310"></script>
-  <script src="js/animations.js?v=202605300310"></script>
+  <script type="module" src="js/auth.js?v=202605300314"></script>
+  <script src="js/data.js?v=202605300314"></script>
+  <script src="js/i18n.js?v=202605300314"></script>
+  <script src="js/render.js?v=202605300314"></script>
+  <script src="js/search.js?v=202605300314"></script>
+  <script src="js/presence.js?v=202605300314"></script>
+  <script src="js/animations.js?v=202605300314"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202605300310"></script>
+  <script src="js/pdf-forms.js?v=202605300314"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -954,10 +954,24 @@
       save(); render();
     };
 
+    // Keep the notes panel starting just below the header (the sun logo),
+    // not at the very top of the page. Once the header scrolls away, the
+    // panel fills the full height. Works for both AR (left) and EN (right).
+    function positionPanel() {
+      const panel = document.getElementById('tasksPanel');
+      const header = document.querySelector('header.site-header');
+      if (!panel || !header) return;
+      const bottom = header.getBoundingClientRect().bottom;
+      panel.style.top = Math.max(0, Math.round(bottom)) + 'px';
+    }
+
     load();
     document.addEventListener('DOMContentLoaded', () => {
       applyOpen();
       render();
+      positionPanel();
+      window.addEventListener('scroll', positionPanel, { passive: true });
+      window.addEventListener('resize', positionPanel);
       const ti = document.getElementById('twTitleInput');
       if (ti) ti.addEventListener('input', () => {
         data.pages[data.page].title = ti.value;
