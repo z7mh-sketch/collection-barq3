@@ -1076,7 +1076,7 @@ const VF_EMAIL_SCRIPTS = {
     ar:
 `السلام عليكم ورحمة الله وبركاته،
 
-أخي {emp_name}،
+الموظف {emp_name}،
 
 نود إحاطتكم علماً بأنه تم رصد تأخير بتاريخ {date}، وقد تم بذلك احتساب مخالفة تأخير.
 
@@ -1094,7 +1094,7 @@ Kindly review the violation details, sign the attached form, and send it back at
     ar:
 `السلام عليكم ورحمة الله وبركاته،
 
-أخي {emp_name}،
+الموظف {emp_name}،
 
 نود إحاطتكم علماً بأنه تم رصد حالة غياب بتاريخ {date}، وقد تم احتساب مخالفة غياب.
 
@@ -1112,7 +1112,7 @@ Kindly review the violation details, sign the attached form, and send it back at
     ar:
 `السلام عليكم ورحمة الله وبركاته،
 
-أخي {emp_name}،
+الموظف {emp_name}،
 
 نود إحاطتكم علماً بأنه تم رصد خروج من موقع العميل دون إذن قائد الفريق المباشر في الفلور بتاريخ {date}، وقد ترتب على ذلك احتساب مخالفة خروج من غير علم.
 
@@ -1463,11 +1463,6 @@ function vfEmailUpdateBody() {
     .replace(/\{emp_name\}/g, d.vf_emp_name || '...')
     .replace(/\{date\}/g,     date           || '...')
     .replace(/\{manager\}/g,  mgr            || '...');
-
-  // ✓ For Hussein/Hassan: keep greeting flexible "أخي / أختي"
-  if (_vfEmailLang === 'ar' && mgr && /حسن|hussein|hassan/i.test(mgr)) {
-    body = body.replace(/أخي /g, 'أخي / أختي ');
-  }
 
   const ta = document.getElementById('vfEmailBody');
   ta.value = body;
