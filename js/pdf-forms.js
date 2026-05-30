@@ -432,6 +432,7 @@ const VF_FILL_COORDS = {
   early:  { y: 737, day_x: 977, mon_x: 927 },
   absent: { y: 770, day_x: 841, mon_x: 804 },
   early_dur:   { x: 741, y: 737 },
+  late_dur:    { x: 741, y: 704 },
   absent_days: { x: 979, y: 770 },
   consequence: { x: 720, y: 904 },
   signature:   { x: 860, y: 1006 },
@@ -504,7 +505,10 @@ async function _vfFillPdf(data) {
       if (day) ctx.fillText(day, pos.day_x, pos.y);
       if (mon) ctx.fillText(mon, pos.mon_x, pos.y);
     };
-    if (data.chk_late)   writeDate(data.vf_late_date,   C.late);
+    if (data.chk_late) {
+      writeDate(data.vf_late_date,   C.late);
+      if (data.vf_late_dur) ctx.fillText(String(data.vf_late_dur), C.late_dur.x, C.late_dur.y);
+    }
     if (data.chk_early) {
       writeDate(data.vf_early_date, C.early);
       if (data.vf_early_dur) ctx.fillText(String(data.vf_early_dur), C.early_dur.x, C.early_dur.y);
