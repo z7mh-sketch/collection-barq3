@@ -435,6 +435,7 @@ const VF_FILL_COORDS = {
   late_dur:    { x: 741, y: 704 },
   absent_days: { x: 979, y: 770 },
   consequence: { x: 720, y: 904 },
+  consequence_dur: { x: 720, y: 944 },
   signature:   { x: 860, y: 1006 },
   chk_late:    { x: 1276, y: 684 },
   chk_early:   { x: 1276, y: 717 },
@@ -520,6 +521,12 @@ async function _vfFillPdf(data) {
 
     // ── الأثر المترتب ──
     if (data.vf_consequence) ctx.fillText(String(data.vf_consequence), C.consequence.x, C.consequence.y);
+
+    // سطر المدة بالإنجليزي تحت الأثر المترتب: "Late by 45min" / "Early leave by 45min"
+    let _durLine = '';
+    if (data.chk_late  && data.vf_late_dur)  _durLine = 'Late by ' + String(data.vf_late_dur).trim();
+    else if (data.chk_early && data.vf_early_dur) _durLine = 'Early leave by ' + String(data.vf_early_dur).trim();
+    if (_durLine) ctx.fillText(_durLine, C.consequence_dur.x, C.consequence_dur.y);
 
     // ── علامات الصح (✓) لكل مخالفة مختارة ──
     const tickSize = Math.round(vp.height * 0.016);
