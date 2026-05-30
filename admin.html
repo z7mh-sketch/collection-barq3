@@ -49,6 +49,13 @@
       font-size: .8rem;
     }
     .signout-btn:hover { color: #FBBF24; border-color: #FBBF24; }
+    a.home-btn {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      color: #FBBF24;
+      border-color: rgba(251,191,36,.4);
+    }
 
     .container {
       max-width: 900px;
@@ -290,6 +297,7 @@
       <h1>لوحة إدارة الطلبات</h1>
       <div class="user-info">
         <span id="adminEmail"></span>
+        <a class="signout-btn home-btn" href="index.html">← الصفحة الرئيسية</a>
         <button class="signout-btn" onclick="doSignOut()">خروج</button>
       </div>
     </div>

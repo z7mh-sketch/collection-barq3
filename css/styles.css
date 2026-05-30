@@ -42,8 +42,8 @@ body {
 .mobile-nav-link:active { background: rgba(251,191,36,.08); color: #FBBF24; }
 
 .site-logo-img {
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   filter: drop-shadow(0 0 6px rgba(251,191,36,.55));
 }
