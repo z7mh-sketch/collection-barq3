@@ -71,6 +71,18 @@
       background: #FBBF24;
       color: #000;
     }
+    .tab-btn.locked {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 1.1rem;
+      font-size: .8rem;
+      color: #52525b;
+    }
+    .switch-link a { color: #FBBF24; font-weight: 600; text-decoration: none; }
+    .switch-link a:hover { text-decoration: underline; }
 
     /* Form */
     .form-group { margin-bottom: 1rem; }
@@ -162,27 +174,16 @@
     <div id="alertMsg" class="msg"></div>
 
     <div class="tabs">
-      <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">تسجيل الدخول</button>
-      <button class="tab-btn" id="tabRequest" onclick="switchTab('request')">طلب الوصول</button>
+      <button class="tab-btn active" id="tabRequest" onclick="switchTab('request')">طلب وصول جديد</button>
+      <button class="tab-btn locked" id="tabSignIn" onclick="switchTab('signin')">تسجيل الدخول</button>
     </div>
 
-    <!-- Sign In Panel -->
-    <div class="panel active" id="panelSignin">
-      <form id="formSignin" onsubmit="handleSignIn(event)">
-        <div class="form-group">
-          <label for="siEmail">البريد الإلكتروني</label>
-          <input type="email" id="siEmail" placeholder="name@barq.com" autocomplete="email" required>
-        </div>
-        <div class="form-group">
-          <label for="siPassword">كلمة المرور</label>
-          <input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password" required>
-        </div>
-        <button type="submit" class="btn-primary" id="btnSignIn">دخول</button>
-      </form>
-    </div>
-
-    <!-- Request Access Panel -->
-    <div class="panel" id="panelRequest">
+    <!-- Request Access Panel (default — new users register first) -->
+    <div class="panel active" id="panelRequest">
+      <p class="hint" style="margin-bottom:1.1rem;color:#a1a1aa;line-height:1.7">
+        أول زيارة؟ أرسل <b style="color:#FBBF24">طلب وصول جديد</b>. بعد إرسال الطلب يُفعَّل تسجيل الدخول،
+        وتقدر تدخل الموقع فور موافقة المسؤول على طلبك.
+      </p>
       <form id="formRequest" onsubmit="handleRequestAccess(event)">
         <div class="form-group">
           <label for="rqName">الاسم الكامل</label>
@@ -199,6 +200,23 @@
         </div>
         <button type="submit" class="btn-primary" id="btnRequest">إرسال الطلب</button>
       </form>
+      <p class="switch-link">سبق أن سجّلت وحسابك معتمد؟ <a href="#" onclick="unlockSignin();return false;">تسجيل الدخول</a></p>
+    </div>
+
+    <!-- Sign In Panel (locked until a request is submitted) -->
+    <div class="panel" id="panelSignin">
+      <form id="formSignin" onsubmit="handleSignIn(event)">
+        <div class="form-group">
+          <label for="siEmail">البريد الإلكتروني</label>
+          <input type="email" id="siEmail" placeholder="name@barq.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label for="siPassword">كلمة المرور</label>
+          <input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-primary" id="btnSignIn">دخول</button>
+      </form>
+      <p class="switch-link">ما عندك حساب؟ <a href="#" onclick="switchTab('request');return false;">أرسل طلب وصول جديد</a></p>
     </div>
   </div>
 
@@ -369,9 +387,11 @@
         // 4. Sign out — they must wait for approval
         await signOut(auth);
 
-        // 5. Show success and hide form
+        // 5. Unlock the Sign In tab (request submitted) + show success
+        try { localStorage.setItem(REQ_FLAG, '1'); } catch (_) {}
+        refreshLockUI();
         document.getElementById('formRequest').style.display = 'none';
-        showMsg('✓ تم إرسال طلبك بنجاح! سيتم إشعارك على بريدك الإلكتروني عند الموافقة.', 'success');
+        showMsg('✓ تم إرسال طلبك بنجاح! بعد موافقة المسؤول تقدر تسجّل الدخول وتدخل الموقع.', 'success');
       } catch (err) {
         const msg = {
           'auth/email-already-in-use': 'هذا البريد الإلكتروني مسجل بالفعل، جرب تسجيل الدخول',
@@ -385,18 +405,48 @@
       }
     };
 
+    // ── Sign-in lock: مقفل حتى يُرسل المستخدم طلب وصول ──────────────────────
+    const REQ_FLAG = 'barq_access_requested';
+    function signinUnlocked() {
+      try { return localStorage.getItem(REQ_FLAG) === '1'; } catch (_) { return false; }
+    }
+    function refreshLockUI() {
+      document.getElementById('tabSignIn').classList.toggle('locked', !signinUnlocked());
+    }
+    window.unlockSignin = function() {
+      try { localStorage.setItem(REQ_FLAG, '1'); } catch (_) {}
+      refreshLockUI();
+      switchTab('signin');
+    };
+
     // ── Tab switching ─────────────────────────────────────────────────────
     window.switchTab = function(tab) {
+      // تسجيل الدخول لا يُتاح إلا بعد إرسال طلب وصول
+      if (tab === 'signin' && !signinUnlocked()) {
+        showMsg('سجّل طلب وصول جديد أولاً — يُفعَّل تسجيل الدخول بعد إرسال الطلب.', 'info');
+        return;
+      }
       clearMsg();
       const isSignin = tab === 'signin';
       document.getElementById('panelSignin').classList.toggle('active', isSignin);
       document.getElementById('panelRequest').classList.toggle('active', !isSignin);
       document.getElementById('tabSignIn').classList.toggle('active', isSignin);
       document.getElementById('tabRequest').classList.toggle('active', !isSignin);
-      if (isSignin) {
-        document.getElementById('formRequest').style.display = '';
-      }
+      // أعِد إظهار نموذج الطلب دائماً عند التنقل بين التبويبات
+      document.getElementById('formRequest').style.display = '';
     };
+
+    // ── Init: التبويب الافتراضي + حالة القفل ────────────────────────────────
+    refreshLockUI();
+    if (signinUnlocked()) {
+      switchTab('signin');   // مستخدم عائد: ابدأ بتسجيل الدخول
+    } else {
+      switchTab('request');  // زائر جديد: لا بد من طلب وصول أولاً
+    }
+    // أعِد إظهار خطأ النطاق إن وُجد (switchTab يمسح الرسائل)
+    if (params.get('err') === 'domain') {
+      showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+    }
   </script>
 </body>
 </html>
