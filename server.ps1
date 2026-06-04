@@ -110,6 +110,66 @@ while ($true) {
       }
       Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":true}'
     }
+    elseif ($path -eq '/api/log-download' -and $method -eq 'POST') {
+      try {
+        $data   = $bodyText | ConvertFrom-Json
+        $vName  = ("$($data.name)").Trim()
+        $vEmail = ("$($data.email)").Trim()
+        $vFile  = ("$($data.file)").Trim()
+        try {
+          $vTime = [System.TimeZoneInfo]::ConvertTimeFromUtc([DateTime]::UtcNow,[System.TimeZoneInfo]::FindSystemTimeZoneById('Arab Standard Time')).ToString('yyyy-MM-dd HH:mm')
+        } catch { $vTime = [DateTime]::Now.ToString('yyyy-MM-dd HH:mm') }
+
+        # ── Save to downloads.json ──
+        $logFile = Join-Path $root 'downloads.json'
+        $sn = ($vName  -replace '\\','\\' -replace '"','\"')
+        $se = ($vEmail -replace '\\','\\' -replace '"','\"')
+        $sf = ($vFile  -replace '\\','\\' -replace '"','\"')
+        $entry = "{`"name`":`"$sn`",`"email`":`"$se`",`"file`":`"$sf`",`"time`":`"$vTime`"}"
+        if (Test-Path $logFile) {
+          $cur = ([System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)).Trim()
+          if ($cur -eq '[]' -or $cur -eq '') { $json = "[$entry]" }
+          else { $json = $cur.TrimEnd(']') + ",$entry]" }
+        } else { $json = "[$entry]" }
+        [System.IO.File]::WriteAllText($logFile, $json, [System.Text.Encoding]::UTF8)
+
+        # ── Send email via Outlook COM ──
+        try {
+          $ol   = New-Object -ComObject Outlook.Application
+          $mail = $ol.CreateItem(0)
+          $mail.To      = 'salghamdi.c@barq.com'
+          $mail.Subject = "تحميل ملف | $vName"
+          $b  = "<div dir='rtl' style='font-family:Tahoma,Arial;font-size:14px;background:#f8fafc;padding:20px'>"
+          $b += "<div style='background:#0f172a;border-radius:12px;padding:24px;max-width:460px;margin:0 auto'>"
+          $b += "<h2 style='color:#FBBF24;margin:0 0 16px;font-size:18px'>&#128229; تحميل ملف جديد</h2>"
+          $b += "<table style='width:100%;border-collapse:collapse;font-size:14px'>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8;width:65px'>الاسم</td><td style='color:#f1f5f9;font-weight:700;padding:7px 0'>$vName</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>البريد</td><td style='color:#f1f5f9;padding:7px 0'>$vEmail</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>الملف</td><td style='color:#FBBF24;font-weight:700;padding:7px 0'>$vFile</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>الوقت</td><td style='color:#f1f5f9;padding:7px 0'>$vTime</td></tr>"
+          $b += "</table>"
+          $b += "<p style='color:#52525b;font-size:11px;margin-top:16px;border-top:1px solid #1e293b;padding-top:10px'>Collection Barq — نظام تتبع التحميلات</p>"
+          $b += "</div></div>"
+          $mail.HTMLBody = $b
+          $mail.Send()
+          [System.Runtime.Interopservices.Marshal]::ReleaseComObject($mail) | Out-Null
+          [System.Runtime.Interopservices.Marshal]::ReleaseComObject($ol)   | Out-Null
+        } catch {}
+
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":true}'
+      } catch {
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":false}'
+      }
+    }
+    elseif ($path -eq '/api/downloads' -and $method -eq 'GET') {
+      $logFile = Join-Path $root 'downloads.json'
+      if (Test-Path $logFile) {
+        $content = [System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' $content
+      } else {
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '[]'
+      }
+    }
     else {
       if ($path -eq '/') { $path = '/index.html' }
       $file = Join-Path $root ($path.TrimStart('/').Replace('/', '\'))

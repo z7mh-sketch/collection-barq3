@@ -115,6 +115,17 @@ function renderQuickLinks() {
   }).join('');
 }
 
+// ----------- Download Tracker -----------
+function trackDownload(fileName) {
+  const name  = localStorage.getItem('presenceName') || 'غير معروف';
+  const email = localStorage.getItem('userEmail')    || '';
+  fetch('/api/log-download', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ name, email, file: fileName })
+  }).catch(() => {});
+}
+
 // ----------- PDF Links -----------
 function openLocalFile(path) {
   fetch('/api/open?path=' + encodeURIComponent(path)).catch(() => {});
@@ -138,11 +149,13 @@ function renderPdfLinks() {
     const iconHtml = link.img
       ? `<img src="${escapeHtml(link.img)}" alt="${escapeHtml(displayLabel)}" class="quick-img" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fa-solid fa-${escapeHtml(link.icon)}\\'></i>'" />`
       : `<i class="fa-solid fa-${escapeHtml(link.icon)}"></i>`;
+    const safeLabel = displayLabel.replace(/'/g, "\\'");
     const clickAttr = link.url === '/pdfs/violation.pdf'
-      ? `href="#" onclick="openVfLaunch();return false;"`
+      ? `href="#" onclick="trackDownload('${safeLabel}');openVfLaunch();return false;"`
       : link.url === '/pdfs/resignation.pdf'
-      ? `href="#" onclick="openRfLaunch();return false;"`
-      : `href="${escapeHtml(link.url)}" download`;
+      ? `href="#" onclick="trackDownload('${safeLabel}');openRfLaunch();return false;"`
+      : `href="${escapeHtml(link.url)}" download onclick="trackDownload('${safeLabel}');"`;
+
     return `
       <a class="quick-card" ${clickAttr}>
         <div class="quick-icon">${iconHtml}</div>
