@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606041850" />
+  <link rel="stylesheet" href="css/styles.css?v=202606042011" />
 </head>
 
 <body>
@@ -610,67 +610,71 @@
         <button onclick="closeLeaveForm()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5" dir="rtl">
-        <!-- بيانات الموظف -->
+        <!-- معلومات الموظف -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div><label class="vf-label">اسم الموظف</label><input type="text" id="lfEmpName" class="search-input" style="width:100%" /></div>
-          <div><label class="vf-label">الرقم الوظيفي HRID</label><input type="text" id="lfHRID" class="search-input" style="width:100%" /></div>
+          <div><label class="vf-label">الرقم الوظيفي (Emp. No.)</label><input type="text" id="lfEmpNo" class="search-input" style="width:100%" /></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div><label class="vf-label">القسم – المشروع</label><input type="text" id="lfDept" class="search-input" style="width:100%" value="CCS" /></div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div><label class="vf-label">تاريخ التعيين <span style="color:#71717a;font-weight:400">(اختياري)</span></label><input type="text" id="lfJoinDate" class="search-input" style="width:100%" placeholder="2020/01/01" /></div>
+          <div><label class="vf-label">الإدارة / القسم</label><input type="text" id="lfDept" class="search-input" style="width:100%" value="CCS" /></div>
           <div><label class="vf-label">المسمى الوظيفي</label><input type="text" id="lfJobTitle" class="search-input" style="width:100%" value="Agent" /></div>
         </div>
-        <!-- نوع الإجازة + عدد الأيام -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="vf-label">نوع الإجازة</label>
-            <select id="lfLeaveType" class="search-input" style="width:100%">
-              <option value="سنوية">سنوية</option>
-              <option value="مرضية">مرضية</option>
-              <option value="اضطرارية">اضطرارية</option>
-              <option value="بدون راتب">بدون راتب</option>
-              <option value="أخرى">أخرى</option>
-            </select>
-          </div>
-          <div><label class="vf-label">عدد الأيام</label><input type="number" id="lfDays" min="1" class="search-input" style="width:100%" /></div>
+        <!-- نوع الإجازة (✓ في المربع المطابق) -->
+        <div class="mb-4">
+          <label class="vf-label">نوع الإجازة</label>
+          <select id="lfLeaveType" class="search-input" style="width:100%">
+            <option value="سنوية">إجازة سنوية</option>
+            <option value="مرضية">إجازة مرضية</option>
+            <option value="زواج">إجازة زواج</option>
+            <option value="ميلاد طفل">إجازة ميلاد طفل</option>
+            <option value="الحج">إجازة الحج</option>
+            <option value="امتحان">إجازة امتحان</option>
+            <option value="وفاة قريب">إجازة وفاة قريب</option>
+            <option value="أخرى">أخرى</option>
+          </select>
         </div>
-        <!-- التواريخ -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <!-- التواريخ: شهر / يوم (السنة 2026 مطبوعة على النموذج) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2">
           <div>
-            <label class="vf-label">تاريخ البداية</label>
+            <label class="vf-label">آخر يوم عمل</label>
             <div style="display:flex;gap:.4rem">
-              <select id="lfStartDay" class="search-input" style="flex:1" aria-label="يوم"></select>
+              <select id="lfLwdMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+              <select id="lfLwdDay" class="search-input" style="flex:1" aria-label="يوم"></select>
+            </div>
+          </div>
+          <div>
+            <label class="vf-label">بداية الإجازة</label>
+            <div style="display:flex;gap:.4rem">
               <select id="lfStartMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+              <select id="lfStartDay" class="search-input" style="flex:1" aria-label="يوم"></select>
             </div>
           </div>
           <div>
-            <label class="vf-label">تاريخ النهاية</label>
+            <label class="vf-label">نهاية الإجازة</label>
             <div style="display:flex;gap:.4rem">
-              <select id="lfEndDay" class="search-input" style="flex:1" aria-label="يوم"></select>
               <select id="lfEndMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+              <select id="lfEndDay" class="search-input" style="flex:1" aria-label="يوم"></select>
             </div>
           </div>
           <div>
-            <label class="vf-label">تاريخ المباشرة</label>
+            <label class="vf-label">المباشرة</label>
             <div style="display:flex;gap:.4rem">
-              <select id="lfReturnDay" class="search-input" style="flex:1" aria-label="يوم"></select>
-              <select id="lfReturnMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+              <select id="lfResumeMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+              <select id="lfResumeDay" class="search-input" style="flex:1" aria-label="يوم"></select>
             </div>
           </div>
         </div>
-        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> يوم/شهر فقط — السنة مطبوعة مسبقاً على النموذج.</p>
+        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> الترتيب: شهر / يوم — السنة (2026) مطبوعة مسبقاً على النموذج.</p>
+        <!-- رقم التواصل + مجموع الأيام -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div><label class="vf-label">رقم التواصل أثناء الإجازة</label><input type="tel" id="lfContact" class="search-input" style="width:100%" placeholder="05XXXXXXXX" /></div>
+          <div><label class="vf-label">مجموع الأيام</label><input type="number" id="lfTotalDays" min="1" class="search-input" style="width:100%" /></div>
+        </div>
         <!-- المدير المباشر -->
         <div class="mb-4">
-          <label class="vf-label">اسم المدير المباشر <span style="color:#71717a;font-weight:400">(تلقائي)</span></label>
+          <label class="vf-label">اسم المدير المباشر <span style="color:#71717a;font-weight:400">(تلقائي — خانة المشرف/المدير المباشر)</span></label>
           <input type="text" id="lfMgrName" class="search-input" style="width:100%" />
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="vf-label">تاريخ المدير المباشر</label>
-            <div style="display:flex;gap:.4rem">
-              <select id="lfMgrDay" class="search-input" style="flex:1" aria-label="يوم"></select>
-              <select id="lfMgrMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
-            </div>
-          </div>
         </div>
         <div class="mb-4">
           <label class="vf-label">توقيع المدير المباشر</label>
@@ -935,19 +939,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606041850"></script>
-  <script src="js/data.js?v=202606041850"></script>
-  <script src="js/i18n.js?v=202606041850"></script>
-  <script src="js/render.js?v=202606041850"></script>
-  <script src="js/search.js?v=202606041850"></script>
-  <script src="js/presence.js?v=202606041850"></script>
-  <script src="js/animations.js?v=202606041850"></script>
+  <script type="module" src="js/auth.js?v=202606042011"></script>
+  <script src="js/data.js?v=202606042011"></script>
+  <script src="js/i18n.js?v=202606042011"></script>
+  <script src="js/render.js?v=202606042011"></script>
+  <script src="js/search.js?v=202606042011"></script>
+  <script src="js/presence.js?v=202606042011"></script>
+  <script src="js/animations.js?v=202606042011"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606041850"></script>
-  <script src="js/resign-forms.js?v=202606041850"></script>
-  <script src="js/leave-forms.js?v=202606041850"></script>
+  <script src="js/pdf-forms.js?v=202606042011"></script>
+  <script src="js/resign-forms.js?v=202606042011"></script>
+  <script src="js/leave-forms.js?v=202606042011"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">

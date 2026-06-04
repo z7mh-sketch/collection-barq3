@@ -1,53 +1,71 @@
 /* ============================================================
-   نموذج طلب إجازة (Leave Request Form)
-   يحاكي تدفّق نموذج الاستقالة: اختيار الموظف → فورم → تعبئة الـ PDF
+   نموذج طلب إجازة (Leave and Travel Request)
+   النموذج الحقيقي: QuickFix — Employee Information + Leave Type (8 مربعات)
+   + Leave Dates (4 تواريخ + هاتف + مجموع أيام) + Approvals
    - يعيد استخدام VF_EMPLOYEES / _vfCurrentEmail / _vfManagerName / _vfSafeFileName
-     من pdf-forms.js (محمّل قبل هذا الملف)
-   - اسم المدير المباشر وتوقيعه تلقائياً (الليدر)، والليدر يختار التواريخ ونوع الإجازة
+   - الموظف = مقدم الطلب (Requestor)؛ الليدر = المدير المباشر (الاسم + التوقيع تلقائي)
+   - السنة 2026 مطبوعة على النموذج، نكتب الشهر واليوم فقط
    - المواضع تُضبط بصرياً عبر زر "ضبط المواضع" وتُحفظ في localStorage
    ============================================================ */
 
 const LF_PDF_URL    = 'pdfs/leave-request.pdf';
 const LF_FILL_SCALE = 2.5;
-const LF_COORDS_KEY = 'barq_lf_coords_v1';
+const LF_COORDS_KEY = 'barq_lf_coords_v2';
 
-// إحداثيات افتراضية (نِسَب 0..1 من أبعاد الكانفس) — تُضبط عبر أداة "ضبط المواضع"
+// إحداثيات (نِسَب 0..1 من أبعاد الكانفس) — مُعايرة على النموذج الحقيقي
 const LF_DEFAULT_COORDS = {
-  emp_name:     { xPct: 0.620, yPct: 0.300 },
-  hrid:         { xPct: 0.620, yPct: 0.340 },
-  dept:         { xPct: 0.620, yPct: 0.380 },
-  jobtitle:     { xPct: 0.620, yPct: 0.420 },
-  leave_type:   { xPct: 0.620, yPct: 0.470 },
-  days:         { xPct: 0.400, yPct: 0.520 },
-  start_day:    { xPct: 0.700, yPct: 0.560 },
-  start_mon:    { xPct: 0.630, yPct: 0.560 },
-  end_day:      { xPct: 0.700, yPct: 0.600 },
-  end_mon:      { xPct: 0.630, yPct: 0.600 },
-  return_day:   { xPct: 0.700, yPct: 0.640 },
-  return_mon:   { xPct: 0.630, yPct: 0.640 },
-  mgr_name:     { xPct: 0.560, yPct: 0.790 },
-  mgr_sig:      { xPct: 0.560, yPct: 0.840 },
-  mgr_date_day: { xPct: 0.300, yPct: 0.880 },
-  mgr_date_mon: { xPct: 0.236, yPct: 0.880 },
+  // ── Employee Information (صف القيم تحت العناوين) ──
+  emp_name:   { xPct: 0.820, yPct: 0.247 },
+  emp_no:     { xPct: 0.662, yPct: 0.247 },
+  join_date:  { xPct: 0.548, yPct: 0.247 },
+  dept:       { xPct: 0.372, yPct: 0.247 },
+  jobtitle:   { xPct: 0.162, yPct: 0.247 },
+  // ── Leave Type — علامة ✓ في المربع المختار (صف1 y=0.317، صف2 y=0.385) ──
+  type_childbirth: { xPct: 0.246, yPct: 0.317 },
+  type_marriage:   { xPct: 0.489, yPct: 0.317 },
+  type_sick:       { xPct: 0.703, yPct: 0.317 },
+  type_annual:     { xPct: 0.917, yPct: 0.317 },
+  type_other:      { xPct: 0.246, yPct: 0.385 },
+  type_hajj:       { xPct: 0.489, yPct: 0.385 },
+  type_exam:       { xPct: 0.703, yPct: 0.385 },
+  type_death:      { xPct: 0.917, yPct: 0.385 },
+  // ── Leave Dates: 2026 / MM / DD (الشهر بين الشرطتين، اليوم بعد الثانية) ──
+  lwd_mon:    { xPct: 0.657, yPct: 0.413 }, lwd_day:    { xPct: 0.700, yPct: 0.413 },
+  start_mon:  { xPct: 0.657, yPct: 0.437 }, start_day:  { xPct: 0.700, yPct: 0.437 },
+  end_mon:    { xPct: 0.657, yPct: 0.462 }, end_day:    { xPct: 0.700, yPct: 0.462 },
+  resume_mon: { xPct: 0.657, yPct: 0.487 }, resume_day: { xPct: 0.700, yPct: 0.487 },
+  contact:    { xPct: 0.180, yPct: 0.425 },
+  total_days: { xPct: 0.180, yPct: 0.475 },
+  // ── Approvals (الإسم y=0.692، التوقيع y=0.738) ──
+  req_name:   { xPct: 0.815, yPct: 0.692 },  // مقدم الطلب = الموظف
+  mgr_name:   { xPct: 0.605, yPct: 0.692 },  // المدير المباشر = الليدر
+  mgr_sig:    { xPct: 0.605, yPct: 0.738 },
 };
 
 const LF_FIELD_LABELS = {
-  emp_name:   'اسم الموظف',
-  hrid:       'الرقم الوظيفي',
-  dept:       'القسم / المشروع',
-  jobtitle:   'المسمى الوظيفي',
-  leave_type: 'نوع الإجازة',
-  days:       'عدد الأيام',
-  start_day:  'تاريخ البداية (يوم)',  start_mon:  'تاريخ البداية (شهر)',
-  end_day:    'تاريخ النهاية (يوم)',  end_mon:    'تاريخ النهاية (شهر)',
-  return_day: 'تاريخ المباشرة (يوم)', return_mon: 'تاريخ المباشرة (شهر)',
-  mgr_name:   'اسم المدير المباشر',
-  mgr_sig:    'توقيع المدير المباشر',
-  mgr_date_day: 'تاريخ المدير (يوم)', mgr_date_mon: 'تاريخ المدير (شهر)',
+  emp_name:  'اسم الموظف', emp_no: 'الرقم الوظيفي', join_date: 'تاريخ التعيين',
+  dept: 'الإدارة/القسم', jobtitle: 'المسمى الوظيفي',
+  type_childbirth: '☑ ميلاد طفل', type_marriage: '☑ زواج', type_sick: '☑ مرضية', type_annual: '☑ سنوية',
+  type_other: '☑ أخرى', type_hajj: '☑ الحج', type_exam: '☑ امتحان', type_death: '☑ وفاة',
+  lwd_mon: 'آخر يوم عمل (شهر)', lwd_day: 'آخر يوم عمل (يوم)',
+  start_mon: 'بداية الإجازة (شهر)', start_day: 'بداية الإجازة (يوم)',
+  end_mon: 'نهاية الإجازة (شهر)', end_day: 'نهاية الإجازة (يوم)',
+  resume_mon: 'المباشرة (شهر)', resume_day: 'المباشرة (يوم)',
+  contact: 'هاتف التواصل', total_days: 'مجموع الأيام',
+  req_name: 'اسم مقدم الطلب', mgr_name: 'اسم المدير المباشر', mgr_sig: 'توقيع المدير المباشر',
 };
 
-// أنواع الإجازة (تُكتب كنص في موضع "نوع الإجازة")
-const LF_LEAVE_TYPES = ['سنوية', 'مرضية', 'اضطرارية', 'بدون راتب', 'أخرى'];
+// نوع الإجازة (قيمة الـ select) → مفتاح إحداثيات المربع
+const LF_TYPE_COORD = {
+  'سنوية': 'type_annual',
+  'مرضية': 'type_sick',
+  'زواج': 'type_marriage',
+  'ميلاد طفل': 'type_childbirth',
+  'الحج': 'type_hajj',
+  'امتحان': 'type_exam',
+  'وفاة قريب': 'type_death',
+  'أخرى': 'type_other',
+};
 
 // ─────────────────────────────────────────────
 //  تخزين / تحميل الإحداثيات
@@ -141,9 +159,9 @@ function lfPickEmployee(emp) {
   setTimeout(() => {
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
     set('lfEmpName', emp.name);
-    set('lfHRID', emp.hrid);
-    set('lfDept', 'CCS');
+    set('lfEmpNo', emp.hrid);
     set('lfJobTitle', emp.title || 'Agent');
+    set('lfDept', 'CCS');
   }, 120);
 }
 
@@ -165,8 +183,8 @@ function _lfPopulateDM() {
       sel.appendChild(o);
     }
   };
-  ['lfStartDay', 'lfEndDay', 'lfReturnDay', 'lfMgrDay'].forEach(id => fill(document.getElementById(id), 31));
-  ['lfStartMonth', 'lfEndMonth', 'lfReturnMonth', 'lfMgrMonth'].forEach(id => fill(document.getElementById(id), 12));
+  ['lfLwdDay', 'lfStartDay', 'lfEndDay', 'lfResumeDay'].forEach(id => fill(document.getElementById(id), 31));
+  ['lfLwdMonth', 'lfStartMonth', 'lfEndMonth', 'lfResumeMonth'].forEach(id => fill(document.getElementById(id), 12));
 }
 
 // اسم المدير المباشر (الليدر) من قائمة data.js حسب إيميله — بدون أي اختلاق
@@ -188,18 +206,12 @@ function _lfManagerName() {
 
 function openLeaveForm() {
   _lfPopulateDM();
-  // اسم المدير المباشر = الليدر (تلقائي)
+  // المدير المباشر = الليدر (تلقائي)
   const mgrEl = document.getElementById('lfMgrName');
   if (mgrEl) mgrEl.value = _lfManagerName() || '';
   // القسم الافتراضي
   const deptEl = document.getElementById('lfDept');
   if (deptEl && !deptEl.value) deptEl.value = 'CCS';
-  // تاريخ المدير المباشر = اليوم
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, '0');
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const sv = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-  sv('lfMgrDay', dd); sv('lfMgrMonth', mm);
   document.getElementById('leaveFormModal').classList.remove('hidden');
   _lfInitCanvas();
   vfLfSyncTypedSig();
@@ -291,16 +303,18 @@ function _lfCollectData() {
   const v = id => { const el = document.getElementById(id); return el ? el.value : ''; };
   return {
     emp_name:  v('lfEmpName'),
-    hrid:      v('lfHRID'),
+    emp_no:    v('lfEmpNo'),
+    join_date: v('lfJoinDate'),
     dept:      v('lfDept'),
     jobtitle:  v('lfJobTitle'),
     leave_type: v('lfLeaveType'),
-    days:      v('lfDays'),
-    start_day: v('lfStartDay'),   start_mon: v('lfStartMonth'),
-    end_day:   v('lfEndDay'),     end_mon:   v('lfEndMonth'),
-    return_day: v('lfReturnDay'), return_mon: v('lfReturnMonth'),
+    lwd_day:   v('lfLwdDay'),    lwd_mon:    v('lfLwdMonth'),
+    start_day: v('lfStartDay'),  start_mon:  v('lfStartMonth'),
+    end_day:   v('lfEndDay'),    end_mon:    v('lfEndMonth'),
+    resume_day: v('lfResumeDay'), resume_mon: v('lfResumeMonth'),
+    contact:   v('lfContact'),
+    total_days: v('lfTotalDays'),
     mgr_name:  v('lfMgrName'),
-    mgr_day:   v('lfMgrDay'),     mgr_mon:   v('lfMgrMonth'),
   };
 }
 
@@ -326,8 +340,7 @@ async function _lfFillPdf(data) {
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
     const W = vp.width, H = vp.height;
-    const fs = Math.round(H * 0.0125);
-    ctx.font = `${fs}px Tahoma, Arial, sans-serif`;
+    const fs = Math.round(H * 0.0118);
     ctx.fillStyle = '#0a2a8c';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -335,26 +348,42 @@ async function _lfFillPdf(data) {
     const put = (key, text) => {
       if (text == null || text === '') return;
       const p = C[key]; if (!p) return;
+      ctx.font = `${fs}px Tahoma, Arial, sans-serif`;
       ctx.fillText(String(text), p.xPct * W, p.yPct * H);
     };
 
+    // Employee Information
     put('emp_name', data.emp_name);
-    put('hrid', data.hrid);
+    put('emp_no', data.emp_no);
+    put('join_date', data.join_date);
     put('dept', data.dept);
     put('jobtitle', data.jobtitle);
-    put('leave_type', data.leave_type);
-    put('days', data.days);
-    put('start_day', data.start_day);   put('start_mon', data.start_mon);
-    put('end_day', data.end_day);       put('end_mon', data.end_mon);
-    put('return_day', data.return_day); put('return_mon', data.return_mon);
-    put('mgr_name', data.mgr_name);
-    put('mgr_date_day', data.mgr_day);  put('mgr_date_mon', data.mgr_mon);
+
+    // Leave Type — ✓ في المربع المختار
+    const typeKey = LF_TYPE_COORD[data.leave_type];
+    if (typeKey && C[typeKey]) {
+      const tick = Math.round(H * 0.020);
+      ctx.font = `bold ${tick}px Tahoma, Arial, sans-serif`;
+      ctx.fillText('✓', C[typeKey].xPct * W, C[typeKey].yPct * H);
+    }
+
+    // Leave Dates (الشهر/اليوم)
+    put('lwd_mon', data.lwd_mon);       put('lwd_day', data.lwd_day);
+    put('start_mon', data.start_mon);   put('start_day', data.start_day);
+    put('end_mon', data.end_mon);       put('end_day', data.end_day);
+    put('resume_mon', data.resume_mon); put('resume_day', data.resume_day);
+    put('contact', data.contact);
+    put('total_days', data.total_days);
+
+    // Approvals
+    put('req_name', data.emp_name);   // مقدم الطلب = الموظف
+    put('mgr_name', data.mgr_name);   // المدير المباشر = الليدر
 
     // توقيع المدير المباشر (تلقائي)
     const sigUrl = _lfSigUrl();
     if (sigUrl && C.mgr_sig) {
       const img = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = sigUrl; });
-      const sw = W * 0.18, sh = sw * 0.30;
+      const sw = W * 0.11, sh = sw * 0.32;
       ctx.drawImage(img, C.mgr_sig.xPct * W - sw / 2, C.mgr_sig.yPct * H - sh / 2, sw, sh);
     }
 
@@ -502,7 +531,7 @@ function _lfRedrawMapperCanvas() {
   if (!canvas || !canvas._basePdf) return;
   const ctx = canvas.getContext('2d');
   ctx.putImageData(canvas._basePdf, 0, 0);
-  const fontSize = Math.round(canvas.height * 0.013);
+  const fontSize = Math.round(canvas.height * 0.011);
   ctx.font = `bold ${fontSize}px Tahoma, Arial, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
