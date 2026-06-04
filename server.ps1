@@ -138,17 +138,17 @@ while ($true) {
           $ol   = New-Object -ComObject Outlook.Application
           $mail = $ol.CreateItem(0)
           $mail.To      = 'salghamdi.c@barq.com'
-          $mail.Subject = "تحميل ملف | $vName"
+          $mail.Subject = "Collection Barq - PDF Download | $vName"
           $b  = "<div dir='rtl' style='font-family:Tahoma,Arial;font-size:14px;background:#f8fafc;padding:20px'>"
           $b += "<div style='background:#0f172a;border-radius:12px;padding:24px;max-width:460px;margin:0 auto'>"
-          $b += "<h2 style='color:#FBBF24;margin:0 0 16px;font-size:18px'>&#128229; تحميل ملف جديد</h2>"
+          $b += "<h2 style='color:#FBBF24;margin:0 0 16px;font-size:18px'>&#128229; &#062; &#062; $vName</h2>"
           $b += "<table style='width:100%;border-collapse:collapse;font-size:14px'>"
-          $b += "<tr><td style='padding:7px 0;color:#94a3b8;width:65px'>الاسم</td><td style='color:#f1f5f9;font-weight:700;padding:7px 0'>$vName</td></tr>"
-          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>البريد</td><td style='color:#f1f5f9;padding:7px 0'>$vEmail</td></tr>"
-          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>الملف</td><td style='color:#FBBF24;font-weight:700;padding:7px 0'>$vFile</td></tr>"
-          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>الوقت</td><td style='color:#f1f5f9;padding:7px 0'>$vTime</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8;width:65px'>&#1575;&#1604;&#1575;&#1587;&#1605;</td><td style='color:#f1f5f9;font-weight:700;padding:7px 0'>$vName</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>&#1575;&#1604;&#1576;&#1585;&#1610;&#1583;</td><td style='color:#f1f5f9;padding:7px 0'>$vEmail</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>&#1575;&#1604;&#1605;&#1604;&#1601;</td><td style='color:#FBBF24;font-weight:700;padding:7px 0'>$vFile</td></tr>"
+          $b += "<tr><td style='padding:7px 0;color:#94a3b8'>&#1575;&#1604;&#1608;&#1602;&#1578;</td><td style='color:#f1f5f9;padding:7px 0'>$vTime</td></tr>"
           $b += "</table>"
-          $b += "<p style='color:#52525b;font-size:11px;margin-top:16px;border-top:1px solid #1e293b;padding-top:10px'>Collection Barq — نظام تتبع التحميلات</p>"
+          $b += "<p style='color:#52525b;font-size:11px;margin-top:16px;border-top:1px solid #1e293b;padding-top:10px'>Collection Barq - Download Tracker</p>"
           $b += "</div></div>"
           $mail.HTMLBody = $b
           $mail.Send()

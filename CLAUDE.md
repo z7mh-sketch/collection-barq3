@@ -26,7 +26,9 @@ leaders-hub/
 │   ├── animations.js       ← نجوم + trail + rotating hero text
 │   ├── presence.js         ← ظهور اسم المستخدم
 │   ├── i18n.js             ← تبديل AR/EN
-│   └── pdf-forms.js        ← نموذج المخالفات + email flow + VF_EMPLOYEES
+│   ├── pdf-forms.js        ← نموذج المخالفات + email flow + VF_EMPLOYEES
+│   ├── resign-forms.js     ← نموذج الاستقالة (يعيد استخدام VF_EMPLOYEES)
+│   └── leave-forms.js      ← نموذج طلب الإجازة (يعيد استخدام VF_EMPLOYEES)
 └── pdfs/
     └── violation.pdf       ← نموذج المخالفة
 ```
@@ -48,6 +50,20 @@ leaders-hub/
   - القيمة = array of `{ name, hrid, email, title }`
 - بعد اختيار الموظف يفتح PDF ويملأه
 - زر "إرسال بالإيميل" يفتح mailto مع 4 قوالب (تأخر/غياب/خروج/أخرى) بـ AR+EN
+
+### 2.1 نموذج الاستقالة (resign-forms.js) ونموذج الإجازة (leave-forms.js)
+- نفس تدفّق المخالفة: launch modal (اختر موظف / يدوي / تحميل فاضي) → فورم → تعبئة PDF → تحميل
+- يعيدان استخدام `VF_EMPLOYEES` + `_vfManagerName` + `_vfCurrentEmail` + `_vfSafeFileName` من pdf-forms.js (يجب تحميلهما بعده)
+- اسم المدير المباشر + توقيعه (رسم/كتابة) + تاريخه تلقائي = الليدر؛ الليدر يختار التواريخ
+- **المواضع تُضبط بصرياً** عبر زر "ضبط المواضع" (mapper) وتُحفظ في localStorage:
+  - الاستقالة: `barq_rf_coords_v2` (مُعايرة من المستخدم) — leave: `barq_lf_coords_v1` (افتراضية تقديرية، تحتاج معايرة أول مرة)
+- النموذجان نص/صورة بدون حقول AcroForm (مثل المخالفة) → لا يمكن استخراج إحداثيات تلقائياً، لذلك المعايرة البصرية ضرورية
+
+### 2.2 تتبّع التحميلات (server.ps1 + render.js + admin.html)
+- أي ضغط على بطاقة PDF يستدعي `trackDownload(label)` → POST `/api/log-download`
+- السيرفر يحفظ في `downloads.json` ويرسل إيميل Outlook (COM) لـ salghamdi.c@barq.com
+- admin.html تاب "التحميلات" يعرض الأسماء مجمّعة (`/api/downloads`)
+- ⚠️ server.ps1 يجب أن يبقى **بدون نص عربي** (encoding يتخرب) — استخدم HTML entities `&#1575;` في جسم الإيميل
 
 ### 3. Sticky Notes Widget (index.html)
 - شريط جانبي ثابت على اليسار (AR) أو اليمين (EN)

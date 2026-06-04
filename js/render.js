@@ -154,6 +154,8 @@ function renderPdfLinks() {
       ? `href="#" onclick="trackDownload('${safeLabel}');openVfLaunch();return false;"`
       : link.url === '/pdfs/resignation.pdf'
       ? `href="#" onclick="trackDownload('${safeLabel}');openRfLaunch();return false;"`
+      : link.url === '/pdfs/leave-request.pdf'
+      ? `href="#" onclick="trackDownload('${safeLabel}');openLfLaunch();return false;"`
       : `href="${escapeHtml(link.url)}" download onclick="trackDownload('${safeLabel}');"`;
 
     return `

@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606041837" />
+  <link rel="stylesheet" href="css/styles.css?v=202606041850" />
 </head>
 
 <body>
@@ -565,6 +565,136 @@
     </div>
   </div>
 
+  <!-- ============ LEAVE: LAUNCH MODAL (Step 0) ============ -->
+  <div id="lfLaunchModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:210;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
+    <div class="modal-box" style="width:min(460px,100%);padding:2rem">
+      <div class="modal-header" style="margin-bottom:1.5rem">
+        <h4 class="modal-title"><i class="fa-solid fa-plane-departure" style="color:#FBBF24"></i> نموذج طلب إجازة</h4>
+        <button onclick="document.getElementById('lfLaunchModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p style="color:#a1a1aa;font-size:.9rem;margin-bottom:1.5rem;text-align:center">كيف تريد ملء النموذج؟</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <button onclick="lfLaunchEmpPicker()" class="escalation-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem">
+          <i class="fa-solid fa-users"></i> اختر من موظفيك
+        </button>
+        <button onclick="lfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#FBBF24">
+          <i class="fa-solid fa-pen-to-square"></i> أملأها بنفسك
+        </button>
+        <button onclick="downloadBlankPdf('pdfs/leave-request.pdf','نموذج_إجازة_فاضي.pdf')" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#475569;color:#cbd5e1">
+          <i class="fa-solid fa-file-arrow-down"></i> تحميل النموذج فاضي (PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LEAVE: EMPLOYEE PICKER ============ -->
+  <div id="lfEmpPickerModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:211;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
+    <div class="modal-box" style="width:min(500px,100%);max-height:80vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#FBBF24"></i> موظفيك</h4>
+        <button onclick="document.getElementById('lfEmpPickerModal').classList.add('hidden');document.getElementById('lfLaunchModal').classList.remove('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding:1rem 1rem 0">
+        <input id="lfEmpSearch" type="text" oninput="lfFilterEmpList(this.value)" placeholder="ابحث بالاسم أو الرقم الوظيفي..."
+          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(251,191,36,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
+      </div>
+      <div id="lfEmpList" style="padding:1rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
+  </div>
+
+  <!-- ============ LEAVE REQUEST FORM MODAL ============ -->
+  <div id="leaveFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.82)">
+    <div class="modal-box w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="fa-solid fa-plane-departure" style="color:#FBBF24"></i> نموذج طلب إجازة</h4>
+        <button onclick="closeLeaveForm()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-5" dir="rtl">
+        <!-- بيانات الموظف -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div><label class="vf-label">اسم الموظف</label><input type="text" id="lfEmpName" class="search-input" style="width:100%" /></div>
+          <div><label class="vf-label">الرقم الوظيفي HRID</label><input type="text" id="lfHRID" class="search-input" style="width:100%" /></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div><label class="vf-label">القسم – المشروع</label><input type="text" id="lfDept" class="search-input" style="width:100%" value="CCS" /></div>
+          <div><label class="vf-label">المسمى الوظيفي</label><input type="text" id="lfJobTitle" class="search-input" style="width:100%" value="Agent" /></div>
+        </div>
+        <!-- نوع الإجازة + عدد الأيام -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="vf-label">نوع الإجازة</label>
+            <select id="lfLeaveType" class="search-input" style="width:100%">
+              <option value="سنوية">سنوية</option>
+              <option value="مرضية">مرضية</option>
+              <option value="اضطرارية">اضطرارية</option>
+              <option value="بدون راتب">بدون راتب</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+          <div><label class="vf-label">عدد الأيام</label><input type="number" id="lfDays" min="1" class="search-input" style="width:100%" /></div>
+        </div>
+        <!-- التواريخ -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="vf-label">تاريخ البداية</label>
+            <div style="display:flex;gap:.4rem">
+              <select id="lfStartDay" class="search-input" style="flex:1" aria-label="يوم"></select>
+              <select id="lfStartMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+            </div>
+          </div>
+          <div>
+            <label class="vf-label">تاريخ النهاية</label>
+            <div style="display:flex;gap:.4rem">
+              <select id="lfEndDay" class="search-input" style="flex:1" aria-label="يوم"></select>
+              <select id="lfEndMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+            </div>
+          </div>
+          <div>
+            <label class="vf-label">تاريخ المباشرة</label>
+            <div style="display:flex;gap:.4rem">
+              <select id="lfReturnDay" class="search-input" style="flex:1" aria-label="يوم"></select>
+              <select id="lfReturnMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+            </div>
+          </div>
+        </div>
+        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> يوم/شهر فقط — السنة مطبوعة مسبقاً على النموذج.</p>
+        <!-- المدير المباشر -->
+        <div class="mb-4">
+          <label class="vf-label">اسم المدير المباشر <span style="color:#71717a;font-weight:400">(تلقائي)</span></label>
+          <input type="text" id="lfMgrName" class="search-input" style="width:100%" />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="vf-label">تاريخ المدير المباشر</label>
+            <div style="display:flex;gap:.4rem">
+              <select id="lfMgrDay" class="search-input" style="flex:1" aria-label="يوم"></select>
+              <select id="lfMgrMonth" class="search-input" style="flex:1" aria-label="شهر"></select>
+            </div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="vf-label">توقيع المدير المباشر</label>
+          <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap;align-items:center">
+            <button type="button" id="lfBtnDraw" onclick="lfSetSigMode('draw')" class="contact-btn" style="border-color:#FBBF24">رسم</button>
+            <button type="button" id="lfBtnType" onclick="lfSetSigMode('type')" class="contact-btn">كتابة</button>
+            <button type="button" onclick="lfClearSig()" class="contact-btn" style="margin-inline-start:auto"><i class="fa-solid fa-eraser"></i> مسح</button>
+          </div>
+          <canvas id="lfSigCanvas" width="600" height="130" style="width:100%;height:130px;border:1.5px solid #3f3f46;border-radius:.5rem;background:#fff;touch-action:none;cursor:crosshair;display:block"></canvas>
+          <input type="text" id="lfSigText" class="search-input" style="width:100%;display:none;font-size:1.6rem;font-style:italic;font-family:'Segoe Script','Brush Script MT','Lucida Handwriting',cursive" />
+        </div>
+        <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;padding-top:.5rem">
+          <button type="button" onclick="closeLeaveForm()" class="contact-btn">إلغاء</button>
+          <button type="button" onclick="openLfCoordMapper()" class="contact-btn">
+            <i class="fa-solid fa-crosshairs"></i> ضبط المواضع
+          </button>
+          <button type="button" onclick="lfDownload()" class="escalation-btn">
+            <i class="fa-solid fa-file-arrow-down"></i> تحميل PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ VF EMAIL MODAL ============ -->
   <div id="vfEmailModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:212;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(620px,100%);max-height:92vh;overflow-y:auto">
@@ -805,18 +935,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606041837"></script>
-  <script src="js/data.js?v=202606041837"></script>
-  <script src="js/i18n.js?v=202606041837"></script>
-  <script src="js/render.js?v=202606041837"></script>
-  <script src="js/search.js?v=202606041837"></script>
-  <script src="js/presence.js?v=202606041837"></script>
-  <script src="js/animations.js?v=202606041837"></script>
+  <script type="module" src="js/auth.js?v=202606041850"></script>
+  <script src="js/data.js?v=202606041850"></script>
+  <script src="js/i18n.js?v=202606041850"></script>
+  <script src="js/render.js?v=202606041850"></script>
+  <script src="js/search.js?v=202606041850"></script>
+  <script src="js/presence.js?v=202606041850"></script>
+  <script src="js/animations.js?v=202606041850"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606041837"></script>
-  <script src="js/resign-forms.js?v=202606041837"></script>
+  <script src="js/pdf-forms.js?v=202606041850"></script>
+  <script src="js/resign-forms.js?v=202606041850"></script>
+  <script src="js/leave-forms.js?v=202606041850"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
