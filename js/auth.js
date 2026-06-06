@@ -104,7 +104,9 @@ onAuthStateChanged(auth, async (user) => {
       showPending(user);
     }
   } catch {
-    // Firestore error — grant access if authenticated (fail open for network issues)
-    grantAccess(user);
+    // Firestore error — fail CLOSED: never grant access when we can't verify status.
+    // Show the pending screen so a network blip (or a deliberately blocked request)
+    // can't be used to bypass approval gating.
+    showPending(user);
   }
 });
