@@ -4,3 +4,6 @@ setup-autostart.ps1
 start.bat
 start-with-tunnel.bat
 .claude/
+
+# Power Apps migration kit — keep employee PII (names/HR IDs/emails) OUT of GitHub
+powerapps-migration/data/
