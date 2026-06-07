@@ -2,6 +2,40 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
+// ── Session idle timeout — auto sign-out after 12h without activity ─────────
+const IDLE_LIMIT_MS = 12 * 60 * 60 * 1000;   // 12 hours
+const LAST_ACTIVE_KEY = 'barq_lastActive';
+
+function markActive() {
+  try { localStorage.setItem(LAST_ACTIVE_KEY, String(Date.now())); } catch (_) {}
+}
+function sessionExpired() {
+  const last = parseInt(localStorage.getItem(LAST_ACTIVE_KEY) || '', 10);
+  return Number.isFinite(last) && last > 0 && (Date.now() - last) > IDLE_LIMIT_MS;
+}
+function expireSession() {
+  try { localStorage.removeItem(LAST_ACTIVE_KEY); } catch (_) {}
+  signOut(auth).finally(() => location.replace('login.html?err=expired'));
+}
+let idleGuardStarted = false;
+function startIdleGuard() {
+  if (idleGuardStarted) return;
+  idleGuardStarted = true;
+  markActive();
+  let lastWrite = Date.now();
+  const onActivity = () => {
+    if (sessionExpired()) { expireSession(); return; }
+    const now = Date.now();
+    if (now - lastWrite > 30000) { lastWrite = now; markActive(); }   // throttle writes to 30s
+  };
+  ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(ev =>
+    document.addEventListener(ev, onActivity, { passive: true }));
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && sessionExpired()) expireSession();
+  });
+  setInterval(() => { if (sessionExpired()) expireSession(); }, 60000);   // check every minute
+}
+
 // Show checking overlay immediately
 const overlay = document.createElement('div');
 overlay.id = 'authOverlay';
@@ -76,6 +110,7 @@ function grantAccess(user, userData, approvalData) {
   setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);
   revealAdminLink(user);
   wireLogout();
+  startIdleGuard();
 }
 
 function wireLogout() {
@@ -101,6 +136,9 @@ onAuthStateChanged(auth, async (user) => {
     location.replace('login.html?err=domain');
     return;
   }
+
+  // Auto sign-out if the site hasn't been used for 12+ hours
+  if (sessionExpired()) { expireSession(); return; }
 
   try {
     const userDoc = await getDoc(doc(db, 'users', user.uid));

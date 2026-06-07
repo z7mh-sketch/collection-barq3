@@ -744,7 +744,7 @@
     }
 
     const alertMsg = document.getElementById('alertMsg');
-    function showMsg(text, type = 'error') { alertMsg.textContent = text; alertMsg.className = 'msg ' + type; }
+    function showMsg(text, type = 'error') { alertMsg.textContent = text; alertMsg.className = 'msg ' + type + ' show'; }
     function clearMsg() { alertMsg.className = 'msg'; alertMsg.textContent = ''; }
 
     const params = new URLSearchParams(location.search);
@@ -768,6 +768,7 @@
       setLoading('btnSignIn', true, 'دخول');
       try {
         await signInWithEmailAndPassword(auth, email, password);
+        try { localStorage.setItem('barq_lastActive', String(Date.now())); } catch (_) {}
         location.replace('index.html');
       } catch (err) {
         const msg = {
@@ -858,6 +859,7 @@
           showMsg('يجب استخدام حساب @barq.com فقط', 'error');
           return;
         }
+        try { localStorage.setItem('barq_lastActive', String(Date.now())); } catch (_) {}
         location.replace('index.html');
       } catch (err) {
         const m = (err && err.code === 'auth/operation-not-allowed')
@@ -873,10 +875,14 @@
     // ── Init ──────────────────────────────────────────────────────────────
     refreshLockUI();
     switchTab('signin');
-    if (params.get('err') === 'domain') {
-      showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+    const _errCode = params.get('err');
+    if (_errCode === 'domain') {
       openAuth('signin');
+      showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+    } else if (_errCode === 'expired') {
+      openAuth('signin');
+      showMsg('انتهت الجلسة بعد 12 ساعة من الخمول، سجّل دخولك مرة أخرى.', 'info');
     }
-  </script>
+</script>
 </body>
 </html>
