@@ -161,6 +161,27 @@ body {
 }
 .theme-btn:hover { background: #262626; border-color: #FBBF24; }
 
+/* ========== Logout Button ========== */
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  height: 38px;
+  padding: 0 .8rem;
+  border-radius: .625rem;
+  background: #1a1a1a;
+  border: 1.5px solid #3f3f46;
+  color: #FBBF24;
+  font-family: inherit;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.logout-btn:hover { background: #2a1414; border-color: #ef4444; color: #ef4444; }
+.logout-btn i { font-size: .9rem; }
+
 /* ========== HERO ========== */
 .hero-section {
   background: #000;

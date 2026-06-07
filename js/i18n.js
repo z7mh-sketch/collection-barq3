@@ -29,6 +29,7 @@ const translations = {
     responsibleLabel: 'المسؤولون',
     teamsChat: 'محادثة على Teams',
     themeLabel: 'تبديل الوضع',
+    logoutBtn: 'تسجيل الخروج',
   },
   en: {
     navQuickLinks: 'Quick Links',
@@ -60,6 +61,7 @@ const translations = {
     responsibleLabel: 'Responsible',
     teamsChat: 'Chat on Teams',
     themeLabel: 'Toggle theme',
+    logoutBtn: 'Log out',
   }
 };
 

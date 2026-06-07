@@ -75,6 +75,19 @@ function grantAccess(user, userData, approvalData) {
   overlay.style.transition = 'opacity .35s';
   setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);
   revealAdminLink(user);
+  wireLogout();
+}
+
+function wireLogout() {
+  const btn = document.getElementById('logoutBtn');
+  if (!btn || btn.dataset.wired) return;
+  btn.dataset.wired = '1';
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    signOut(auth)
+      .then(() => location.replace('login.html'))
+      .catch(() => { location.replace('login.html'); });
+  });
 }
 
 onAuthStateChanged(auth, async (user) => {
