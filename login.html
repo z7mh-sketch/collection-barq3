@@ -1,241 +1,709 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تسجيل الدخول — Collection Barq</title>
-  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collection Barq</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --bg:#000;
+    --white:#fff;
+    --gray:#9ca3af;
+    --gray2:#a1a1aa;
+    --row:#0d0d0f;
+    --row-border:rgba(255,255,255,.06);
+    --blue:#2563eb;
+    --blue2:#3b82f6;
+    --gold:#FBBF24;
+  }
+  html,body{background:var(--bg);}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:var(--white);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  a{text-decoration:none;color:inherit;}
 
-    body {
-      font-family: 'Tajawal', system-ui, sans-serif;
-      background: #000;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
+  .container{
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 40px;
+    width:100%;
+  }
 
-    .card {
-      background: #111;
-      border: 1.5px solid #FBBF24;
-      border-radius: 1.25rem;
-      padding: 2.5rem 2rem;
-      width: min(400px, 100%);
-      box-shadow: 0 0 60px rgba(251,191,36,.15);
-    }
+  /* ============ NAV ============ */
+  .nav{
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    background:#000;
+  }
+  .nav-logo{
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
+  }
+  .nav-logo img{
+    height:26px;
+    width:auto;
+    object-fit:contain;
+    filter:brightness(0) invert(1);
+    display:block;
+  }
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    flex:1;
+    justify-content:center;
+  }
+  .nav-links a{
+    color:var(--gray);
+    font-size:15px;
+    font-weight:500;
+    white-space:nowrap;
+    transition:color .2s ease;
+  }
+  .nav-links a:hover{color:#fff;}
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    flex-shrink:0;
+  }
+  .nav-login{
+    color:var(--gray);
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    transition:color .2s ease;
+  }
+  .nav-login:hover{color:#fff;}
+  .nav-signup{
+    background:#fff;
+    color:#000;
+    font-size:15px;
+    font-weight:600;
+    border:none;
+    border-radius:999px;
+    padding:10px 18px;
+    cursor:pointer;
+    line-height:1;
+    font-family:inherit;
+    transition:opacity .2s ease,transform .2s ease;
+  }
+  .nav-signup:hover{opacity:.88;}
 
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #FBBF24;
-      text-align: center;
-      letter-spacing: -.01em;
-      margin-bottom: .35rem;
-    }
-    .logo-sub {
-      text-align: center;
-      color: #71717a;
-      font-size: .8rem;
-      margin-bottom: 1.75rem;
-    }
+  /* ============ HERO ============ */
+  .hero{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    align-items:center;
+    margin-top:96px;
+    min-height:500px;
+  }
+  .hero-left{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .hero-title{
+    font-weight:800;
+    font-size:clamp(2.8rem,6vw,4.6rem);
+    line-height:1.04;
+    letter-spacing:-.02em;
+    text-align:left;
+    color:#fff;
+  }
+  .hero-title .line2{
+    background:linear-gradient(95deg,#ffffff 30%,#f5e6c0 70%,#e9c97a 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    color:transparent;
+  }
+  .hero-sub{
+    margin-top:22px;
+    font-family:'Tajawal',sans-serif;
+    color:var(--gray2);
+    font-size:17px;
+    font-weight:500;
+    line-height:1.6;
+    text-align:left;
+  }
 
-    /* Tabs */
-    .tabs {
-      display: flex;
-      gap: .375rem;
-      background: #1a1a1a;
-      border-radius: .75rem;
-      padding: .25rem;
-      margin-bottom: 1.75rem;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: .55rem .5rem;
-      border: none;
-      border-radius: .55rem;
-      background: transparent;
-      color: #71717a;
-      font-family: inherit;
-      font-size: .875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s, color .15s;
-    }
-    .tab-btn.active {
-      background: #FBBF24;
-      color: #000;
-    }
-    .tab-btn.locked {
-      opacity: .4;
-      cursor: not-allowed;
-    }
-    .switch-link {
-      text-align: center;
-      margin-top: 1.1rem;
-      font-size: .8rem;
-      color: #52525b;
-    }
-    .switch-link a { color: #FBBF24; font-weight: 600; text-decoration: none; }
-    .switch-link a:hover { text-decoration: underline; }
+  /* glowing blue login pill */
+  .glow-btn{
+    margin-top:34px;
+    width:330px;
+    max-width:100%;
+    height:54px;
+    border-radius:12px;
+    border:1px solid rgba(59,130,246,.55);
+    background:linear-gradient(135deg,#0b1220,#0a1a3a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:0 20px;
+    cursor:pointer;
+    font-family:inherit;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 0 0 1px rgba(59,130,246,.5),0 0 28px 4px rgba(37,99,235,.55),0 0 60px rgba(37,99,235,.35);
+    animation:bluePulse 2.6s ease-in-out infinite;
+    transition:transform .2s ease;
+  }
+  .glow-btn:hover{transform:translateY(-1px);}
+  .glow-btn::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(120% 80% at 20% 0%,rgba(96,165,250,.18),transparent 60%);
+    pointer-events:none;
+  }
+  @keyframes bluePulse{
+    0%,100%{box-shadow:0 0 0 1px rgba(59,130,246,.5),0 0 28px 4px rgba(37,99,235,.55),0 0 60px rgba(37,99,235,.35);}
+    50%{box-shadow:0 0 0 1px rgba(59,130,246,.72),0 0 40px 8px rgba(37,99,235,.78),0 0 88px rgba(37,99,235,.52);}
+  }
+  .glow-btn .spark{
+    color:#bfdbfe;
+    font-size:18px;
+    line-height:1;
+    flex-shrink:0;
+    position:relative;
+    z-index:1;
+    text-shadow:0 0 10px rgba(96,165,250,.9);
+  }
+  .glow-btn .glow-txt{
+    font-family:'Tajawal',sans-serif;
+    color:#e5e7eb;
+    font-size:16px;
+    font-weight:500;
+    position:relative;
+    z-index:1;
+  }
 
-    /* Form */
-    .form-group { margin-bottom: 1rem; }
-    label {
-      display: block;
-      font-size: .8rem;
-      font-weight: 600;
-      color: #a1a1aa;
-      margin-bottom: .4rem;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: .65rem .85rem;
-      background: #1a1a1a;
-      border: 1.5px solid #27272a;
-      border-radius: .6rem;
-      color: #f4f4f5;
-      font-family: inherit;
-      font-size: .9rem;
-      outline: none;
-      transition: border-color .15s;
-      direction: ltr;
-      text-align: right;
-    }
-    input:focus { border-color: #FBBF24; }
-    input::placeholder { color: #52525b; direction: rtl; text-align: right; }
+  /* ============ 3D KEYCAP ============ */
+  .hero-right{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    min-height:460px;
+    perspective:1100px;
+  }
+  .scene{
+    position:relative;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .keycap-img{
+    width:clamp(330px,40vw,580px);
+    height:auto;
+    display:block;
+    mix-blend-mode:screen;
+    filter:drop-shadow(0 50px 70px rgba(0,0,0,.55)) saturate(1.06) contrast(1.03);
+    pointer-events:none;
+  }
+  @keyframes floatImg{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-14px);}
+  }
 
-    .btn-primary {
-      width: 100%;
-      padding: .72rem;
-      background: #FBBF24;
-      color: #000;
-      border: none;
-      border-radius: .65rem;
-      font-family: inherit;
-      font-size: .95rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: .5rem;
-      transition: opacity .15s, transform .1s;
-    }
-    .btn-primary:hover { opacity: .9; }
-    .btn-primary:active { transform: scale(.98); }
-    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+  /* spectral holographic glow under the cube (dual layer for vivid depth) */
+  .spectrum{
+    position:absolute;
+    left:50%;
+    top:62%;
+    transform:translate(-50%,-50%);
+    width:470px;
+    height:390px;
+    border-radius:50%;
+    background:conic-gradient(from 0deg,
+        #ff2d55,#ff8a00,#ffe600,#27e36a,#00d4ff,#3b6bff,#a855f7,#ff2d55);
+    filter:blur(38px) saturate(1.35);
+    opacity:.98;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 8%,#000 55%,#000 90%,transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 8%,#000 55%,#000 90%,transparent 100%);
+    animation:spectrumSpin 14s linear infinite,spectrumDrift 8s ease-in-out infinite alternate;
+    z-index:0;
+    pointer-events:none;
+  }
+  .spectrum.second{
+    width:300px;
+    height:240px;
+    filter:blur(54px);
+    opacity:.78;
+    background:conic-gradient(from 120deg,
+        #00d4ff,#3b6bff,#a855f7,#ff2d55,#ff8a00,#27e36a,#00d4ff);
+    animation:spectrumSpin 20s linear infinite reverse,spectrumDrift 10s ease-in-out infinite alternate;
+  }
+  @keyframes spectrumSpin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+  @keyframes spectrumDrift{
+    from{top:60%;}
+    to{top:66%;}
+  }
 
-    /* Messages */
-    .msg {
-      display: none;
-      padding: .65rem .85rem;
-      border-radius: .55rem;
-      font-size: .85rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    .msg.error { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; display: block; }
-    .msg.success { background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.25); color: #86efac; display: block; }
-    .msg.info { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.2); color: #fde68a; display: block; }
+  .cube-wrap{
+    position:relative;
+    width:380px;
+    height:380px;
+    transform:perspective(1000px) rotateX(52deg) rotateZ(-44deg);
+    transform-style:preserve-3d;
+    z-index:2;
+    animation:floaty 6s ease-in-out infinite;
+  }
+  @keyframes floaty{
+    0%,100%{transform:perspective(1000px) rotateX(52deg) rotateZ(-44deg) translateZ(0);}
+    50%{transform:perspective(1000px) rotateX(52deg) rotateZ(-44deg) translateZ(18px);}
+  }
+  .keycap{
+    position:absolute;
+    inset:0;
+    border-radius:28%;
+    background:linear-gradient(145deg,#3a3a3e,#0a0a0b);
+    box-shadow:
+      inset 0 4px 10px rgba(255,255,255,.18),
+      inset 0 -10px 30px rgba(0,0,0,.7),
+      0 40px 60px -10px rgba(0,0,0,.85),
+      0 80px 120px -20px rgba(0,0,0,.7);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  /* top highlight edge for volume */
+  .keycap::before{
+    content:"";
+    position:absolute;
+    inset:6%;
+    border-radius:24%;
+    background:linear-gradient(150deg,rgba(255,255,255,.12),rgba(255,255,255,0) 45%);
+    pointer-events:none;
+  }
+  /* iridescent reflection on lower edge of the cube */
+  .keycap::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:46%;
+    background:linear-gradient(to top,
+        rgba(168,85,247,.35),
+        rgba(59,130,246,.22),
+        rgba(0,212,255,.12),
+        transparent);
+    mix-blend-mode:screen;
+    pointer-events:none;
+    border-radius:0 0 28% 28%;
+  }
+  /* engraved logo, counter-rotated so it reads upright */
+  .engrave{
+    position:relative;
+    z-index:1;
+    width:46%;
+    height:46%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotateZ(44deg);
+  }
+  .engrave img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    filter:brightness(0) invert(.55) drop-shadow(0 2px 2px rgba(0,0,0,.6));
+    opacity:.85;
+  }
 
-    .panel { display: none; }
-    .panel.active { display: block; }
+  /* ============ POPULAR DOMAINS ============ */
+  .domains{
+    margin-top:80px;
+    margin-bottom:90px;
+  }
+  .domains-title{
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    margin-bottom:18px;
+  }
+  .domains-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .domain-row{
+    background:var(--row);
+    border:1px solid var(--row-border);
+    border-radius:12px;
+    padding:16px 20px;
+    height:56px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    transition:border-color .2s ease,background .2s ease;
+  }
+  .domain-row:hover{border-color:rgba(255,255,255,.14);background:#121214;}
+  .domain-name{
+    color:#f3f4f6;
+    font-size:15px;
+    font-weight:500;
+  }
+  .domain-spinner{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.14);
+    border-top-color:rgba(255,255,255,.55);
+    animation:spin .9s linear infinite;
+    flex-shrink:0;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
 
-    .spinner {
-      display: inline-block;
-      width: 14px; height: 14px;
-      border: 2px solid rgba(0,0,0,.3);
-      border-top-color: #000;
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-      vertical-align: middle;
-      margin-left: .4rem;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+  /* ============ AUTH (centered welcome screen) ============ */
+  .auth-view{
+    display:none;
+    position:fixed; inset:0; z-index:60;
+    background:#000;
+    align-items:center; justify-content:center;
+    padding:2rem;
+  }
+  .auth-view.show{display:flex; animation:authFade .25s ease;}
+  @keyframes authFade{from{opacity:0;}to{opacity:1;}}
+  .auth-box{
+    position:relative;
+    width:min(360px,100%);
+    display:flex; flex-direction:column;
+    font-family:'Tajawal',sans-serif;
+  }
+  .auth-logo{ width:46px; height:46px; margin:0 auto 1rem; display:block; }
+  .auth-h{ font-family:'Inter','Tajawal',sans-serif; color:#fff; font-weight:800; font-size:1.55rem; line-height:1.25; text-align:center; }
+  .auth-p{ color:#71717a; font-weight:800; font-size:1.55rem; line-height:1.25; text-align:center; margin-bottom:1.7rem; }
+  .btn-google{
+    width:100%; padding:.8rem 1rem; border:none; border-radius:.6rem;
+    background:#e8e8eb; color:#111;
+    font-family:'Tajawal',sans-serif; font-weight:700; font-size:.95rem;
+    display:flex; align-items:center; justify-content:center; gap:.55rem;
+    cursor:pointer; transition:opacity .2s ease;
+  }
+  .btn-google:hover{ opacity:.9; }
+  .auth-or{ display:flex; align-items:center; gap:.75rem; margin:1rem 0; color:#52525b; font-size:.8rem; font-weight:700; }
+  .auth-or::before,.auth-or::after{ content:""; flex:1; height:1px; background:rgba(255,255,255,.1); }
+  .auth-box input{
+    width:100%; padding:.8rem .9rem; margin-bottom:.7rem;
+    background:#1c1c1f; border:1px solid rgba(255,255,255,.09); border-radius:.6rem;
+    color:#f4f4f5; font-family:'Tajawal',sans-serif; font-size:.92rem; outline:none;
+    direction:rtl; text-align:right; transition:border-color .18s ease;
+  }
+  .auth-box input:focus{ border-color:#3b82f6; }
+  .auth-box input::placeholder{ color:#6b7280; }
+  .btn-cont{
+    width:100%; padding:.85rem; border:none; border-radius:.6rem;
+    background:#2a2a2e; color:#fff;
+    font-family:'Tajawal',sans-serif; font-weight:700; font-size:.95rem;
+    cursor:pointer; transition:background .2s ease;
+  }
+  .btn-cont:hover{ background:#34343a; }
+  .auth-back{
+    position:fixed; top:22px; right:24px; z-index:61;
+    background:transparent; border:none; color:#9ca3af;
+    font-family:'Tajawal',sans-serif; font-size:.9rem; font-weight:700;
+    cursor:pointer; padding:.3rem .5rem; transition:color .2s ease;
+  }
+  .auth-back:hover{ color:#fff; }
+  .card-title{
+    font-family:'Inter',sans-serif;
+    font-weight:800;
+    font-size:1.5rem;
+    color:#fff;
+    text-align:center;
+    letter-spacing:-.01em;
+  }
+  .card-sub{
+    text-align:center;
+    color:#a1a1aa;
+    font-size:.95rem;
+    margin-top:.4rem;
+    margin-bottom:1.4rem;
+  }
+  .msg{
+    display:none;
+    border-radius:.7rem;
+    padding:.7rem 1rem;
+    font-size:.9rem;
+    margin-bottom:1rem;
+    text-align:center;
+    line-height:1.6;
+  }
+  .msg.show{display:block;}
+  .msg.error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#fca5a5;}
+  .msg.success{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);color:#86efac;}
+  .msg.info{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.4);color:#93c5fd;}
+  .tabs{
+    display:flex;
+    gap:.5rem;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:.9rem;
+    padding:.35rem;
+    margin-bottom:1.4rem;
+  }
+  .tab-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:#a1a1aa;
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:.92rem;
+    padding:.6rem .5rem;
+    border-radius:.65rem;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .tab-btn.active{
+    background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(37,99,235,.20));
+    color:#fff;
+    box-shadow:0 0 0 1px rgba(251,191,36,.3),0 0 16px rgba(37,99,235,.3);
+  }
+  .tab-btn.locked{opacity:.55;cursor:not-allowed;}
+  .panel{display:none;}
+  .panel.active{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .form-group{margin-bottom:1.1rem;text-align:right;}
+  .form-group label{
+    display:block;
+    color:#e5e7eb;
+    font-size:.9rem;
+    font-weight:500;
+    margin-bottom:.45rem;
+  }
+  .form-group input{
+    width:100%;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:.7rem;
+    padding:.8rem 1rem;
+    color:#fff;
+    font-family:'Tajawal',sans-serif;
+    font-size:.95rem;
+    direction:rtl;
+    outline:none;
+    transition:border-color .2s ease,box-shadow .2s ease;
+  }
+  .form-group input::placeholder{color:#6b7280;}
+  .form-group input:focus{
+    border-color:rgba(251,191,36,.55);
+    box-shadow:0 0 0 3px rgba(251,191,36,.14);
+  }
+  .hint{
+    color:#9ca3af;
+    font-size:.78rem;
+    margin-top:.4rem;
+    line-height:1.6;
+  }
+  .btn-primary{
+    width:100%;
+    border:none;
+    border-radius:.8rem;
+    padding:.85rem 1rem;
+    font-family:'Tajawal',sans-serif;
+    font-weight:800;
+    font-size:1rem;
+    color:#1a1300;
+    cursor:pointer;
+    background:linear-gradient(135deg,#FBBF24,#f59e0b 55%,#2563eb 140%);
+    box-shadow:0 0 0 1px rgba(251,191,36,.4),0 0 22px rgba(245,158,11,.45),0 0 48px rgba(37,99,235,.28);
+    transition:transform .15s ease,box-shadow .25s ease,opacity .2s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.6rem;
+    margin-top:.4rem;
+  }
+  .btn-primary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 0 0 1px rgba(251,191,36,.6),0 0 30px rgba(245,158,11,.62),0 0 64px rgba(37,99,235,.42);
+  }
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+  .spinner{
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    border:2px solid rgba(26,19,0,.3);
+    border-top-color:#1a1300;
+    animation:spin .8s linear infinite;
+    display:inline-block;
+    vertical-align:middle;
+  }
+  .switch-link{
+    text-align:center;
+    color:#a1a1aa;
+    font-size:.85rem;
+    margin-top:1.2rem;
+    line-height:1.7;
+  }
+  .switch-link a{
+    color:var(--gold);
+    font-weight:700;
+  }
+  .switch-link a:hover{text-decoration:underline;}
 
-    .hint {
-      font-size: .75rem;
-      color: #52525b;
-      margin-top: .35rem;
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:900px){
+    .container{padding:0 24px;}
+    .nav-links{display:none;}
+    .hero{
+      grid-template-columns:1fr;
+      margin-top:56px;
+      gap:40px;
+      min-height:auto;
     }
-  </style>
+    .hero-right{order:2;min-height:340px;}
+    .hero-left{order:1;}
+    .scene{width:280px;height:280px;}
+    .cube-wrap{width:230px;height:230px;}
+    .spectrum{width:260px;height:220px;}
+    .spectrum.second{width:210px;height:170px;}
+    .domains{margin-top:56px;}
+    .domains-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:480px){
+    .container{padding:0 18px;}
+    .glow-btn{width:100%;}
+    .scene{width:240px;height:240px;}
+    .cube-wrap{width:200px;height:200px;}
+  }
+
+  /* ============ ENTRANCE (alive on load) ============ */
+  @keyframes inUp   { from{opacity:0; transform:translateY(26px);} to{opacity:1; transform:none;} }
+  @keyframes inDown { from{opacity:0; transform:translateY(-16px);} to{opacity:1; transform:none;} }
+  @keyframes inPop  { 0%{opacity:0; transform:scale(.8) translateY(26px);} 60%{opacity:1;} 100%{opacity:1; transform:scale(1) translateY(0);} }
+  .nav{ animation:inDown .7s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-title .line1{ display:inline-block; animation:inUp .85s cubic-bezier(.2,.7,.2,1) both; animation-delay:.25s; }
+  .hero-title .line2{ display:inline-block; animation:inUp .85s cubic-bezier(.2,.7,.2,1) both; animation-delay:.40s; }
+  .hero-sub{ animation:inUp .85s cubic-bezier(.2,.7,.2,1) both; animation-delay:.58s; }
+  .hero-right .scene{ transform-origin:center bottom; animation:inPop 1.4s cubic-bezier(.2,.7,.2,1) both; animation-delay:.4s; }
+
+  @media (prefers-reduced-motion:reduce){
+    .spectrum,.spectrum.second,.cube-wrap,.domain-spinner,.spinner,.panel.active,
+    .nav,.hero-title .line1,.hero-title .line2,.hero-sub,.hero-right .scene{
+      animation:none !important; opacity:1 !important; transform:none !important;
+    }
+  }
+</style>
 </head>
 <body>
-  <div class="card">
-    <img src="assets/logo.svg" alt="Barq" style="width:64px;height:64px;display:block;margin:0 auto .5rem" />
-    <div class="logo">Collection Barq</div>
-    <p class="logo-sub">مرجع الليدرز الداخلي</p>
 
-    <div id="alertMsg" class="msg"></div>
+  <!-- ============ NAV ============ -->
+  <header class="container">
+    <nav class="nav">
+      <a href="#" class="nav-logo" aria-label="Collection Barq">
+        <img src="assets/logo.svg" alt="Collection Barq">
+      </a>
+      <div class="nav-links">
+        <a href="#">Product</a>
+        <a href="#">Teams</a>
+        <a href="#">Resources</a>
+        <a href="#">Community</a>
+        <a href="#">Support</a>
+        <a href="#">Enterprise</a>
+        <a href="#">Pricing</a>
+      </div>
+      <div class="nav-right">
+        <button type="button" class="nav-signup" onclick="openAuth('signin')" style="font-family:'Tajawal',sans-serif">تسجيل الدخول</button>
+      </div>
+    </nav>
+  </header>
 
-    <div class="tabs">
-      <button class="tab-btn active" id="tabRequest" onclick="switchTab('request')">طلب وصول جديد</button>
-      <button class="tab-btn locked" id="tabSignIn" onclick="switchTab('signin')">تسجيل الدخول</button>
-    </div>
+  <!-- ============ HERO ============ -->
+  <main class="container">
+    <section class="hero">
+      <div class="hero-left">
+        <h1 class="hero-title">
+          <span class="line1">Start with</span><br>
+          <span class="line2">Collection Barq</span>
+        </h1>
+        <p class="hero-sub">بوابة الدخول الموحّدة لقادة الشركة.</p>
 
-    <!-- Request Access Panel (default — new users register first) -->
-    <div class="panel active" id="panelRequest">
-      <p class="hint" style="margin-bottom:1.1rem;color:#a1a1aa;line-height:1.7">
-        أول زيارة؟ أرسل <b style="color:#FBBF24">طلب وصول جديد</b>. بعد إرسال الطلب يُفعَّل تسجيل الدخول،
-        وتقدر تدخل الموقع فور موافقة المسؤول على طلبك.
-      </p>
-      <form id="formRequest" onsubmit="handleRequestAccess(event)">
-        <div class="form-group">
-          <label for="rqName">الاسم الكامل</label>
-          <input type="text" id="rqName" placeholder="برق بن براق" required>
-        </div>
-        <div class="form-group">
-          <label for="rqEmail">البريد الإلكتروني</label>
-          <input type="email" id="rqEmail" placeholder="name@barq.com" autocomplete="email" required>
-          <p class="hint">يجب أن يكون بريدك على نطاق @barq.com</p>
-        </div>
-        <div class="form-group">
-          <label for="rqPassword">كلمة المرور</label>
-          <input type="password" id="rqPassword" placeholder="6 أحرف على الأقل" autocomplete="new-password" required minlength="6">
-        </div>
-        <button type="submit" class="btn-primary" id="btnRequest">إرسال الطلب</button>
-      </form>
-      <p class="switch-link">سبق أن سجّلت وحسابك معتمد؟ <a href="#" onclick="unlockSignin();return false;">تسجيل الدخول</a></p>
-    </div>
+        <!-- AUTH (centered welcome screen — same page, no navigation) -->
+        <div id="authView" class="auth-view">
+          <button type="button" class="auth-back" onclick="closeAuth()">‹ رجوع</button>
+          <div class="auth-box" dir="rtl">
+            <img class="auth-logo" src="assets/logo.svg" alt="">
+            <h2 class="auth-h">مرحباً بك في Collection Barq</h2>
+            <p class="auth-p">سجّل دخولك للمتابعة.</p>
+            <div id="alertMsg" class="msg"></div>
 
-    <!-- Sign In Panel (locked until a request is submitted) -->
-    <div class="panel" id="panelSignin">
-      <form id="formSignin" onsubmit="handleSignIn(event)">
-        <div class="form-group">
-          <label for="siEmail">البريد الإلكتروني</label>
-          <input type="email" id="siEmail" placeholder="name@barq.com" autocomplete="email" required>
+            <!-- Sign in -->
+            <div class="panel active" id="panelSignin">
+              <button type="button" class="btn-google" onclick="handleGoogle()">
+                <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.96a9 9 0 0 0 0 8.08l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96L3.97 7.3C4.68 5.17 6.66 3.58 9 3.58z"/></svg>
+                المتابعة عبر Google
+              </button>
+              <div class="auth-or"><span>أو</span></div>
+              <form id="formSignin" onsubmit="handleSignIn(event)">
+                <input type="email" id="siEmail" placeholder="اكتب بريد العمل..." autocomplete="email" required>
+                <input type="password" id="siPassword" placeholder="كلمة المرور" autocomplete="current-password" required>
+                <button type="submit" class="btn-cont" id="btnSignIn">دخول</button>
+              </form>
+              <p class="switch-link">أول مرة هنا؟ <a href="#" onclick="switchTab('request');return false;">أرسل طلب وصول جديد</a></p>
+            </div>
+
+            <!-- Request access -->
+            <div class="panel" id="panelRequest">
+              <form id="formRequest" onsubmit="handleRequestAccess(event)">
+                <input type="text" id="rqName" placeholder="الاسم الكامل" required>
+                <input type="email" id="rqEmail" placeholder="بريدك على ‎@barq.com" autocomplete="email" required>
+                <input type="password" id="rqPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="new-password" required minlength="6">
+                <button type="submit" class="btn-cont" id="btnRequest">إرسال الطلب</button>
+              </form>
+              <p class="switch-link">عندك حساب معتمد؟ <a href="#" onclick="switchTab('signin');return false;">تسجيل الدخول</a></p>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="siPassword">كلمة المرور</label>
-          <input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password" required>
+
+      </div>
+
+      <!-- 3D KEYCAP (real render) -->
+      <div class="hero-right">
+        <div class="scene">
+          <video class="keycap-img" src="assets/keycap.mp4" poster="assets/keycap.png" autoplay loop muted playsinline></video>
         </div>
-        <button type="submit" class="btn-primary" id="btnSignIn">دخول</button>
-      </form>
-      <p class="switch-link">ما عندك حساب؟ <a href="#" onclick="switchTab('request');return false;">أرسل طلب وصول جديد</a></p>
-    </div>
-  </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- (نموذج الدخول صار inline داخل hero-left) -->
 
   <script type="module">
     import { auth, db } from './js/firebase-config.js';
     import {
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
-      signOut
+      signOut,
+      GoogleAuthProvider,
+      signInWithPopup
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
     import {
       doc, setDoc, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     // ── Teams Incoming Webhook URL ──────────────────────────────────────────
-    // Get from: Teams → channel → Workflows → "Post to a channel when a webhook
-    // request is received" template. Paste the generated URL below.
     const TEAMS_WEBHOOK_URL = 'YOUR_TEAMS_WEBHOOK_URL';
-    // Admin page URL (link shown in the Teams notification).
     const ADMIN_URL = 'https://z7mh-sketch.github.io/collection-barq3/admin.html';
     // ────────────────────────────────────────────────────────────────────────
 
@@ -250,36 +718,15 @@
             type: 'AdaptiveCard',
             version: '1.4',
             body: [
-              {
-                type: 'TextBlock',
-                text: '🔔 طلب وصول جديد',
-                weight: 'Bolder',
-                size: 'Large',
-                color: 'Warning',
-                wrap: true,
-              },
-              {
-                type: 'FactSet',
-                facts: [
+              { type: 'TextBlock', text: '🔔 طلب وصول جديد', weight: 'Bolder', size: 'Large', color: 'Warning', wrap: true },
+              { type: 'FactSet', facts: [
                   { title: 'الاسم:', value: name },
                   { title: 'البريد:', value: email },
                   { title: 'الوقت:', value: new Date().toLocaleString('ar-SA') },
-                ],
-              },
-              {
-                type: 'TextBlock',
-                text: 'افتح لوحة الإدارة لمراجعة الطلب والموافقة عليه.',
-                wrap: true,
-                spacing: 'Medium',
-              },
+              ]},
+              { type: 'TextBlock', text: 'افتح لوحة الإدارة لمراجعة الطلب والموافقة عليه.', wrap: true, spacing: 'Medium' },
             ],
-            actions: [
-              {
-                type: 'Action.OpenUrl',
-                title: 'فتح لوحة الإدارة',
-                url: ADMIN_URL,
-              },
-            ],
+            actions: [ { type: 'Action.OpenUrl', title: 'فتح لوحة الإدارة', url: ADMIN_URL } ],
           },
         }],
       };
@@ -293,23 +740,13 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(buildTeamsCard(name, email, uid)),
         });
-      } catch (_) {
-        // Non-blocking — registration still succeeds if Teams notify fails.
-      }
+      } catch (_) { /* non-blocking */ }
     }
 
     const alertMsg = document.getElementById('alertMsg');
+    function showMsg(text, type = 'error') { alertMsg.textContent = text; alertMsg.className = 'msg ' + type; }
+    function clearMsg() { alertMsg.className = 'msg'; alertMsg.textContent = ''; }
 
-    function showMsg(text, type = 'error') {
-      alertMsg.textContent = text;
-      alertMsg.className = 'msg ' + type;
-    }
-    function clearMsg() {
-      alertMsg.className = 'msg';
-      alertMsg.textContent = '';
-    }
-
-    // Handle ?err=domain from auth.js redirect
     const params = new URLSearchParams(location.search);
     if (params.get('err') === 'domain') {
       showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
@@ -318,9 +755,7 @@
     function setLoading(btnId, loading, label) {
       const btn = document.getElementById(btnId);
       btn.disabled = loading;
-      btn.innerHTML = loading
-        ? label + '<span class="spinner"></span>'
-        : label;
+      btn.innerHTML = loading ? label + '<span class="spinner"></span>' : label;
     }
 
     // ── Sign In ───────────────────────────────────────────────────────────
@@ -329,12 +764,7 @@
       clearMsg();
       const email = document.getElementById('siEmail').value.trim().toLowerCase();
       const password = document.getElementById('siPassword').value;
-
-      if (!email.endsWith('@barq.com')) {
-        showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
-        return;
-      }
-
+      if (!email.endsWith('@barq.com')) { showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error'); return; }
       setLoading('btnSignIn', true, 'دخول');
       try {
         await signInWithEmailAndPassword(auth, email, password);
@@ -349,9 +779,7 @@
           'auth/network-request-failed': 'تعذر الاتصال، تحقق من الإنترنت',
         }[err.code] || 'حدث خطأ، حاول مجدداً';
         showMsg(msg, 'error');
-      } finally {
-        setLoading('btnSignIn', false, 'دخول');
-      }
+      } finally { setLoading('btnSignIn', false, 'دخول'); }
     };
 
     // ── Request Access ────────────────────────────────────────────────────
@@ -361,33 +789,14 @@
       const name  = document.getElementById('rqName').value.trim();
       const email = document.getElementById('rqEmail').value.trim().toLowerCase();
       const password = document.getElementById('rqPassword').value;
-
-      if (!email.endsWith('@barq.com')) {
-        showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
-        return;
-      }
-
+      if (!email.endsWith('@barq.com')) { showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error'); return; }
       setLoading('btnRequest', true, 'إرسال الطلب');
       try {
-        // 1. Create Firebase Auth account
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         const uid = cred.user.uid;
-
-        // 2. Write pending user record to Firestore
-        await setDoc(doc(db, 'users', uid), {
-          name,
-          email,
-          status: 'pending',
-          createdAt: serverTimestamp(),
-        });
-
-        // 3. Notify Teams channel (non-blocking)
+        await setDoc(doc(db, 'users', uid), { name, email, status: 'pending', createdAt: serverTimestamp() });
         notifyTeams(name, email, uid);
-
-        // 4. Sign out — they must wait for approval
         await signOut(auth);
-
-        // 5. Unlock the Sign In tab (request submitted) + show success
         try { localStorage.setItem(REQ_FLAG, '1'); } catch (_) {}
         refreshLockUI();
         document.getElementById('formRequest').style.display = 'none';
@@ -400,19 +809,13 @@
           'auth/network-request-failed': 'تعذر الاتصال، تحقق من الإنترنت',
         }[err.code] || 'حدث خطأ، حاول مجدداً';
         showMsg(msg, 'error');
-      } finally {
-        setLoading('btnRequest', false, 'إرسال الطلب');
-      }
+      } finally { setLoading('btnRequest', false, 'إرسال الطلب'); }
     };
 
-    // ── Sign-in lock: مقفل حتى يُرسل المستخدم طلب وصول ──────────────────────
+    // ── Sign-in lock ────────────────────────────────────────────────────────
     const REQ_FLAG = 'barq_access_requested';
-    function signinUnlocked() {
-      try { return localStorage.getItem(REQ_FLAG) === '1'; } catch (_) { return false; }
-    }
-    function refreshLockUI() {
-      document.getElementById('tabSignIn').classList.toggle('locked', !signinUnlocked());
-    }
+    function signinUnlocked() { try { return localStorage.getItem(REQ_FLAG) === '1'; } catch (_) { return false; } }
+    function refreshLockUI() { const t = document.getElementById('tabSignIn'); if (t) t.classList.toggle('locked', !signinUnlocked()); }
     window.unlockSignin = function() {
       try { localStorage.setItem(REQ_FLAG, '1'); } catch (_) {}
       refreshLockUI();
@@ -421,31 +824,58 @@
 
     // ── Tab switching ─────────────────────────────────────────────────────
     window.switchTab = function(tab) {
-      // تسجيل الدخول لا يُتاح إلا بعد إرسال طلب وصول
-      if (tab === 'signin' && !signinUnlocked()) {
-        showMsg('سجّل طلب وصول جديد أولاً — يُفعَّل تسجيل الدخول بعد إرسال الطلب.', 'info');
-        return;
-      }
       clearMsg();
       const isSignin = tab === 'signin';
       document.getElementById('panelSignin').classList.toggle('active', isSignin);
       document.getElementById('panelRequest').classList.toggle('active', !isSignin);
-      document.getElementById('tabSignIn').classList.toggle('active', isSignin);
-      document.getElementById('tabRequest').classList.toggle('active', !isSignin);
-      // أعِد إظهار نموذج الطلب دائماً عند التنقل بين التبويبات
-      document.getElementById('formRequest').style.display = '';
+      const ts = document.getElementById('tabSignIn'); if (ts) ts.classList.toggle('active', isSignin);
+      const tr = document.getElementById('tabRequest'); if (tr) tr.classList.toggle('active', !isSignin);
+      const fr = document.getElementById('formRequest'); if (fr) fr.style.display = '';
     };
 
-    // ── Init: التبويب الافتراضي + حالة القفل ────────────────────────────────
+    // ── Auth view: centered welcome screen (same page, no navigation) ───────
+    const authView = document.getElementById('authView');
+    window.openAuth = function(tab) {
+      authView.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      switchTab(tab || 'signin');
+    };
+    window.closeAuth = function() {
+      authView.classList.remove('show');
+      document.body.style.overflow = '';
+      clearMsg();
+    };
+    // ── Continue with Google (Firebase Google provider) ─────────────────────
+    window.handleGoogle = async function() {
+      clearMsg();
+      try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ hd: 'barq.com', prompt: 'select_account' });
+        const res = await signInWithPopup(auth, provider);
+        const email = (res.user.email || '').toLowerCase();
+        if (!email.endsWith('@barq.com')) {
+          await signOut(auth);
+          showMsg('يجب استخدام حساب @barq.com فقط', 'error');
+          return;
+        }
+        location.replace('index.html');
+      } catch (err) {
+        const m = (err && err.code === 'auth/operation-not-allowed')
+          ? 'الدخول عبر Google غير مفعّل بعد في Firebase — استخدم البريد وكلمة المرور.'
+          : 'تعذّر الدخول عبر Google، استخدم البريد وكلمة المرور.';
+        showMsg(m, 'error');
+      }
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && authView.classList.contains('show')) window.closeAuth();
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────
     refreshLockUI();
-    if (signinUnlocked()) {
-      switchTab('signin');   // مستخدم عائد: ابدأ بتسجيل الدخول
-    } else {
-      switchTab('request');  // زائر جديد: لا بد من طلب وصول أولاً
-    }
-    // أعِد إظهار خطأ النطاق إن وُجد (switchTab يمسح الرسائل)
+    switchTab('signin');
     if (params.get('err') === 'domain') {
       showMsg('يجب استخدام بريد إلكتروني من نطاق @barq.com فقط', 'error');
+      openAuth('signin');
     }
   </script>
 </body>
