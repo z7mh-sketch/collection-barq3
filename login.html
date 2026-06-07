@@ -86,6 +86,9 @@
     font-size:15px;
     font-weight:500;
     cursor:pointer;
+    background:none;
+    border:none;
+    font-family:inherit;
     transition:color .2s ease;
   }
   .nav-login:hover{color:#fff;}
@@ -604,6 +607,31 @@
       animation:none !important; opacity:1 !important; transform:none !important;
     }
   }
+
+  /* ============ INFO / FEATURES (English explainer) ============ */
+  .info{ padding:130px 0 30px; }
+  .info-head{ max-width:760px; }
+  .info-eyebrow{ color:var(--blue2); font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; }
+  .info-title{ margin-top:14px; font-size:clamp(2rem,4vw,3.2rem); font-weight:800; line-height:1.08; letter-spacing:-.02em; color:#fff; }
+  .info-lead{ margin-top:20px; color:var(--gray); font-size:17px; line-height:1.75; }
+  .feat-grid{ margin-top:64px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .feat{
+    border:1px solid var(--row-border); background:var(--row);
+    border-radius:16px; padding:28px 24px;
+    transition:border-color .25s ease, transform .25s ease, background .25s ease;
+  }
+  .feat:hover{ border-color:rgba(59,130,246,.5); transform:translateY(-3px); background:#101014; }
+  .feat-ic{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center;
+    background:rgba(59,130,246,.12); font-size:22px; margin-bottom:18px; }
+  .feat h3{ font-size:18px; font-weight:700; color:#fff; margin-bottom:9px; }
+  .feat p{ color:var(--gray); font-size:14.5px; line-height:1.7; }
+  .info-foot{ margin-top:84px; padding-top:48px; border-top:1px solid var(--row-border);
+    display:flex; flex-wrap:wrap; gap:28px; align-items:center; justify-content:space-between; }
+  .info-foot p{ color:var(--gray); font-size:16px; line-height:1.75; max-width:600px; }
+  .info-foot .nav-signup{ height:50px; padding:0 28px; font-size:16px; }
+  .site-foot{ padding:46px 0; color:#52525b; font-size:13px; text-align:center; letter-spacing:.02em; }
+  @media(max-width:900px){ .feat-grid{ grid-template-columns:1fr 1fr; } .info{ padding:90px 0 20px; } }
+  @media(max-width:600px){ .feat-grid{ grid-template-columns:1fr; } .info-foot{ flex-direction:column; align-items:flex-start; } }
 </style>
 </head>
 <body>
@@ -624,7 +652,8 @@
         <a href="#">Pricing</a>
       </div>
       <div class="nav-right">
-        <button type="button" class="nav-signup" onclick="openAuth('signin')" style="font-family:'Tajawal',sans-serif">تسجيل الدخول</button>
+        <a href="#" class="nav-login" onclick="openAuth('signin');return false;">Log in</a>
+        <button type="button" class="nav-signup" onclick="openAuth('request')">Sign up</button>
       </div>
     </nav>
   </header>
@@ -686,6 +715,33 @@
       </div>
     </section>
   </main>
+
+  <!-- ============ INFO / FEATURES (English explainer) ============ -->
+  <section class="info">
+    <div class="container">
+      <div class="info-head">
+        <div class="info-eyebrow">Collection Barq</div>
+        <h2 class="info-title">Everything your leaders need, in one place</h2>
+        <p class="info-lead">Collection Barq is the unified internal hub for Barq's leaders — bringing the contact directory, escalation channels, quick links, and ready-to-send HR forms together in one fast, simple workspace. Reaching the right person at the right time has never been easier.</p>
+      </div>
+
+      <div class="feat-grid">
+        <div class="feat"><div class="feat-ic">👥</div><h3>Leaders Directory</h3><p>Find any leader instantly — name, role, department, email, phone, and a one-tap Microsoft Teams chat.</p></div>
+        <div class="feat"><div class="feat-ic">🔗</div><h3>Escalation Links</h3><p>Direct, one-click access to every key escalation channel and its tracker — no digging through folders.</p></div>
+        <div class="feat"><div class="feat-ic">⚡</div><h3>Quick Access</h3><p>Sprinklr, ITSM, Microsoft Teams, Outlook, and the company intranet — all reachable from a single screen.</p></div>
+        <div class="feat"><div class="feat-ic">📄</div><h3>Smart HR Forms</h3><p>Generate violation, resignation, and leave requests in seconds — pre-filled, signed, and ready to send.</p></div>
+        <div class="feat"><div class="feat-ic">🌐</div><h3>Fully Bilingual</h3><p>Work in Arabic or English with instant right-to-left switching across the entire experience.</p></div>
+        <div class="feat"><div class="feat-ic">🔒</div><h3>Secure by Design</h3><p>Protected by company sign-in — only approved <strong style="color:#cbd5e1">@barq.com</strong> accounts can get inside.</p></div>
+      </div>
+
+      <div class="info-foot">
+        <p><strong style="color:#fff">Simple from the first click.</strong> No training and no manuals — open the hub, find what you need, and get back to work. Built to feel fast on any device, for every leader on the team.</p>
+        <button type="button" class="nav-signup" onclick="openAuth('signin')">Log in to continue →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-foot">Collection Barq · Internal use only · © Barq</footer>
 
   <!-- (نموذج الدخول صار inline داخل hero-left) -->
 
