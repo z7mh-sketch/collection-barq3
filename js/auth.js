@@ -51,7 +51,7 @@ function showPending(user) {
   overlay.innerHTML = `
     <div class="auth-box">
       <div class="auth-logo">Collection Barq</div>
-      <p style="color:#f59e0b;font-size:1.1rem;margin-bottom:.5rem">⏳ طلبك قيد المراجعة</p>
+      <p style="color:#aab0ba;font-size:1.1rem;margin-bottom:.5rem">⏳ طلبك قيد المراجعة</p>
       <p style="color:#94a3b8;font-size:.85rem;margin-bottom:1.25rem">
         سيتم إشعارك على بريدك الإلكتروني عند الموافقة على طلبك.
       </p>

@@ -49,9 +49,9 @@
 
       // Draw star
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 3.5);
-      glow.addColorStop(0,   `rgba(251,191,36,${s.alpha})`);
-      glow.addColorStop(0.4, `rgba(251,191,36,${s.alpha * .4})`);
-      glow.addColorStop(1,   'rgba(251,191,36,0)');
+      glow.addColorStop(0,   `rgba(255,255,255,${s.alpha})`);
+      glow.addColorStop(0.4, `rgba(255,255,255,${s.alpha * .4})`);
+      glow.addColorStop(1,   'rgba(255,255,255,0)');
 
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r * 3.5, 0, Math.PI * 2);
@@ -91,7 +91,7 @@
         ctx.beginPath();
         ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
         ctx.lineTo(trail[i].x,     trail[i].y);
-        ctx.strokeStyle = `rgba(251,191,36,${alpha * 0.35})`;
+        ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.35})`;
         ctx.lineWidth   = width * 3.5;
         ctx.lineCap     = 'round';
         ctx.lineJoin    = 'round';
@@ -108,8 +108,8 @@
       const h  = trail[trail.length - 1];
       const hg = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, 14);
       hg.addColorStop(0,   `rgba(255,245,180,${h.life * 0.7})`);
-      hg.addColorStop(0.4, `rgba(251,191,36,${h.life * 0.25})`);
-      hg.addColorStop(1,   'rgba(251,191,36,0)');
+      hg.addColorStop(0.4, `rgba(255,255,255,${h.life * 0.25})`);
+      hg.addColorStop(1,   'rgba(255,255,255,0)');
       ctx.beginPath();
       ctx.arc(h.x, h.y, 14, 0, Math.PI * 2);
       ctx.fillStyle = hg;
@@ -129,9 +129,9 @@
       if (s.y > canvas.height + 5) s.y = -5;
 
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 3.5);
-      glow.addColorStop(0,   `rgba(251,191,36,${s.alpha})`);
-      glow.addColorStop(0.4, `rgba(251,191,36,${s.alpha * .4})`);
-      glow.addColorStop(1,   'rgba(251,191,36,0)');
+      glow.addColorStop(0,   `rgba(255,255,255,${s.alpha})`);
+      glow.addColorStop(0.4, `rgba(255,255,255,${s.alpha * .4})`);
+      glow.addColorStop(1,   'rgba(255,255,255,0)');
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r * 3.5, 0, Math.PI * 2);
       ctx.fillStyle = glow;

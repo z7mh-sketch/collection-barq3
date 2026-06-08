@@ -285,10 +285,10 @@ function vfSetSigMode(mode) {
   const tBtn   = document.getElementById('vfBtnType');
   if (mode === 'draw') {
     canvas.style.display = 'block'; input.style.display = 'none';
-    dBtn.style.borderColor = '#FBBF24'; tBtn.style.borderColor = '';
+    dBtn.style.borderColor = '#E7E9EE'; tBtn.style.borderColor = '';
   } else {
     canvas.style.display = 'none'; input.style.display = 'block';
-    tBtn.style.borderColor = '#FBBF24'; dBtn.style.borderColor = '';
+    tBtn.style.borderColor = '#E7E9EE'; dBtn.style.borderColor = '';
     // توقيع جاهز باسم الليدر (الاسم الأول يكفي) إذا كانت الخانة فاضية
     if (!input.value.trim()) {
       const full  = _vfManagerName();
@@ -654,7 +654,7 @@ function _vfBuildMapperModal() {
         <button onclick="document.getElementById('vfMapperModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-4">
-        <div id="vfMapStatus" style="font-size:.82rem;color:#FBBF24;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(251,191,36,.08);border-radius:.4rem;border:1px solid rgba(251,191,36,.3)">اختر حقلاً ثم انقر على النموذج، أو استخدم الأسهم ← ↑ → ↓ لضبط دقيق (Shift = قفزة 25px, Ctrl = 1px)</div>
+        <div id="vfMapStatus" style="font-size:.82rem;color:#E7E9EE;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(255,255,255,.08);border-radius:.4rem;border:1px solid rgba(255,255,255,.3)">اختر حقلاً ثم انقر على النموذج، أو استخدم الأسهم ← ↑ → ↓ لضبط دقيق (Shift = قفزة 25px, Ctrl = 1px)</div>
         <div id="vfMapFieldBtns" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
         <div style="position:relative;display:inline-block;width:100%">
           <canvas id="vfMapCanvas" tabindex="0" style="width:100%;border:1.5px solid #3f3f46;border-radius:.5rem;cursor:crosshair;display:block;outline:none"></canvas>
@@ -681,7 +681,7 @@ function _vfBuildMapperModal() {
     b.onclick = () => {
       _vfMapField = f;
       btns.querySelectorAll('.contact-btn').forEach(x => x.style.borderColor = '');
-      b.style.borderColor = '#FBBF24';
+      b.style.borderColor = '#E7E9EE';
       _vfUpdateMapStatus();
       const cv = document.getElementById('vfMapCanvas');
       if (cv) cv.focus();
@@ -744,7 +744,7 @@ function _vfRedrawMapperCanvas() {
     // Highlight box
     const label = labels[f] || f;
     const tw = ctx.measureText(label).width;
-    ctx.fillStyle = 'rgba(251,191,36,.25)';
+    ctx.fillStyle = 'rgba(255,255,255,.25)';
     ctx.fillRect(px - tw / 2 - 4, py - fontSize / 2 - 2, tw + 8, fontSize + 4);
     // Text
     ctx.fillStyle = '#000';
@@ -1243,8 +1243,8 @@ function _vfRenderEmpList(emps) {
     btn.className = 'contact-btn';
     btn.style.cssText = 'width:100%;justify-content:flex-start;gap:.75rem;padding:.75rem 1rem;text-align:right;display:flex;align-items:center';
     btn.innerHTML = `
-      <span style="width:36px;height:36px;border-radius:50%;background:#FBBF2422;border:1.5px solid #FBBF2455;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i class="fa-solid fa-user" style="color:#FBBF24;font-size:.85rem"></i>
+      <span style="width:36px;height:36px;border-radius:50%;background:#E7E9EE22;border:1.5px solid #E7E9EE55;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="fa-solid fa-user" style="color:#E7E9EE;font-size:.85rem"></i>
       </span>
       <span style="flex:1;min-width:0">
         <strong style="display:block;font-size:.9rem">${emp.name}</strong>
@@ -1329,9 +1329,9 @@ function vfOpenEmailModal() {
     const isSelected = key === _vfEmailTpl;
     const wrap = document.createElement('label');
     wrap.style.cssText = 'display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border:1.5px solid #27272a;border-radius:.65rem;cursor:pointer;transition:border-color .15s;user-select:none';
-    if (isSelected) wrap.style.borderColor = '#FBBF24';
+    if (isSelected) wrap.style.borderColor = '#E7E9EE';
     wrap.innerHTML = `
-      <input type="radio" name="vfEmailTpl" value="${key}" ${isSelected ? 'checked' : ''} style="accent-color:#FBBF24;width:16px;height:16px;flex-shrink:0">
+      <input type="radio" name="vfEmailTpl" value="${key}" ${isSelected ? 'checked' : ''} style="accent-color:#E7E9EE;width:16px;height:16px;flex-shrink:0">
       <span>
         <strong style="display:block;font-size:.88rem">${tpl.label_ar}</strong>
         <span style="color:#71717a;font-size:.77rem">${tpl.label_en}</span>
@@ -1341,13 +1341,13 @@ function vfOpenEmailModal() {
       _vfEmailTpl = key;
       vfEmailUpdateBody();
       container.querySelectorAll('label').forEach(l => l.style.borderColor = '#27272a');
-      wrap.style.borderColor = '#FBBF24';
+      wrap.style.borderColor = '#E7E9EE';
     });
     container.appendChild(wrap);
   });
 
   // Set language buttons
-  document.getElementById('vfEmailLangAr').style.borderColor = '#FBBF24';
+  document.getElementById('vfEmailLangAr').style.borderColor = '#E7E9EE';
   document.getElementById('vfEmailLangEn').style.borderColor = '';
 
   vfEmailUpdateBody();
@@ -1416,8 +1416,8 @@ function _vfAttachEmailAC() {
 
 function vfEmailSetLang(lang) {
   _vfEmailLang = lang;
-  document.getElementById('vfEmailLangAr').style.borderColor = lang === 'ar' ? '#FBBF24' : '';
-  document.getElementById('vfEmailLangEn').style.borderColor = lang === 'en' ? '#FBBF24' : '';
+  document.getElementById('vfEmailLangAr').style.borderColor = lang === 'ar' ? '#E7E9EE' : '';
+  document.getElementById('vfEmailLangEn').style.borderColor = lang === 'en' ? '#E7E9EE' : '';
   document.getElementById('vfEmailBody').setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
   vfEmailUpdateBody();
 }
@@ -1476,8 +1476,8 @@ function _vfViolationType(lang) {
 function _vfLogoSVG(size) {
   const s = size || 22;
   return `<svg width="${s}" height="${s}" viewBox="4 4 36.5 36.5" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle">`
-    + `<path fill="#FBBF24" d="M 28.43 20.734 C 26.031 20.734 24.75 19.219 24.75 16.418 L 24.75 15.043 L 22.137 15.043 L 22.137 16.652 C 22.137 18.75 22.582 20.008 23.676 21.082 C 24.117 21.527 24.699 21.969 25.074 22.133 L 25.074 22.184 C 24.699 22.344 24.117 22.789 23.676 23.234 C 22.582 24.309 22.137 25.566 22.137 27.664 L 22.137 34.172 L 24.75 34.172 L 24.75 27.902 C 24.75 25.102 26.031 23.59 28.43 23.59 L 29.223 23.59 L 29.223 20.738 L 28.43 20.738 Z"/>`
-    + `<path fill="#FBBF24" d="M 20.59 23.227 C 20.148 22.785 19.566 22.34 19.191 22.176 L 19.191 22.129 C 19.566 21.965 20.148 21.52 20.59 21.078 C 21.684 20 22.129 18.746 22.129 16.645 L 22.129 10.137 L 19.516 10.137 L 19.516 16.406 C 19.516 19.207 18.234 20.719 15.836 20.719 L 15.043 20.719 L 15.043 23.57 L 15.836 23.57 C 18.234 23.57 19.516 25.082 19.516 27.883 L 19.516 29.258 L 22.129 29.258 L 22.129 27.652 C 22.129 25.551 21.684 24.297 20.59 23.223 Z"/>`
+    + `<path fill="#E7E9EE" d="M 28.43 20.734 C 26.031 20.734 24.75 19.219 24.75 16.418 L 24.75 15.043 L 22.137 15.043 L 22.137 16.652 C 22.137 18.75 22.582 20.008 23.676 21.082 C 24.117 21.527 24.699 21.969 25.074 22.133 L 25.074 22.184 C 24.699 22.344 24.117 22.789 23.676 23.234 C 22.582 24.309 22.137 25.566 22.137 27.664 L 22.137 34.172 L 24.75 34.172 L 24.75 27.902 C 24.75 25.102 26.031 23.59 28.43 23.59 L 29.223 23.59 L 29.223 20.738 L 28.43 20.738 Z"/>`
+    + `<path fill="#E7E9EE" d="M 20.59 23.227 C 20.148 22.785 19.566 22.34 19.191 22.176 L 19.191 22.129 C 19.566 21.965 20.148 21.52 20.59 21.078 C 21.684 20 22.129 18.746 22.129 16.645 L 22.129 10.137 L 19.516 10.137 L 19.516 16.406 C 19.516 19.207 18.234 20.719 15.836 20.719 L 15.043 20.719 L 15.043 23.57 L 15.836 23.57 C 18.234 23.57 19.516 25.082 19.516 27.883 L 19.516 29.258 L 22.129 29.258 L 22.129 27.652 C 22.129 25.551 21.684 24.297 20.59 23.223 Z"/>`
     + `</svg>`;
 }
 
@@ -1532,14 +1532,14 @@ function _vfDetailsTableHTML(lang, forEmail) {
     const bg = i % 2 ? '#1e293b' : '#0f172a';
     return `
       <tr>
-        <td bgcolor="${bg}" width="150" style="width:150px;background-color:${bg};padding:10px 16px;border:1px solid #4a3f1a;color:#FBBF24;font-weight:700;white-space:nowrap;text-align:${align}">${r[0]}</td>
+        <td bgcolor="${bg}" width="150" style="width:150px;background-color:${bg};padding:10px 16px;border:1px solid #4a3f1a;color:#E7E9EE;font-weight:700;white-space:nowrap;text-align:${align}">${r[0]}</td>
         <td bgcolor="${bg}" style="background-color:${bg};padding:10px 16px;border:1px solid #4a3f1a;color:#f4f4f5;text-align:${align}">${r[1] || '—'}</td>
       </tr>`;
   }).join('');
 
-  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#0f172a" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:440px;border:2px solid #FBBF24;margin:8px 0;background-color:#0f172a">
+  return `<table dir="${dir}" cellpadding="0" cellspacing="0" role="presentation" bgcolor="#0f172a" style="border-collapse:collapse;font-family:Tajawal,Arial,sans-serif;font-size:14px;width:100%;max-width:440px;border:2px solid #E7E9EE;margin:8px 0;background-color:#0f172a">
       <tr>
-        <td colspan="2" bgcolor="#FBBF24" style="background-color:#FBBF24;color:#0f172a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
+        <td colspan="2" bgcolor="#E7E9EE" style="background-color:#E7E9EE;color:#0f172a;padding:12px 16px;font-size:16px;font-weight:800;text-align:${align};letter-spacing:.3px">${title}</td>
       </tr>
       ${trs}
       <tr>

@@ -101,8 +101,8 @@ function _rfRenderEmpList(emps) {
     btn.className = 'contact-btn';
     btn.style.cssText = 'width:100%;justify-content:flex-start;gap:.75rem;padding:.75rem 1rem;text-align:right;display:flex;align-items:center';
     btn.innerHTML = `
-      <span style="width:36px;height:36px;border-radius:50%;background:#FBBF2422;border:1.5px solid #FBBF2455;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i class="fa-solid fa-user" style="color:#FBBF24;font-size:.85rem"></i>
+      <span style="width:36px;height:36px;border-radius:50%;background:#E7E9EE22;border:1.5px solid #E7E9EE55;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="fa-solid fa-user" style="color:#E7E9EE;font-size:.85rem"></i>
       </span>
       <span style="flex:1;min-width:0">
         <strong style="display:block;font-size:.9rem">${emp.name}</strong>
@@ -260,10 +260,10 @@ function rfSetSigMode(mode) {
   const tBtn   = document.getElementById('rfBtnType');
   if (mode === 'draw') {
     canvas.style.display = 'block'; input.style.display = 'none';
-    dBtn.style.borderColor = '#FBBF24'; tBtn.style.borderColor = '';
+    dBtn.style.borderColor = '#E7E9EE'; tBtn.style.borderColor = '';
   } else {
     canvas.style.display = 'none'; input.style.display = 'block';
-    tBtn.style.borderColor = '#FBBF24'; dBtn.style.borderColor = '';
+    tBtn.style.borderColor = '#E7E9EE'; dBtn.style.borderColor = '';
     vfRfSyncTypedSig();
   }
 }
@@ -475,7 +475,7 @@ function _rfBuildMapperModal() {
         <button onclick="document.getElementById('rfMapperModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-4">
-        <div id="rfMapStatus" style="font-size:.82rem;color:#FBBF24;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(251,191,36,.08);border-radius:.4rem;border:1px solid rgba(251,191,36,.3)">اختر حقلاً ثم انقر على النموذج، أو استخدم الأسهم للضبط الدقيق (Shift = 25px, Ctrl = 1px)</div>
+        <div id="rfMapStatus" style="font-size:.82rem;color:#E7E9EE;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(255,255,255,.08);border-radius:.4rem;border:1px solid rgba(255,255,255,.3)">اختر حقلاً ثم انقر على النموذج، أو استخدم الأسهم للضبط الدقيق (Shift = 25px, Ctrl = 1px)</div>
         <div id="rfMapFieldBtns" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem"></div>
         <div style="position:relative;display:inline-block;width:100%">
           <canvas id="rfMapCanvas" tabindex="0" style="width:100%;border:1.5px solid #3f3f46;border-radius:.5rem;cursor:crosshair;display:block;outline:none"></canvas>
@@ -499,7 +499,7 @@ function _rfBuildMapperModal() {
     b.onclick = () => {
       _rfMapField = f;
       btns.querySelectorAll('.contact-btn').forEach(x => x.style.borderColor = '');
-      b.style.borderColor = '#FBBF24';
+      b.style.borderColor = '#E7E9EE';
       _rfUpdateMapStatus();
       const cv = document.getElementById('rfMapCanvas'); if (cv) cv.focus();
     };
@@ -551,7 +551,7 @@ function _rfRedrawMapperCanvas() {
     const px = pos.xPct * canvas.width, py = pos.yPct * canvas.height;
     const label = RF_FIELD_LABELS[f] || f;
     const tw = ctx.measureText(label).width;
-    ctx.fillStyle = (f === _rfMapField) ? 'rgba(239,68,68,.30)' : 'rgba(251,191,36,.22)';
+    ctx.fillStyle = (f === _rfMapField) ? 'rgba(239,68,68,.30)' : 'rgba(255,255,255,.22)';
     ctx.fillRect(px - tw / 2 - 4, py - fontSize / 2 - 2, tw + 8, fontSize + 4);
     ctx.fillStyle = '#000';
     ctx.fillText(label, px, py);

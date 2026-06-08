@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -109,9 +109,9 @@
     animation:wFadeIn .3s ease;
   ">
     <div style="
-      background:#111;border:1.5px solid #FBBF24;border-radius:1.5rem;
+      background:#111;border:1.5px solid #E7E9EE;border-radius:1.5rem;
       padding:2.25rem 2rem;width:min(500px,100%);position:relative;
-      box-shadow:0 0 80px rgba(251,191,36,.2);
+      box-shadow:0 0 80px rgba(255,255,255,.2);
       animation:wSlideUp .35s ease;
       font-family:'Tajawal',sans-serif;
     ">
@@ -122,13 +122,13 @@
         width:2rem;height:2rem;border-radius:.5rem;cursor:pointer;
         font-size:1.1rem;display:flex;align-items:center;justify-content:center;
         transition:all .15s;
-      " onmouseover="this.style.color='#fff';this.style.borderColor='#FBBF24'"
+      " onmouseover="this.style.color='#fff';this.style.borderColor='#E7E9EE'"
          onmouseout="this.style.color='#a1a1aa';this.style.borderColor='#3f3f46'">✕</button>
 
       <!-- Header -->
       <div style="text-align:center;margin-bottom:1.5rem;">
         <div style="font-size:2.2rem;margin-bottom:.6rem;">✨</div>
-        <h2 style="color:#FBBF24;font-size:1.45rem;font-weight:800;margin-bottom:.5rem;line-height:1.3">
+        <h2 style="color:#E7E9EE;font-size:1.45rem;font-weight:800;margin-bottom:.5rem;line-height:1.3">
           كل ما تحتاجه، هنا في مكان واحد
         </h2>
         <p style="color:#94a3b8;font-size:.95rem;line-height:1.7">
@@ -165,7 +165,7 @@
       <!-- CTA -->
       <button onclick="closeWelcome()" style="
         width:100%;padding:.8rem;
-        background:#FBBF24;color:#000;border:none;
+        background:#E7E9EE;color:#000;border:none;
         border-radius:.75rem;font-family:inherit;
         font-size:1rem;font-weight:800;cursor:pointer;
         transition:opacity .15s;
@@ -336,7 +336,7 @@
     <span data-i18n="footerText">Collection Barq · مرجع داخلي للاستخدام ضمن الشركة فقط</span>
     <span style="display:block;font-size:.7rem;color:#52525b;margin-top:.3rem">🚧 الموقع مازال تحت التطوير — لا تصيح</span>
     <a id="adminLink" href="admin.html"
-       style="display:none;margin-top:.6rem;font-size:.78rem;color:#FBBF24;text-decoration:none;align-items:center;gap:.35rem;justify-content:center">
+       style="display:none;margin-top:.6rem;font-size:.78rem;color:#E7E9EE;text-decoration:none;align-items:center;gap:.35rem;justify-content:center">
       <i class="fa-solid fa-shield-halved"></i>
       <span>لوحة الإدارة</span>
     </a>
@@ -350,7 +350,7 @@
     <div class="modal-box w-full max-w-lg">
       <div class="modal-header">
         <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-headset" style="color:#FBBF24"></i>
+          <i class="fa-solid fa-headset" style="color:#E7E9EE"></i>
           <span id="contactModalTitle">ITSM</span>
         </h4>
         <button onclick="closeContactModal()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -477,7 +477,7 @@
         <div class="mb-4">
           <label class="vf-label" id="vfLblSig">توقيع المشرف / المدير المباشر</label>
           <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap;align-items:center">
-            <button type="button" id="vfBtnDraw" onclick="vfSetSigMode('draw')" class="contact-btn" style="border-color:#FBBF24"><span id="vfBtnDrawLbl">رسم</span></button>
+            <button type="button" id="vfBtnDraw" onclick="vfSetSigMode('draw')" class="contact-btn" style="border-color:#E7E9EE"><span id="vfBtnDrawLbl">رسم</span></button>
             <button type="button" id="vfBtnType" onclick="vfSetSigMode('type')" class="contact-btn"><span id="vfBtnTypeLbl">كتابة</span></button>
             <button type="button" onclick="vfClearSig()" class="contact-btn" style="margin-inline-start:auto"><i class="fa-solid fa-eraser"></i> <span id="vfBtnClearLbl">مسح</span></button>
           </div>
@@ -505,7 +505,7 @@
   <div id="vfLaunchModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:210;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(460px,100%);padding:2rem">
       <div class="modal-header" style="margin-bottom:1.5rem">
-        <h4 class="modal-title"><i class="fa-solid fa-file-circle-exclamation" style="color:#FBBF24"></i> نموذج مخالفة</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-file-circle-exclamation" style="color:#E7E9EE"></i> نموذج مخالفة</h4>
         <button onclick="document.getElementById('vfLaunchModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <p style="color:#a1a1aa;font-size:.9rem;margin-bottom:1.5rem;text-align:center">كيف تريد ملء النموذج؟</p>
@@ -513,7 +513,7 @@
         <button onclick="vfLaunchEmpPicker()" class="escalation-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem">
           <i class="fa-solid fa-users"></i> اختر من موظفيك
         </button>
-        <button onclick="vfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#FBBF24">
+        <button onclick="vfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#E7E9EE">
           <i class="fa-solid fa-pen-to-square"></i> أملأها بنفسك
         </button>
         <button onclick="downloadBlankPdf('pdfs/violation.pdf','نموذج_مخالفة_فاضي.pdf')" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#475569;color:#cbd5e1">
@@ -527,12 +527,12 @@
   <div id="vfEmpPickerModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:211;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(500px,100%);max-height:80vh;display:flex;flex-direction:column">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#FBBF24"></i> موظفيك</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#E7E9EE"></i> موظفيك</h4>
         <button onclick="document.getElementById('vfEmpPickerModal').classList.add('hidden');document.getElementById('vfLaunchModal').classList.remove('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div style="padding:1rem 1rem 0">
         <input id="vfEmpSearch" type="text" oninput="vfFilterEmpList(this.value)" placeholder="ابحث بالاسم أو الرقم الوظيفي..."
-          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(251,191,36,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
+          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(255,255,255,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
       </div>
       <div id="vfEmpList" style="padding:1rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem"></div>
     </div>
@@ -542,7 +542,7 @@
   <div id="rfLaunchModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:210;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(460px,100%);padding:2rem">
       <div class="modal-header" style="margin-bottom:1.5rem">
-        <h4 class="modal-title"><i class="fa-solid fa-file-signature" style="color:#FBBF24"></i> نموذج استقالة</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-file-signature" style="color:#E7E9EE"></i> نموذج استقالة</h4>
         <button onclick="document.getElementById('rfLaunchModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <p style="color:#a1a1aa;font-size:.9rem;margin-bottom:1.5rem;text-align:center">كيف تريد ملء النموذج؟</p>
@@ -550,7 +550,7 @@
         <button onclick="rfLaunchEmpPicker()" class="escalation-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem">
           <i class="fa-solid fa-users"></i> اختر من موظفيك
         </button>
-        <button onclick="rfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#FBBF24">
+        <button onclick="rfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#E7E9EE">
           <i class="fa-solid fa-pen-to-square"></i> أملأها بنفسك
         </button>
         <button onclick="downloadBlankPdf('pdfs/resignation.pdf','نموذج_استقالة_فاضي.pdf')" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#475569;color:#cbd5e1">
@@ -564,12 +564,12 @@
   <div id="rfEmpPickerModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:211;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(500px,100%);max-height:80vh;display:flex;flex-direction:column">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#FBBF24"></i> موظفيك</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#E7E9EE"></i> موظفيك</h4>
         <button onclick="document.getElementById('rfEmpPickerModal').classList.add('hidden');document.getElementById('rfLaunchModal').classList.remove('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div style="padding:1rem 1rem 0">
         <input id="rfEmpSearch" type="text" oninput="rfFilterEmpList(this.value)" placeholder="ابحث بالاسم أو الرقم الوظيفي..."
-          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(251,191,36,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
+          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(255,255,255,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
       </div>
       <div id="rfEmpList" style="padding:1rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem"></div>
     </div>
@@ -579,7 +579,7 @@
   <div id="resignFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.82)">
     <div class="modal-box w-full max-w-2xl max-h-[90vh] overflow-y-auto">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-file-signature" style="color:#FBBF24"></i> نموذج استقالة موظف</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-file-signature" style="color:#E7E9EE"></i> نموذج استقالة موظف</h4>
         <button onclick="closeResignForm()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5" dir="rtl">
@@ -610,7 +610,7 @@
             </div>
           </div>
         </div>
-        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> يوم/شهر فقط — السنة (2026) مطبوعة مسبقاً. سبب الاستقالة وتاريخ تقديمها يُتركان فارغين ليعبّئهما الموظف.</p>
+        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#E7E9EE"></i> يوم/شهر فقط — السنة (2026) مطبوعة مسبقاً. سبب الاستقالة وتاريخ تقديمها يُتركان فارغين ليعبّئهما الموظف.</p>
         <!-- المدير المباشر -->
         <div class="mb-4">
           <label class="vf-label">اسم المدير المباشر <span style="color:#71717a;font-weight:400">(تلقائي — يُكتب عربي وإنجليزي)</span></label>
@@ -619,7 +619,7 @@
         <div class="mb-4">
           <label class="vf-label">توقيع المدير المباشر</label>
           <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap;align-items:center">
-            <button type="button" id="rfBtnDraw" onclick="rfSetSigMode('draw')" class="contact-btn" style="border-color:#FBBF24">رسم</button>
+            <button type="button" id="rfBtnDraw" onclick="rfSetSigMode('draw')" class="contact-btn" style="border-color:#E7E9EE">رسم</button>
             <button type="button" id="rfBtnType" onclick="rfSetSigMode('type')" class="contact-btn">كتابة</button>
             <button type="button" onclick="rfClearSig()" class="contact-btn" style="margin-inline-start:auto"><i class="fa-solid fa-eraser"></i> مسح</button>
           </div>
@@ -643,7 +643,7 @@
   <div id="lfLaunchModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:210;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(460px,100%);padding:2rem">
       <div class="modal-header" style="margin-bottom:1.5rem">
-        <h4 class="modal-title"><i class="fa-solid fa-plane-departure" style="color:#FBBF24"></i> نموذج طلب إجازة</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-plane-departure" style="color:#E7E9EE"></i> نموذج طلب إجازة</h4>
         <button onclick="document.getElementById('lfLaunchModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <p style="color:#a1a1aa;font-size:.9rem;margin-bottom:1.5rem;text-align:center">كيف تريد ملء النموذج؟</p>
@@ -651,7 +651,7 @@
         <button onclick="lfLaunchEmpPicker()" class="escalation-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem">
           <i class="fa-solid fa-users"></i> اختر من موظفيك
         </button>
-        <button onclick="lfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#FBBF24">
+        <button onclick="lfLaunchManual()" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#E7E9EE">
           <i class="fa-solid fa-pen-to-square"></i> أملأها بنفسك
         </button>
         <button onclick="downloadBlankPdf('pdfs/leave-request.pdf','نموذج_إجازة_فاضي.pdf')" class="contact-btn" style="width:100%;justify-content:center;gap:.65rem;padding:.9rem 1.25rem;border-color:#475569;color:#cbd5e1">
@@ -665,12 +665,12 @@
   <div id="lfEmpPickerModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:211;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(500px,100%);max-height:80vh;display:flex;flex-direction:column">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#FBBF24"></i> موظفيك</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-users" style="color:#E7E9EE"></i> موظفيك</h4>
         <button onclick="document.getElementById('lfEmpPickerModal').classList.add('hidden');document.getElementById('lfLaunchModal').classList.remove('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div style="padding:1rem 1rem 0">
         <input id="lfEmpSearch" type="text" oninput="lfFilterEmpList(this.value)" placeholder="ابحث بالاسم أو الرقم الوظيفي..."
-          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(251,191,36,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
+          style="width:100%;padding:.6rem .9rem;border-radius:.65rem;background:#18181b;border:1.5px solid rgba(255,255,255,.4);color:#f4f4f5;font-size:.85rem;box-sizing:border-box;font-family:inherit">
       </div>
       <div id="lfEmpList" style="padding:1rem;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:.5rem"></div>
     </div>
@@ -680,7 +680,7 @@
   <div id="leaveFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.82)">
     <div class="modal-box w-full max-w-2xl max-h-[90vh] overflow-y-auto">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-plane-departure" style="color:#FBBF24"></i> نموذج طلب إجازة</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-plane-departure" style="color:#E7E9EE"></i> نموذج طلب إجازة</h4>
         <button onclick="closeLeaveForm()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-5" dir="rtl">
@@ -739,7 +739,7 @@
             </div>
           </div>
         </div>
-        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#FBBF24"></i> الترتيب: شهر / يوم — السنة (2026) مطبوعة مسبقاً على النموذج.</p>
+        <p style="color:#71717a;font-size:.72rem;margin-bottom:1rem"><i class="fa-solid fa-circle-info" style="color:#E7E9EE"></i> الترتيب: شهر / يوم — السنة (2026) مطبوعة مسبقاً على النموذج.</p>
         <!-- رقم التواصل + مجموع الأيام -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div><label class="vf-label">رقم التواصل أثناء الإجازة</label><input type="tel" id="lfContact" class="search-input" style="width:100%" placeholder="05XXXXXXXX" /></div>
@@ -753,7 +753,7 @@
         <div class="mb-4">
           <label class="vf-label">توقيع المدير المباشر</label>
           <div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap;align-items:center">
-            <button type="button" id="lfBtnDraw" onclick="lfSetSigMode('draw')" class="contact-btn" style="border-color:#FBBF24">رسم</button>
+            <button type="button" id="lfBtnDraw" onclick="lfSetSigMode('draw')" class="contact-btn" style="border-color:#E7E9EE">رسم</button>
             <button type="button" id="lfBtnType" onclick="lfSetSigMode('type')" class="contact-btn">كتابة</button>
             <button type="button" onclick="lfClearSig()" class="contact-btn" style="margin-inline-start:auto"><i class="fa-solid fa-eraser"></i> مسح</button>
           </div>
@@ -777,7 +777,7 @@
   <div id="vfEmailModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:212;background:rgba(0,0,0,.82);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(620px,100%);max-height:92vh;overflow-y:auto">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-envelope" style="color:#FBBF24"></i> إرسال المخالفة عبر الإيميل</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-envelope" style="color:#E7E9EE"></i> إرسال المخالفة عبر الإيميل</h4>
         <button onclick="document.getElementById('vfEmailModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1.25rem">
@@ -787,7 +787,7 @@
         </div>
         <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
           <span style="color:#a1a1aa;font-size:.82rem">لغة النص الجاهز:</span>
-          <button id="vfEmailLangAr" onclick="vfEmailSetLang('ar')" class="contact-btn" style="border-color:#FBBF24;padding:.3rem .9rem;font-size:.8rem">العربية</button>
+          <button id="vfEmailLangAr" onclick="vfEmailSetLang('ar')" class="contact-btn" style="border-color:#E7E9EE;padding:.3rem .9rem;font-size:.8rem">العربية</button>
           <button id="vfEmailLangEn" onclick="vfEmailSetLang('en')" class="contact-btn" style="padding:.3rem .9rem;font-size:.8rem">English</button>
         </div>
         <div>
@@ -812,14 +812,14 @@
   <div id="vfEmailPreviewModal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="z-index:213;background:rgba(0,0,0,.85);backdrop-filter:blur(6px)">
     <div class="modal-box" style="width:min(660px,100%);max-height:92vh;overflow-y:auto">
       <div class="modal-header">
-        <h4 class="modal-title"><i class="fa-solid fa-paper-plane" style="color:#FBBF24"></i> معاينة قبل الإرسال</h4>
+        <h4 class="modal-title"><i class="fa-solid fa-paper-plane" style="color:#E7E9EE"></i> معاينة قبل الإرسال</h4>
         <button onclick="document.getElementById('vfEmailPreviewModal').classList.add('hidden')" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem">
         <div style="background:#1a1a1a;border:1.5px solid #3f3f46;border-radius:.75rem;padding:1.25rem">
           <table style="width:100%;font-size:.85rem;border-collapse:collapse;margin-bottom:1rem">
             <tr><td style="color:#71717a;padding:.25rem .5rem .25rem 0;white-space:nowrap">إلى:</td><td id="vfPrevTo" style="color:#e4e4e7;word-break:break-all"></td></tr>
-            <tr><td style="color:#71717a;padding:.25rem .5rem .25rem 0;white-space:nowrap">الموضوع:</td><td id="vfPrevSubject" style="color:#FBBF24;font-weight:600"></td></tr>
+            <tr><td style="color:#71717a;padding:.25rem .5rem .25rem 0;white-space:nowrap">الموضوع:</td><td id="vfPrevSubject" style="color:#E7E9EE;font-weight:600"></td></tr>
           </table>
           <hr style="border-color:#3f3f46;margin-bottom:1rem">
           <pre id="vfPrevBody" style="white-space:pre-wrap;font-family:inherit;font-size:.88rem;color:#d4d4d8;line-height:1.75"></pre>
@@ -834,21 +834,21 @@
         </div>
         <div style="background:#1c1917;border:1px solid #3f3f46;border-radius:.65rem;padding:.85rem">
           <p style="color:#71717a;font-size:.8rem;margin-bottom:.4rem"><i class="fa-solid fa-paperclip"></i> المرفقات:</p>
-          <span style="color:#FBBF24;font-size:.85rem"><i class="fa-solid fa-file-pdf"></i> violation-filled.pdf</span>
+          <span style="color:#E7E9EE;font-size:.85rem"><i class="fa-solid fa-file-pdf"></i> violation-filled.pdf</span>
           <span id="vfAttachHint" style="color:#22c55e;font-size:.75rem;margin-right:.5rem"><i class="fa-solid fa-circle-check"></i> مرفق تلقائياً</span>
           <p style="color:#71717a;font-size:.72rem;margin-top:.6rem;line-height:1.6"><i class="fa-solid fa-circle-check" style="color:#22c55e"></i> نموذج المخالفة (PDF) مرفق تلقائياً داخل الرسالة — جاهز للإرسال مباشرة.</p>
         </div>
         <!-- طريقة الإرسال -->
         <div style="background:#111;border:1.5px solid #27272a;border-radius:.7rem;padding:.85rem 1rem;display:flex;gap:.75rem">
-          <label style="flex:1;display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.5rem .75rem;border-radius:.5rem;border:1.5px solid #FBBF24;transition:border-color .15s" id="vfSendOpt1Lbl">
-            <input type="radio" name="vfSendMethod" value="ready" checked style="accent-color:#FBBF24;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt1Lbl').style.borderColor='#FBBF24';document.getElementById('vfSendOpt2Lbl').style.borderColor='#3f3f46'">
+          <label style="flex:1;display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.5rem .75rem;border-radius:.5rem;border:1.5px solid #E7E9EE;transition:border-color .15s" id="vfSendOpt1Lbl">
+            <input type="radio" name="vfSendMethod" value="ready" checked style="accent-color:#E7E9EE;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt1Lbl').style.borderColor='#E7E9EE';document.getElementById('vfSendOpt2Lbl').style.borderColor='#3f3f46'">
             <span>
               <strong style="display:block;font-size:.85rem;color:#f4f4f5">Outlook على الكمبيوتر <span style="color:#22c55e;font-size:.7rem">(موصى به)</span></strong>
               <span style="font-size:.72rem;color:#71717a">رسالة جاهزة — الجدول بالألوان، والـ PDF مرفق تلقائياً</span>
             </span>
           </label>
           <label style="flex:1;display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.5rem .75rem;border-radius:.5rem;border:1.5px solid #3f3f46;transition:border-color .15s" id="vfSendOpt2Lbl">
-            <input type="radio" name="vfSendMethod" value="web" style="accent-color:#FBBF24;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt2Lbl').style.borderColor='#FBBF24';document.getElementById('vfSendOpt1Lbl').style.borderColor='#3f3f46'">
+            <input type="radio" name="vfSendMethod" value="web" style="accent-color:#E7E9EE;width:15px;height:15px;flex-shrink:0" onchange="document.getElementById('vfSendOpt2Lbl').style.borderColor='#E7E9EE';document.getElementById('vfSendOpt1Lbl').style.borderColor='#3f3f46'">
             <span>
               <strong style="display:block;font-size:.85rem;color:#f4f4f5">Outlook الويب</strong>
               <span style="font-size:.72rem;color:#71717a">نص فقط — بدون جدول، أرفق الـ PDF يدوياً</span>
@@ -856,10 +856,10 @@
           </label>
         </div>
         <!-- تنبيه المرفق -->
-        <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:.6rem;padding:.65rem .9rem;display:flex;align-items:center;gap:.65rem">
-          <i class="fa-solid fa-paperclip" style="color:#FBBF24;font-size:1rem;flex-shrink:0"></i>
-          <span style="font-size:.78rem;color:#d4d4d8">في وضع <strong style="color:#FBBF24">الكمبيوتر</strong> الـ PDF مرفق داخل الرسالة تلقائياً وجاهز للإرسال. في وضع <strong style="color:#FBBF24">الويب</strong> فقط يلزم تحميله وإرفاقه يدوياً.</span>
-          <button onclick="vfRedownloadPdf()" title="تحميل مجدداً" style="background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:.4rem;padding:.25rem .55rem;color:#FBBF24;font-size:.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0"><i class="fa-solid fa-download"></i> تحميل الـ PDF</button>
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.3);border-radius:.6rem;padding:.65rem .9rem;display:flex;align-items:center;gap:.65rem">
+          <i class="fa-solid fa-paperclip" style="color:#E7E9EE;font-size:1rem;flex-shrink:0"></i>
+          <span style="font-size:.78rem;color:#d4d4d8">في وضع <strong style="color:#E7E9EE">الكمبيوتر</strong> الـ PDF مرفق داخل الرسالة تلقائياً وجاهز للإرسال. في وضع <strong style="color:#E7E9EE">الويب</strong> فقط يلزم تحميله وإرفاقه يدوياً.</span>
+          <button onclick="vfRedownloadPdf()" title="تحميل مجدداً" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:.4rem;padding:.25rem .55rem;color:#E7E9EE;font-size:.72rem;cursor:pointer;white-space:nowrap;flex-shrink:0"><i class="fa-solid fa-download"></i> تحميل الـ PDF</button>
         </div>
         <div style="display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;padding-top:.25rem">
           <button onclick="document.getElementById('vfEmailPreviewModal').classList.add('hidden')" class="contact-btn"><i class="fa-solid fa-pen"></i> تعديل</button>
@@ -876,7 +876,7 @@
     <div class="modal-box w-full max-w-6xl max-h-[90vh] overflow-y-auto">
       <div class="modal-header">
         <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-user-group" style="color:#FBBF24"></i>
+          <i class="fa-solid fa-user-group" style="color:#E7E9EE"></i>
           <span data-i18n="leadersLabel">الليدرز</span>
           <span id="leadersCount" class="text-sm font-normal" style="color:#71717a"></span>
         </h4>
@@ -907,7 +907,7 @@
     <div class="modal-box w-full max-w-5xl max-h-[90vh] overflow-y-auto">
       <div class="modal-header">
         <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-sitemap" style="color:#FBBF24"></i>
+          <i class="fa-solid fa-sitemap" style="color:#E7E9EE"></i>
           <span data-i18n="orgChartLabel">الهيكل التنظيمي</span>
         </h4>
         <button id="orgChartClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -942,7 +942,7 @@
     <div class="modal-box w-full max-w-4xl" style="max-height:95vh;display:flex;flex-direction:column">
       <div class="modal-header">
         <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-crosshairs" style="color:#FBBF24"></i>
+          <i class="fa-solid fa-crosshairs" style="color:#E7E9EE"></i>
           حدد مكان كل حقل على النموذج
         </h4>
         <button id="pdfMapperClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -969,7 +969,7 @@
     <div class="modal-box w-full max-w-3xl max-h-[90vh] overflow-y-auto">
       <div class="modal-header">
         <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-list-check" style="color:#FBBF24"></i>
+          <i class="fa-solid fa-list-check" style="color:#E7E9EE"></i>
           <span data-i18n="escalationLabel">دليل التصعيد بالخطوات</span>
         </h4>
         <button id="escalationModalClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
@@ -996,7 +996,7 @@
   <!-- ============ NAME MODAL ============ -->
   <div id="nameModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4" style="background:rgba(0,0,0,.88)">
     <div class="modal-box max-w-xs w-full" style="padding:2rem;text-align:center">
-      <i class="fa-solid fa-circle-user" style="color:#FBBF24;font-size:2.5rem;display:block;margin-bottom:1rem"></i>
+      <i class="fa-solid fa-circle-user" style="color:#E7E9EE;font-size:2.5rem;display:block;margin-bottom:1rem"></i>
       <h3 class="modal-title" style="margin-bottom:.4rem">مرحباً!</h3>
       <p style="color:#71717a;font-size:.875rem;margin-bottom:1.25rem">أدخل اسمك ليظهر للآخرين كمتصل</p>
       <input id="nameInput" type="text" placeholder="اسمك..." class="search-input" style="width:100%;margin-bottom:.75rem" />

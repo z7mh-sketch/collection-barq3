@@ -331,18 +331,18 @@ function openLeaderModal(id) {
 
   const contactRows = [];
   if (leader.contacts?.email)
-    contactRows.push(`<a class="modal-link" href="mailto:${escapeHtml(leader.contacts.email)}"><i class="fa-solid fa-envelope" style="width:1.2rem;text-align:center;color:#FBBF24"></i><span>${escapeHtml(leader.contacts.email)}</span></a>`);
+    contactRows.push(`<a class="modal-link" href="mailto:${escapeHtml(leader.contacts.email)}"><i class="fa-solid fa-envelope" style="width:1.2rem;text-align:center;color:#E7E9EE"></i><span>${escapeHtml(leader.contacts.email)}</span></a>`);
   if (leader.contacts?.phone)
-    contactRows.push(`<a class="modal-link" href="tel:${escapeHtml(leader.contacts.phone)}"><i class="fa-solid fa-phone" style="width:1.2rem;text-align:center;color:#FBBF24"></i><span dir="ltr">${escapeHtml(leader.contacts.phone)}</span></a>`);
+    contactRows.push(`<a class="modal-link" href="tel:${escapeHtml(leader.contacts.phone)}"><i class="fa-solid fa-phone" style="width:1.2rem;text-align:center;color:#E7E9EE"></i><span dir="ltr">${escapeHtml(leader.contacts.phone)}</span></a>`);
   if (leader.contacts?.teams)
-    contactRows.push(`<a class="modal-link" href="${escapeHtml(leader.contacts.teams)}" target="_blank" rel="noopener"><i class="fa-solid fa-comments" style="width:1.2rem;text-align:center;color:#FBBF24"></i><span>${t('teamsChat')}</span><i class="fa-solid fa-arrow-up-left-from-square link-ext"></i></a>`);
+    contactRows.push(`<a class="modal-link" href="${escapeHtml(leader.contacts.teams)}" target="_blank" rel="noopener"><i class="fa-solid fa-comments" style="width:1.2rem;text-align:center;color:#E7E9EE"></i><span>${t('teamsChat')}</span><i class="fa-solid fa-arrow-up-left-from-square link-ext"></i></a>`);
 
   if (contactRows.length)
     sections.push(`<div style="margin-bottom:1.25rem"><div class="modal-section-title">${t('contactInfoLabel')}</div><div style="display:flex;flex-direction:column;gap:.5rem">${contactRows.join('')}</div></div>`);
 
   if (leader.escalationLinks?.length) {
     const links = leader.escalationLinks.map(l =>
-      `<a class="modal-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener"><i class="fa-solid fa-link" style="width:1.2rem;text-align:center;color:#FBBF24"></i><span>${escapeHtml(td(l, 'label'))}</span><i class="fa-solid fa-arrow-up-left-from-square link-ext"></i></a>`
+      `<a class="modal-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener"><i class="fa-solid fa-link" style="width:1.2rem;text-align:center;color:#E7E9EE"></i><span>${escapeHtml(td(l, 'label'))}</span><i class="fa-solid fa-arrow-up-left-from-square link-ext"></i></a>`
     ).join('');
     sections.push(`<div><div class="modal-section-title">${t('escalationLinksLabel')}</div><div style="display:flex;flex-direction:column;gap:.5rem">${links}</div></div>`);
   }
@@ -350,7 +350,7 @@ function openLeaderModal(id) {
   if (leader.reportsTo) {
     const boss = leadersById[leader.reportsTo];
     if (boss)
-      sections.push(`<div style="margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid #f4f4f5"><div class="modal-section-title">${t('reportsToLabel')}</div><button type="button" class="modal-link" data-jump-to="${boss.id}"><i class="fa-solid fa-user-tie" style="width:1.2rem;text-align:center;color:#FBBF24"></i><span>${escapeHtml(td(boss, 'name'))} — ${escapeHtml(td(boss, 'title'))}</span></button></div>`);
+      sections.push(`<div style="margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid #f4f4f5"><div class="modal-section-title">${t('reportsToLabel')}</div><button type="button" class="modal-link" data-jump-to="${boss.id}"><i class="fa-solid fa-user-tie" style="width:1.2rem;text-align:center;color:#E7E9EE"></i><span>${escapeHtml(td(boss, 'name'))} — ${escapeHtml(td(boss, 'title'))}</span></button></div>`);
   }
 
   const body = document.getElementById('modalBody');
@@ -371,7 +371,7 @@ function renderOrgChart() {
 
   const topIds = leaders.filter(l => !l.reportsTo).map(l => l.id);
   const midIds = leaders.filter(l =>  l.reportsTo).map(l => l.id);
-  lines.push('  classDef top fill:#000,stroke:#FBBF24,color:#FBBF24,stroke-width:2px;');
+  lines.push('  classDef top fill:#000,stroke:#E7E9EE,color:#E7E9EE,stroke-width:2px;');
   lines.push('  classDef mid fill:#fff,stroke:#000,color:#000,stroke-width:1.5px;');
   if (topIds.length) lines.push(`  class ${topIds.join(',')} top;`);
   if (midIds.length) lines.push(`  class ${midIds.join(',')} mid;`);
@@ -432,8 +432,8 @@ function initTheme() {
   });
   function updateIcon() {
     btn.innerHTML = root.classList.contains('dark')
-      ? '<i class="fa-solid fa-sun" style="color:#FBBF24"></i>'
-      : '<i class="fa-solid fa-moon" style="color:#FBBF24"></i>';
+      ? '<i class="fa-solid fa-sun" style="color:#E7E9EE"></i>'
+      : '<i class="fa-solid fa-moon" style="color:#E7E9EE"></i>';
   }
 }
 
