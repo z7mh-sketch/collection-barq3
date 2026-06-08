@@ -25,6 +25,78 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <link rel="stylesheet" href="css/styles.css?v=202606072035" />
+  <style id="flux-dashboard">
+    :root{
+      --fx-bg:#0a0b0d; --fx-panel:#0e1013; --fx-card:#15171b;
+      --fx-border:rgba(255,255,255,.07); --fx-text:#e7e9ee; --fx-muted:#8a8f99; --fx-active:#1b1e24;
+    }
+    html,body{ background:var(--fx-bg) !important; }
+    body{ color:var(--fx-text); min-height:100vh; }
+
+    .app-shell{ display:flex; direction:ltr; min-height:100vh; align-items:stretch; }
+    .app-shell > .dash-sidebar, .app-shell > .dash-content{ direction:rtl; }
+
+    .dash-sidebar{
+      width:242px; flex-shrink:0; background:var(--fx-panel);
+      border-inline-end:1px solid var(--fx-border);
+      display:flex; flex-direction:column; gap:4px; padding:18px 14px;
+      position:sticky; top:0; height:100vh; overflow-y:auto;
+    }
+    .dash-brand{ display:flex; align-items:center; gap:10px; padding:4px 8px 16px; }
+    .dash-brand img{ width:26px; height:26px; }
+    .dash-brand b{ font-size:1.05rem; color:#fff; font-weight:800; }
+    .dash-menu-label{ font-size:.64rem; font-weight:700; letter-spacing:.14em; color:#565b65; padding:10px 10px 6px; }
+    .dash-nav{ display:flex; flex-direction:column; gap:3px; }
+    .dash-nav-item{
+      display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px;
+      color:var(--fx-muted); font-size:.92rem; font-weight:600; font-family:inherit;
+      background:transparent; border:none; cursor:pointer; text-align:start; width:100%; text-decoration:none;
+      transition:background .15s ease, color .15s ease;
+    }
+    .dash-nav-item i{ width:18px; text-align:center; font-size:1rem; flex-shrink:0; }
+    .dash-nav-item:hover{ background:var(--fx-active); color:var(--fx-text); }
+    .dash-nav-item.active{ background:var(--fx-active); color:#fff; }
+    .dash-nav-item.maint{ opacity:.4; cursor:not-allowed; pointer-events:none; }
+    .dash-nav-item .tag{ margin-inline-start:auto; font-size:.72rem; }
+
+    .dash-content{ flex:1; min-width:0; display:flex; flex-direction:column; min-height:100vh; }
+    .dash-topbar{
+      height:64px; flex-shrink:0; display:flex; align-items:center; gap:12px;
+      padding:0 24px; border-bottom:1px solid var(--fx-border);
+      background:rgba(10,11,13,.85); backdrop-filter:blur(8px);
+      position:sticky; top:0; z-index:30;
+    }
+    .dash-page-title{ font-size:1.05rem; font-weight:800; color:#fff; }
+    .dash-topbar-spacer{ flex:1; }
+    .dash-hamburger{ display:none; background:none; border:none; color:var(--fx-text); font-size:1.15rem; cursor:pointer; }
+    .dash-content > main{ max-width:none !important; margin:0 !important; padding:24px !important; }
+
+    /* Flux-ify existing pieces */
+    .hero-section{ background:linear-gradient(160deg,#16181d,#0e1013) !important; border:1px solid var(--fx-border) !important; }
+    .hero-title{ color:#fff !important; }
+    .hero-desc{ color:var(--fx-muted) !important; }
+    .section-title{ color:#fff !important; }
+    .section-subtitle{ color:var(--fx-muted) !important; }
+    .site-footer{ background:transparent !important; border-top:1px solid var(--fx-border); color:var(--fx-muted) !important; padding:22px; margin-top:8px; }
+    .header-search-input{ background:var(--fx-card) !important; border:1px solid var(--fx-border) !important; color:var(--fx-text) !important; }
+    .dash-topbar .logout-btn{ background:transparent !important; border:1px solid var(--fx-border) !important; color:var(--fx-text) !important; border-radius:10px !important; padding:8px 14px !important; }
+    .dash-topbar .logout-btn:hover{ background:var(--fx-active) !important; }
+
+    /* hide legacy gold decorations that clash with the Flux look */
+    #starCanvas{ display:none !important; }
+    #tasksPanel{ display:none !important; }
+
+    @media(max-width:860px){
+      .app-shell{ flex-direction:column; }
+      .dash-sidebar{ width:100%; height:auto; position:relative; flex-direction:row; flex-wrap:wrap; gap:6px; align-items:center; padding:12px; }
+      .dash-menu-label{ display:none; }
+      .dash-nav{ flex-direction:row; flex-wrap:wrap; }
+      .dash-nav-item{ width:auto; padding:8px 10px; }
+      .dash-brand{ padding:4px 8px; }
+      .dash-hamburger{ display:inline-flex; }
+      .header-search-wrap{ display:none; }
+    }
+  </style>
 </head>
 
 <body>
@@ -125,49 +197,44 @@
     })();
   </script>
 
-  <!-- ============ HEADER ============ -->
-  <header class="site-header sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 flex-wrap">
+  <!-- ============ DASHBOARD SHELL ============ -->
+  <div class="app-shell">
 
-      <!-- Logo + Title -->
-      <div class="flex items-center gap-2 shrink-0">
-        <img src="assets/logo.svg" class="site-logo-img" alt="logo" />
-        <h1 class="site-title" dir="ltr">Collection Barq</h1>
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand">
+        <img src="assets/logo.svg" alt="logo" />
+        <b dir="ltr">Collection Barq</b>
       </div>
-
-      <!-- Nav -->
-      <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-        <a href="#quick-links" class="nav-link" data-i18n="navQuickLinks">روابط سريعة</a>
-        <button id="leadersNavBtn" class="nav-link nav-link-btn" data-i18n="navLeaders">الليدرز</button>
-        <span style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:1px;cursor:not-allowed;opacity:.5" title="تحت الصيانة">
-          <button id="orgChartNavBtn" class="nav-link nav-link-btn" data-i18n="navOrgChart" disabled style="pointer-events:none">الهيكل التنظيمي</button>
-          <span style="font-size:.58rem;color:#f97316;font-weight:700;letter-spacing:.02em;line-height:1">🔧 تحت الصيانة</span>
-        </span>
-        <span style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:1px;cursor:not-allowed;opacity:.5" title="تحت الصيانة">
-          <button id="escalationNavBtn" class="nav-link nav-link-btn" data-i18n="navEscalation" disabled style="pointer-events:none">دليل التصعيد</button>
-          <span style="font-size:.58rem;color:#f97316;font-weight:700;letter-spacing:.02em;line-height:1">🔧 تحت الصيانة</span>
-        </span>
-        <span style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:1px;cursor:not-allowed;opacity:.5" title="تحت الصيانة">
-          <button id="bookletNavBtn" class="nav-link nav-link-btn" disabled style="pointer-events:none">أحدث بكليت</button>
-          <span style="font-size:.58rem;color:#f97316;font-weight:700;letter-spacing:.02em;line-height:1">🔧 تحت الصيانة</span>
-        </span>
+      <div class="dash-menu-label">MAIN MENU</div>
+      <nav class="dash-nav">
+        <a href="#quick-links" class="dash-nav-item active" data-i18n="navQuickLinks"><i class="fa-solid fa-bolt"></i><span>روابط سريعة</span></a>
+        <button id="leadersNavBtn" class="dash-nav-item nav-link nav-link-btn" data-i18n="navLeaders"><i class="fa-solid fa-users"></i><span>الليدرز</span></button>
+        <a href="#pdf-links" class="dash-nav-item"><i class="fa-solid fa-file-pdf"></i><span data-i18n="pdfLabel">ملفات PDF</span></a>
+        <a href="#escalation-quick-links" class="dash-nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i><span data-i18n="escalationQuickLabel">روابط التصعيد</span></a>
+        <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" data-i18n="navOrgChart" disabled><i class="fa-solid fa-sitemap"></i><span>الهيكل التنظيمي</span><span class="tag">🔧</span></button>
+        <button id="escalationNavBtn" class="dash-nav-item nav-link nav-link-btn maint" data-i18n="navEscalation" disabled><i class="fa-solid fa-diagram-project"></i><span>دليل التصعيد</span><span class="tag">🔧</span></button>
+        <button id="bookletNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><i class="fa-solid fa-bookmark"></i><span>أحدث بكليت</span><span class="tag">🔧</span></button>
       </nav>
+    </aside>
 
-      <!-- Header Search -->
-      <div class="header-search-wrap">
-        <input id="headerSearchInput" type="search" class="header-search-input"
-          placeholder="شبيك لبيك برق بين يديك"
-          autocomplete="off" />
-        <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
-      </div>
+    <!-- CONTENT -->
+    <div class="dash-content">
 
-      <!-- Mobile hamburger -->
-      <button id="mobileMenuBtn" class="md:hidden nav-link nav-link-btn ms-auto" aria-label="القائمة">
-        <i class="fa-solid fa-bars" id="mobileMenuIcon"></i>
-      </button>
+      <!-- TOP BAR -->
+      <header class="dash-topbar">
+        <button id="mobileMenuBtn" class="dash-hamburger" aria-label="القائمة"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
+        <h1 class="dash-page-title" dir="ltr">Collection Barq</h1>
+        <div class="dash-topbar-spacer"></div>
 
-      <!-- Controls -->
-      <div class="flex items-center gap-2 ms-2 md:ms-auto">
+        <!-- Header Search -->
+        <div class="header-search-wrap">
+          <input id="headerSearchInput" type="search" class="header-search-input"
+            placeholder="شبيك لبيك برق بين يديك"
+            autocomplete="off" />
+          <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
+        </div>
+
         <!-- Presence Widget -->
         <div id="presenceWidget" class="presence-widget hidden">
           <div class="presence-item">
@@ -198,9 +265,7 @@
           <i class="fa-solid fa-right-from-bracket"></i>
           <span data-i18n="logoutBtn">تسجيل الخروج</span>
         </button>
-      </div>
-    </div>
-  </header>
+      </header>
 
   <!-- Mobile nav dropdown -->
   <div id="mobileMenu" class="mobile-menu-panel hidden md:hidden">
@@ -276,6 +341,9 @@
       <span>لوحة الإدارة</span>
     </a>
   </footer>
+
+    </div><!-- /.dash-content -->
+  </div><!-- /.app-shell -->
 
   <!-- ============ CONTACT MODAL ============ -->
   <div id="contactModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.78)">
