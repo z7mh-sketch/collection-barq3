@@ -2341,9 +2341,12 @@
 
   <!-- ============ REPORT A SERVICE PROBLEM ============ -->
   <style id="report-css">
+    .dash-nav .dash-nav-item[data-view="settings"]{ display:none; }
+    .rp-seg{ display:flex; width:100%; }
+    .rp-seg button{ flex:1; }
     .rp-fab{ position:fixed; bottom:20px; right:20px; z-index:9000; display:inline-flex; align-items:center; gap:8px; background:#15171b; color:#e7e9ee; border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:10px 16px; font-family:'Inter','Tajawal',sans-serif; font-size:.85rem; font-weight:600; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.5); transition:background .2s,border-color .2s,transform .15s; }
     .rp-fab:hover{ background:#1f2228; border-color:rgba(59,130,246,.5); transform:translateY(-1px); }
-    .rp-fab svg{ width:16px; height:16px; color:#f87171; flex-shrink:0; }
+    .rp-fab svg{ width:16px; height:16px; color:#93c5fd; flex-shrink:0; }
     .rp-overlay{ position:fixed; inset:0; z-index:99996; background:rgba(0,0,0,.8); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:1.5rem; }
     .rp-overlay.open{ display:flex; }
     .rp-box{ width:min(480px,100%); background:#0d0d0f; border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:24px; font-family:'Inter','Tajawal',sans-serif; }
@@ -2363,47 +2366,59 @@
     .rp-ok{ display:none; color:#86efac; font-size:.85rem; margin-top:12px; text-align:center; }
     @media(max-width:600px){ .rp-fab span{ display:none; } .rp-fab{ padding:12px; bottom:16px; right:16px; } }
   </style>
-  <button type="button" class="rp-fab" onclick="openReport()" title="Report a service problem">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-    <span>Report a problem</span>
+  <button type="button" class="rp-fab" onclick="openReport()" title="Report a problem or share an idea">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Feedback</span>
   </button>
   <div class="rp-overlay" id="reportModal">
     <div class="rp-box">
-      <h3><i class="fa-solid fa-triangle-exclamation"></i> Report a service problem</h3>
-      <p class="rp-hint">Tell us what went wrong — it goes straight to the admin panel.</p>
-      <div class="rp-field">
+      <h3><i class="fa-solid fa-comment-dots"></i> Send feedback</h3>
+      <p class="rp-hint">Report a problem or share an idea — it goes straight to the admin panel.</p>
+      <div class="seg rp-seg" id="rpType">
+        <button type="button" class="active" data-type="problem" onclick="rpSetType('problem')">Report a problem</button>
+        <button type="button" data-type="idea" onclick="rpSetType('idea')">Share an idea</button>
+      </div>
+      <div class="rp-field" style="margin-top:14px">
         <label>Page / service</label>
         <input id="rpPage" class="rp-input" type="text" readonly />
       </div>
       <div class="rp-field">
-        <label>What's the problem?</label>
+        <label id="rpMsgLabel">What's the problem?</label>
         <textarea id="rpMsg" class="rp-textarea" placeholder="Describe the issue you ran into…"></textarea>
       </div>
-      <div class="rp-ok" id="rpOk">✓ Report sent — thank you!</div>
+      <div class="rp-ok" id="rpOk">✓ Sent — thank you!</div>
       <div class="rp-actions">
         <button type="button" class="rp-btn cancel" onclick="closeReport()">Cancel</button>
-        <button type="button" class="rp-btn send" id="rpSend" onclick="submitReport()">Send report</button>
+        <button type="button" class="rp-btn send" id="rpSend" onclick="submitReport()">Send</button>
       </div>
     </div>
   </div>
   <script>
     (function(){
+      var rpType='problem';
       function curPage(){ var a=document.querySelector('.dash-nav-item.active span'); var t=a?a.textContent.trim():''; if(t) return t; var v=document.querySelector('.dash-view.active'); return v? v.id.replace('view-','') : 'Home'; }
-      window.openReport=function(){ var m=document.getElementById('reportModal'); if(!m) return; var p=document.getElementById('rpPage'); if(p) p.value=curPage(); var ok=document.getElementById('rpOk'); if(ok) ok.style.display='none'; var msg=document.getElementById('rpMsg'); if(msg) msg.value=''; m.classList.add('open'); if(msg) setTimeout(function(){msg.focus();},50); };
+      window.rpSetType=function(t){
+        rpType=(t==='idea')?'idea':'problem';
+        var seg=document.getElementById('rpType'); if(seg) seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-type')===rpType); });
+        var lbl=document.getElementById('rpMsgLabel'); var msg=document.getElementById('rpMsg');
+        if(rpType==='idea'){ if(lbl) lbl.textContent="What's your idea?"; if(msg) msg.placeholder='Tell us how we can make it better…'; }
+        else { if(lbl) lbl.textContent="What's the problem?"; if(msg) msg.placeholder='Describe the issue you ran into…'; }
+      };
+      window.openReport=function(){ var m=document.getElementById('reportModal'); if(!m) return; var p=document.getElementById('rpPage'); if(p) p.value=curPage(); var ok=document.getElementById('rpOk'); if(ok) ok.style.display='none'; var msg=document.getElementById('rpMsg'); if(msg) msg.value=''; rpSetType('problem'); m.classList.add('open'); if(msg) setTimeout(function(){msg.focus();},50); };
       window.closeReport=function(){ var m=document.getElementById('reportModal'); if(m) m.classList.remove('open'); };
       window.submitReport=function(){
         var msgEl=document.getElementById('rpMsg'); var v=(msgEl&&msgEl.value||'').trim(); if(!v){ if(msgEl) msgEl.focus(); return; }
         var page=(document.getElementById('rpPage')||{}).value||curPage();
         var name='', email='';
         try{ name=(localStorage.getItem('presenceName')||'').trim(); email=(localStorage.getItem('userEmail')||'').trim(); }catch(e){}
-        var payload={ name:name, email:email, page:page, message:v };
-        try{ var k='barq_reports_v1'; var a=JSON.parse(localStorage.getItem(k)||'[]'); a.push({name:name,email:email,page:page,message:v}); localStorage.setItem(k, JSON.stringify(a)); }catch(e){}
+        var payload={ name:name, email:email, page:page, type:rpType, message:v };
+        try{ var k='barq_reports_v1'; var a=JSON.parse(localStorage.getItem(k)||'[]'); a.push(payload); localStorage.setItem(k, JSON.stringify(a)); }catch(e){}
         var btn=document.getElementById('rpSend'); if(btn){ btn.disabled=true; btn.textContent='Sending…'; }
         fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
           .catch(function(){})
           .then(function(){
             var ok=document.getElementById('rpOk'); if(ok) ok.style.display='block';
-            if(btn){ btn.disabled=false; btn.textContent='Send report'; }
+            if(btn){ btn.disabled=false; btn.textContent='Send'; }
             setTimeout(closeReport, 1300);
           });
       };

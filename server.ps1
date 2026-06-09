@@ -178,6 +178,8 @@ while ($true) {
         $rEmail = ("$($data.email)").Trim()
         $rPage  = ("$($data.page)").Trim()
         $rMsg   = ("$($data.message)").Trim()
+        $rType  = ("$($data.type)").Trim()
+        if ($rType -eq '') { $rType = 'problem' }
         try {
           $rTime = [System.TimeZoneInfo]::ConvertTimeFromUtc([DateTime]::UtcNow,[System.TimeZoneInfo]::FindSystemTimeZoneById('Arab Standard Time')).ToString('yyyy-MM-dd HH:mm')
         } catch { $rTime = [DateTime]::Now.ToString('yyyy-MM-dd HH:mm') }
@@ -185,8 +187,9 @@ while ($true) {
         $sn = ($rName  -replace '\\','\\' -replace '"','\"')
         $se = ($rEmail -replace '\\','\\' -replace '"','\"')
         $sp = ($rPage  -replace '\\','\\' -replace '"','\"')
+        $stype = ($rType -replace '\\','\\' -replace '"','\"')
         $sm = ($rMsg   -replace '\\','\\' -replace '"','\"' -replace "`r",' ' -replace "`n",' ')
-        $entry = "{`"name`":`"$sn`",`"email`":`"$se`",`"page`":`"$sp`",`"message`":`"$sm`",`"time`":`"$rTime`"}"
+        $entry = "{`"name`":`"$sn`",`"email`":`"$se`",`"page`":`"$sp`",`"type`":`"$stype`",`"message`":`"$sm`",`"time`":`"$rTime`"}"
         if (Test-Path $logFile) {
           $cur = ([System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)).Trim()
           if ($cur -eq '[]' -or $cur -eq '') { $json = "[$entry]" }
