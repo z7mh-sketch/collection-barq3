@@ -630,14 +630,7 @@
         <button type="button" class="dash-nav-item" data-view="pdf" onclick="showView('pdf')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></button>
         <button type="button" class="dash-nav-item" data-view="notes" onclick="showView('notes')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h4"/></svg><span data-i18n="navNotes">الملاحظات والمهام</span></button>
 
-        <!-- expandable group -->
-        <div class="sb-group">
-          <button type="button" class="dash-nav-item sb-exp" onclick="toggleGroup(this)"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>Escalation</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-          <div class="sb-sub">
-            <a href="#" onclick="showView('escalation-links');return false;" data-i18n="escalationQuickLabel">روابط التصعيد</a>
-            <button id="escalationNavBtn" class="nav-link nav-link-btn maint" data-i18n="navEscalation" disabled>دليل التصعيد</button>
-          </div>
-        </div>
+        <button type="button" class="dash-nav-item" data-view="escalation-links" onclick="showView('escalation-links')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>Escalation</span></button>
 
         <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3"/><path d="M6 16v-2h12v2"/></svg><span data-i18n="navOrgChart">الهيكل التنظيمي</span><span class="tag">🔧</span></button>
         <button id="bookletNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>Latest booklet</span><span class="tag">🔧</span></button>
