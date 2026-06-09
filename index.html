@@ -27,8 +27,9 @@
   <link rel="stylesheet" href="css/styles.css?v=202606072035" />
   <style id="flux-dashboard">
     :root{
-      --fx-bg:#0a0b0d; --fx-panel:#0e1013; --fx-card:#15171b;
-      --fx-border:rgba(255,255,255,.07); --fx-text:#e7e9ee; --fx-muted:#8a8f99; --fx-active:#1b1e24;
+      --fx-bg:#000; --fx-panel:#0a0a0a; --fx-card:#0d0d0f;
+      --fx-border:rgba(255,255,255,.06); --fx-text:#e7e9ee; --fx-muted:#9ca3af; --fx-active:#15171b;
+      --fx-blue:#3b82f6;
     }
     html,body{ background:var(--fx-bg) !important; }
     body{ color:var(--fx-text); min-height:100vh; }
@@ -55,7 +56,8 @@
     }
     .dash-nav-item i{ width:18px; text-align:center; font-size:1rem; flex-shrink:0; }
     .dash-nav-item:hover{ background:var(--fx-active); color:var(--fx-text); }
-    .dash-nav-item.active{ background:var(--fx-active); color:#fff; }
+    .dash-nav-item.active{ background:rgba(59,130,246,.14); color:#fff; }
+    .dash-nav-item.active i{ color:var(--fx-blue); }
     .dash-nav-item.maint{ opacity:.4; cursor:not-allowed; pointer-events:none; }
     .dash-nav-item .tag{ margin-inline-start:auto; font-size:.72rem; }
 
@@ -63,7 +65,7 @@
     .dash-topbar{
       height:64px; flex-shrink:0; display:flex; align-items:center; gap:12px;
       padding:0 24px; border-bottom:1px solid var(--fx-border);
-      background:rgba(10,11,13,.85); backdrop-filter:blur(8px);
+      background:rgba(0,0,0,.85); backdrop-filter:blur(8px);
       position:sticky; top:0; z-index:30;
     }
     .dash-page-title{ font-size:1.05rem; font-weight:800; color:#fff; }
@@ -72,7 +74,7 @@
     .dash-content > main{ max-width:none !important; margin:0 !important; padding:24px !important; }
 
     /* Flux-ify existing pieces */
-    .hero-section{ background:linear-gradient(160deg,#16181d,#0e1013) !important; border:1px solid var(--fx-border) !important; }
+    .hero-section{ background:#0d0d0f !important; border:1px solid var(--fx-border) !important; }
     .hero-title{ color:#fff !important; }
     .hero-desc{ color:var(--fx-muted) !important; }
     .section-title{ color:#fff !important; }
@@ -85,6 +87,14 @@
     /* hide legacy gold decorations that clash with the Flux look */
     #starCanvas{ display:none !important; }
     #tasksPanel{ display:none !important; }
+
+    /* match login.html palette: #0d0d0f cards + subtle white borders + blue hover */
+    #quickLinksGrid > *, #pdfGrid > *, #escalationQuickGrid > *, #additionalLinksGrid > *, .quick-card{
+      background:#0d0d0f !important; border:1px solid var(--fx-border) !important;
+    }
+    #quickLinksGrid > *:hover, #pdfGrid > *:hover, #escalationQuickGrid > *:hover, #additionalLinksGrid > *:hover, .quick-card:hover{
+      border-color:rgba(59,130,246,.45) !important;
+    }
 
     @media(max-width:860px){
       .app-shell{ flex-direction:column; }
