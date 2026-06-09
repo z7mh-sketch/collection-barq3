@@ -287,22 +287,22 @@
 
   <style id="home-css">
     /* ===== Home landing hero ===== */
-    .hm-hero{ position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.07); border-radius:24px; background:radial-gradient(120% 130% at 80% 6%, #0e1422 0%, #08090c 62%); padding:clamp(28px,4vw,54px); display:flex; align-items:center; gap:40px; }
+    .hm-hero{ position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.07); border-radius:24px; background:radial-gradient(120% 120% at 50% 0%, #0e1422 0%, #08090c 62%); padding:clamp(30px,4vw,56px); display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px; }
     .hm-aura{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(58% 80% at 16% 0%, rgba(59,130,246,.22), transparent 60%), radial-gradient(46% 66% at 96% 16%, rgba(37,99,235,.18), transparent 60%); animation:hmPulse 7s ease-in-out infinite; }
     @keyframes hmPulse{ 0%,100%{opacity:.65} 50%{opacity:1} }
-    .hm-hero-inner{ position:relative; z-index:2; flex:1; min-width:0; }
+    .hm-hero-inner{ position:relative; z-index:2; width:100%; max-width:700px; }
     .hm-eyebrow{ display:inline-flex; align-items:center; gap:8px; color:#93c5fd; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; border:1px solid rgba(59,130,246,.25); background:rgba(59,130,246,.08); padding:6px 13px; border-radius:999px; }
     .hm-dot{ width:7px; height:7px; border-radius:50%; background:#3b82f6; box-shadow:0 0 10px #3b82f6; }
     .hm-title{ margin-top:18px; font-size:clamp(1.9rem,4.4vw,3.1rem); font-weight:800; line-height:1.07; letter-spacing:-.02em; color:#fff; }
     .hm-grad{ background:linear-gradient(95deg,#fff 18%,#93c5fd 72%,#2563eb 120%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
     .hm-tag{ color:#93c5fd !important; margin-top:14px; font-size:1rem; font-weight:600; min-height:1.4em; }
-    .hm-lead{ margin-top:10px; color:#9ca3af; font-size:1rem; line-height:1.75; max-width:56ch; }
-    .hm-cta{ margin-top:26px; display:flex; gap:12px; flex-wrap:wrap; }
+    .hm-lead{ margin:10px auto 0; color:#9ca3af; font-size:1rem; line-height:1.75; max-width:60ch; }
+    .hm-cta{ margin-top:26px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
     .hm-btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:11px; background:#2563eb; color:#fff; border:none; font-family:inherit; font-weight:700; font-size:.92rem; cursor:pointer; transition:background .2s, transform .15s; }
     .hm-btn:hover{ background:#1d4ed8; transform:translateY(-1px); }
     .hm-btn.ghost{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); color:#e7e9ee; }
     .hm-btn.ghost:hover{ background:rgba(255,255,255,.08); }
-    .hm-visual{ position:relative; z-index:2; flex-shrink:0; width:340px; height:300px; }
+    .hm-visual{ position:relative; z-index:2; flex-shrink:0; width:min(440px,82%); height:340px; margin-bottom:4px; }
     .hm-visual svg, .hm-visual video{ width:100%; height:100%; }
     .hm-keycap{ object-fit:contain; mix-blend-mode:screen; filter:drop-shadow(0 26px 60px rgba(37,99,235,.28)); animation:hmFloat 6s ease-in-out infinite; }
     @keyframes hmFloat{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
@@ -316,7 +316,7 @@
     .hm-feat-ic{ width:42px; height:42px; border-radius:11px; background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
     .hm-feat h3{ margin-top:14px; color:#fff; font-size:1rem; font-weight:700; }
     .hm-feat p{ margin-top:7px; color:#9ca3af; font-size:.86rem; line-height:1.6; }
-    @media(max-width:880px){ .hm-hero{ flex-direction:column; align-items:flex-start; } .hm-visual{ width:100%; max-width:320px; height:220px; margin:0 auto; } .hm-feat-grid{ grid-template-columns:1fr 1fr; } }
+    @media(max-width:880px){ .hm-visual{ width:100%; max-width:320px; height:240px; } .hm-feat-grid{ grid-template-columns:1fr 1fr; } }
     @media(max-width:560px){ .hm-feat-grid{ grid-template-columns:1fr; } }
   </style>
 
@@ -692,6 +692,9 @@
     <!-- ============ HERO (landing-style, no auth) ============ -->
     <section class="hm-hero">
       <div class="hm-aura"></div>
+      <div class="hm-visual" aria-hidden="true">
+        <video class="hm-keycap" src="assets/keycap.mp4" poster="assets/keycap.png" autoplay loop muted playsinline></video>
+      </div>
       <div class="hm-hero-inner">
         <span class="hm-eyebrow"><span class="hm-dot"></span> Collection Barq · Internal hub</span>
         <h1 class="hm-title">Everything your leaders<br>need, <span class="hm-grad">in one place</span></h1>
@@ -701,9 +704,6 @@
           <button type="button" class="hm-btn" onclick="showView('leaders')">Browse leaders <i class="fa-solid fa-arrow-right" style="font-size:.78em"></i></button>
           <button type="button" class="hm-btn ghost" onclick="showView('pdf')">HR forms</button>
         </div>
-      </div>
-      <div class="hm-visual" aria-hidden="true">
-        <video class="hm-keycap" src="assets/keycap.mp4" poster="assets/keycap.png" autoplay loop muted playsinline></video>
       </div>
     </section>
 
