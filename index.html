@@ -76,6 +76,8 @@
     .sb-search input::placeholder{ color:#6b7280; }
 
     .sb-profile{ display:flex; align-items:center; gap:10px; padding:8px 6px; margin-bottom:8px; }
+    .sb-profile-btn{ width:100%; margin-bottom:0; background:transparent; border:1px solid transparent; border-radius:11px; cursor:pointer; font-family:inherit; text-align:start; transition:background .15s, border-color .15s; }
+    .sb-profile-btn:hover{ background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.09); }
     .sb-avatar{ width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; display:grid; place-items:center; font-weight:800; font-size:.95rem; flex-shrink:0; }
     .sb-name{ flex:1; min-width:0; color:#e7e9ee; font-weight:600; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .sb-badge{ font-size:.58rem; font-weight:800; letter-spacing:.05em; color:#bfdbfe; background:rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.4); padding:3px 7px; border-radius:6px; flex-shrink:0; }
@@ -610,16 +612,8 @@
         <input id="headerSearchInput" type="search" placeholder="Search by name, title or department..." data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
       </div>
 
-      <!-- fast actions -->
-      <button type="button" class="sb-fast" id="sbFastBtn" onclick="toggleFast()">
-        <span class="sb-fast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
-        <span>Quick actions</span>
-      </button>
-      <div class="sb-fast-menu" id="sbFastMenu">
-        <a href="#" onclick="trackDownload('Violation form');openVfLaunch();return false;">Violation form</a>
-        <a href="#" onclick="trackDownload('Resignation form');openRfLaunch();return false;">Resignation form</a>
-        <a href="#" onclick="trackDownload('Leave request');openLfLaunch();return false;">Leave request</a>
-      </div>
+      <!-- pinned: Notes & Tasks -->
+      <button type="button" class="dash-nav-item" data-view="notes" onclick="showView('notes')" style="margin-bottom:4px"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h4"/></svg><span data-i18n="navNotes">الملاحظات والمهام</span></button>
 
       <div class="dash-menu-label">Main menu</div>
 
@@ -628,8 +622,6 @@
         <button id="leadersNavBtn" class="dash-nav-item nav-link nav-link-btn" data-view="leaders"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="navLeaders">الليدرز</span></button>
         <button type="button" class="dash-nav-item" data-view="quicklinks" onclick="showView('quicklinks')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg><span data-i18n="navQuickLinks">روابط سريعة</span></button>
         <button type="button" class="dash-nav-item" data-view="pdf" onclick="showView('pdf')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></button>
-        <button type="button" class="dash-nav-item" data-view="notes" onclick="showView('notes')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h4"/></svg><span data-i18n="navNotes">الملاحظات والمهام</span></button>
-
         <button type="button" class="dash-nav-item" data-view="escalation-links" onclick="showView('escalation-links')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>Escalation</span></button>
 
         <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3"/><path d="M6 16v-2h12v2"/></svg><span data-i18n="navOrgChart">الهيكل التنظيمي</span><span class="tag">🔧</span></button>
@@ -638,16 +630,12 @@
         <button type="button" class="dash-nav-item" data-view="settings" onclick="showView('settings')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="navSettings">الإعدادات</span></button>
       </nav>
 
-      <!-- bottom: account + logout -->
+      <!-- bottom: account opens Settings -->
       <div class="sb-bottom">
-        <div class="sb-profile">
+        <button type="button" class="sb-profile sb-profile-btn" data-view="settings" onclick="showView('settings')" title="Account & settings">
           <span class="sb-avatar" id="sbAvatar">B</span>
           <span class="sb-name" id="sbName" dir="ltr">Collection Barq</span>
           <span class="sb-badge">Verified</span>
-        </div>
-        <button id="logoutBtn" class="sb-logout" title="Log out">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-          <span data-i18n="logoutBtn">Log out</span>
         </button>
       </div>
     </aside>
@@ -873,6 +861,10 @@
       <div style="display:flex;gap:8px;margin-top:14px">
         <input id="accNameInput" class="set-input" placeholder="Edit display name…" />
         <button class="set-btn" onclick="saveAccountName()" data-i18n="setSave">Save</button>
+      </div>
+      <div class="set-row" style="margin-top:16px;border-top:1px solid rgba(255,255,255,.06);padding-top:16px">
+        <span class="lbl">Sign out of your account</span>
+        <button id="logoutBtn" class="set-btn" title="Log out" style="background:transparent;border:1px solid rgba(239,68,68,.4);color:#f87171"><i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="logoutBtn">Log out</span></button>
       </div>
     </div>
 
