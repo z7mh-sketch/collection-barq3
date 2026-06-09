@@ -257,6 +257,220 @@
     .dash-sidebar.collapsed .sb-logout span{ display:none; }
   </style>
 
+  <style id="home-css">
+    /* ===== Home landing hero ===== */
+    .hm-hero{ position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.07); border-radius:24px; background:radial-gradient(120% 130% at 80% 6%, #0e1422 0%, #08090c 62%); padding:clamp(28px,4vw,54px); display:flex; align-items:center; gap:40px; }
+    .hm-aura{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(58% 80% at 16% 0%, rgba(59,130,246,.22), transparent 60%), radial-gradient(46% 66% at 96% 16%, rgba(37,99,235,.18), transparent 60%); animation:hmPulse 7s ease-in-out infinite; }
+    @keyframes hmPulse{ 0%,100%{opacity:.65} 50%{opacity:1} }
+    .hm-hero-inner{ position:relative; z-index:2; flex:1; min-width:0; }
+    .hm-eyebrow{ display:inline-flex; align-items:center; gap:8px; color:#93c5fd; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; border:1px solid rgba(59,130,246,.25); background:rgba(59,130,246,.08); padding:6px 13px; border-radius:999px; }
+    .hm-dot{ width:7px; height:7px; border-radius:50%; background:#3b82f6; box-shadow:0 0 10px #3b82f6; }
+    .hm-title{ margin-top:18px; font-size:clamp(1.9rem,4.4vw,3.1rem); font-weight:800; line-height:1.07; letter-spacing:-.02em; color:#fff; }
+    .hm-grad{ background:linear-gradient(95deg,#fff 18%,#93c5fd 72%,#2563eb 120%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+    .hm-tag{ color:#93c5fd !important; margin-top:14px; font-size:1rem; font-weight:600; min-height:1.4em; }
+    .hm-lead{ margin-top:10px; color:#9ca3af; font-size:1rem; line-height:1.75; max-width:56ch; }
+    .hm-cta{ margin-top:26px; display:flex; gap:12px; flex-wrap:wrap; }
+    .hm-btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:11px; background:#2563eb; color:#fff; border:none; font-family:inherit; font-weight:700; font-size:.92rem; cursor:pointer; transition:background .2s, transform .15s; }
+    .hm-btn:hover{ background:#1d4ed8; transform:translateY(-1px); }
+    .hm-btn.ghost{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); color:#e7e9ee; }
+    .hm-btn.ghost:hover{ background:rgba(255,255,255,.08); }
+    .hm-visual{ position:relative; z-index:2; flex-shrink:0; width:300px; height:264px; }
+    .hm-visual svg{ width:100%; height:100%; }
+    /* ===== Explainer ===== */
+    .hm-info-eyebrow{ color:#60a5fa; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+    .hm-info-title{ margin-top:12px; font-size:clamp(1.5rem,3vw,2.1rem); font-weight:800; line-height:1.12; letter-spacing:-.02em; color:#fff; }
+    .hm-info-lead{ margin-top:14px; color:#9ca3af; font-size:1rem; line-height:1.75; max-width:72ch; }
+    .hm-feat-grid{ margin-top:28px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .hm-feat{ border:1px solid rgba(255,255,255,.07); background:#0d0d0f; border-radius:16px; padding:22px; transition:border-color .2s, transform .15s, background .2s; }
+    .hm-feat:hover{ border-color:rgba(59,130,246,.45); transform:translateY(-3px); background:#101014; }
+    .hm-feat-ic{ width:42px; height:42px; border-radius:11px; background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+    .hm-feat h3{ margin-top:14px; color:#fff; font-size:1rem; font-weight:700; }
+    .hm-feat p{ margin-top:7px; color:#9ca3af; font-size:.86rem; line-height:1.6; }
+    @media(max-width:880px){ .hm-hero{ flex-direction:column; align-items:flex-start; } .hm-visual{ width:100%; max-width:320px; height:220px; margin:0 auto; } .hm-feat-grid{ grid-template-columns:1fr 1fr; } }
+    @media(max-width:560px){ .hm-feat-grid{ grid-template-columns:1fr; } }
+  </style>
+
+<style id="notes-css">
+/* ===== Collection Barq — Notes & Tasks (SignVault-style) ===== */
+#view-notes .nt-shell{
+  display:flex; gap:24px; align-items:flex-start;
+  margin-top:6px; max-width:1180px;
+}
+@media (max-width:860px){ #view-notes .nt-shell{ flex-direction:column; } }
+
+/* ---------- LEFT RAIL ---------- */
+#view-notes .nt-rail{
+  flex:0 0 252px; width:252px;
+  background:#0d0d0f;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:20px 16px 16px;
+  position:relative;
+}
+@media (max-width:860px){ #view-notes .nt-rail{ width:100%; flex-basis:auto; } }
+
+#view-notes .nt-brand{ display:flex; align-items:center; gap:10px; margin:2px 6px 22px; }
+#view-notes .nt-brand-mark{
+  width:30px; height:30px; border-radius:9px; flex:0 0 30px;
+  display:grid; place-items:center;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff; font-size:14px;
+  box-shadow:0 4px 14px rgba(37,99,235,.35);
+}
+#view-notes .nt-brand-word{ color:#cfd6e4; font-size:15px; font-weight:500; letter-spacing:.2px; }
+#view-notes .nt-brand-word b{ color:#fff; font-weight:700; }
+
+#view-notes .nt-stepper{ position:relative; display:flex; flex-direction:column; gap:4px; }
+/* vertical connector line behind the icons */
+#view-notes .nt-stepper::before{
+  content:""; position:absolute; top:24px; bottom:24px;
+  inset-inline-start:25px; width:2px;
+  background:rgba(255,255,255,.08);
+}
+@media (max-width:860px){ #view-notes .nt-stepper::before{ display:none; } }
+
+#view-notes .nt-step{
+  position:relative; z-index:1;
+  display:flex; align-items:center; gap:12px;
+  width:100%; text-align:start;
+  padding:10px 12px; border-radius:12px;
+  background:transparent; border:1px solid transparent;
+  cursor:pointer; color:#9ca3af;
+  transition:background .15s, border-color .15s, color .15s;
+  font:inherit;
+}
+#view-notes .nt-step:hover{ background:rgba(255,255,255,.03); }
+#view-notes .nt-step.active{
+  background:rgba(37,99,235,.10);
+  border-color:rgba(37,99,235,.35);
+  color:#fff;
+}
+
+#view-notes .nt-dot{
+  flex:0 0 26px; width:26px; height:26px; border-radius:50%;
+  display:grid; place-items:center; font-size:12px;
+  background:#15171b; border:2px solid rgba(255,255,255,.18);
+  color:#71717a;
+}
+#view-notes .nt-step.active .nt-dot{
+  border-color:#2563eb; color:#60a5fa; background:#0d0d0f;
+  box-shadow:0 0 0 3px rgba(37,99,235,.15);
+}
+#view-notes .nt-dot.done{
+  background:#16a34a; border-color:#16a34a; color:#fff;
+}
+#view-notes .nt-step.active .nt-dot.done{ box-shadow:0 0 0 3px rgba(22,163,74,.18); }
+
+#view-notes .nt-step-body{ min-width:0; flex:1; }
+#view-notes .nt-step-label{
+  display:block; font-size:13.5px; font-weight:600;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  color:inherit;
+}
+#view-notes .nt-step-sub{ display:block; font-size:11px; color:#71717a; margin-top:2px; }
+#view-notes .nt-step.active .nt-step-sub{ color:#9ca3af; }
+
+#view-notes .nt-newlist{
+  margin-top:14px; width:100%;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px; border-radius:12px;
+  background:transparent; color:#cfd6e4;
+  border:1px dashed rgba(255,255,255,.16);
+  cursor:pointer; font:inherit; font-size:13px; font-weight:600;
+  transition:border-color .15s, color .15s, background .15s;
+}
+#view-notes .nt-newlist:hover{ border-color:rgba(37,99,235,.5); color:#fff; background:rgba(37,99,235,.08); }
+
+/* ---------- MAIN ---------- */
+#view-notes .nt-main{
+  flex:1 1 auto; min-width:0;
+  background:#0d0d0f;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:24px 26px;
+}
+
+#view-notes .nt-main-head{ display:flex; align-items:flex-start; gap:12px; }
+#view-notes .nt-title{
+  flex:1; min-width:0;
+  font-size:26px; font-weight:700; color:#fff; line-height:1.25;
+  margin:0; padding:2px 6px; border-radius:8px;
+  outline:none; border:1px solid transparent;
+  transition:border-color .15s, background .15s;
+  word-break:break-word;
+}
+#view-notes .nt-title:hover{ border-color:rgba(255,255,255,.08); }
+#view-notes .nt-title:focus{ border-color:rgba(37,99,235,.45); background:#15171b; }
+#view-notes .nt-dellist{ flex:0 0 auto; margin-top:4px; }
+
+#view-notes .nt-seg{ display:inline-flex; margin:18px 0 16px; }
+
+#view-notes .nt-banner{
+  display:flex; align-items:flex-start; gap:10px;
+  background:rgba(37,99,235,.10);
+  border:1px solid rgba(37,99,235,.28);
+  color:#c7d2fe;
+  border-radius:12px; padding:12px 14px;
+  font-size:12.5px; line-height:1.5;
+  margin-bottom:18px;
+}
+#view-notes .nt-banner i{ color:#60a5fa; margin-top:2px; flex:0 0 auto; }
+
+/* task rows */
+#view-notes .nt-tasks{ display:flex; flex-direction:column; gap:8px; min-height:60px; }
+
+#view-notes .nt-row{
+  display:flex; align-items:center; gap:12px;
+  background:#15171b;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px; padding:11px 14px;
+  transition:border-color .15s, background .15s;
+}
+#view-notes .nt-row:hover{ border-color:rgba(255,255,255,.12); }
+
+#view-notes .nt-check{
+  flex:0 0 20px; width:20px; height:20px; border-radius:6px;
+  display:grid; place-items:center; cursor:pointer;
+  background:#0d0d0f; border:2px solid rgba(255,255,255,.22);
+  color:transparent; font-size:11px;
+  transition:background .15s, border-color .15s, color .15s;
+}
+#view-notes .nt-check:hover{ border-color:#2563eb; }
+#view-notes .nt-check.on{ background:#16a34a; border-color:#16a34a; color:#fff; }
+
+#view-notes .nt-text{
+  flex:1; min-width:0; color:#e7e9ee; font-size:14px; line-height:1.4;
+  padding:3px 4px; border-radius:6px; outline:none;
+  border:1px solid transparent; word-break:break-word;
+}
+#view-notes .nt-text:hover{ border-color:rgba(255,255,255,.08); }
+#view-notes .nt-text:focus{ border-color:rgba(37,99,235,.45); background:#0d0d0f; }
+#view-notes .nt-row.done .nt-text{ color:#71717a; text-decoration:line-through; }
+
+#view-notes .nt-del{
+  flex:0 0 auto; width:30px; height:30px; border-radius:8px;
+  display:grid; place-items:center; cursor:pointer;
+  background:transparent; border:1px solid transparent; color:#71717a;
+  transition:color .15s, background .15s, border-color .15s; font-size:13px;
+}
+#view-notes .nt-del:hover{ color:#f87171; background:rgba(248,113,113,.10); border-color:rgba(248,113,113,.25); }
+
+#view-notes .nt-empty{
+  text-align:center; color:#71717a; padding:34px 16px; font-size:13px;
+  border:1px dashed rgba(255,255,255,.10); border-radius:12px;
+}
+#view-notes .nt-empty i{ display:block; font-size:24px; margin-bottom:10px; color:#3f3f46; }
+
+/* add row */
+#view-notes .nt-add{ display:flex; gap:10px; margin-top:18px; align-items:center; }
+#view-notes .nt-input{ flex:1; min-width:0; }
+#view-notes .nt-primary{
+  flex:0 0 auto; white-space:nowrap;
+  background:#2563eb; border:none; color:#fff; font-weight:600;
+}
+#view-notes .nt-primary:hover{ background:#1d4ed8; }
+</style>
+
   <div id="welcomeModal" class="wm-overlay">
     <div class="wm-box">
       <div class="wm-grid">
@@ -447,12 +661,51 @@
 
   <main id="view-home" class="dash-view active max-w-7xl mx-auto px-4 py-8 space-y-12">
 
-    <!-- ============ HERO ============ -->
-    <section class="hero-section rounded-2xl p-7 md:p-10">
-      <h2 class="hero-title" data-i18n="heroTitle">أهلاً بك في Collection Barq</h2>
-      <p class="hero-desc mt-2 max-w-2xl" data-i18n="heroDesc">
-        Collection Barq هو مرجعك الشامل لقادة الشركة — يجمع كل ما تحتاجه في مكان واحد، من معلومات التواصل المباشر وروابط التصعيد، إلى الهيكل التنظيمي ودليل حل المشكلات خطوة بخطوة. لأن الوصول السريع للشخص الصح يصنع الفرق.
-      </p>
+    <!-- ============ HERO (landing-style, no auth) ============ -->
+    <section class="hm-hero">
+      <div class="hm-aura"></div>
+      <div class="hm-hero-inner">
+        <span class="hm-eyebrow"><span class="hm-dot"></span> Collection Barq · Internal hub</span>
+        <h1 class="hm-title">Everything your leaders<br>need, <span class="hm-grad">in one place</span></h1>
+        <p class="hero-desc hm-tag" data-i18n="heroDesc">Reaching the right person, the moment you need them.</p>
+        <p class="hm-lead">Your unified workspace for the company's leaders — the full directory, escalation channels, quick links to every system, and ready-to-send HR forms. Fast, bilingual, and secure behind company sign-in.</p>
+        <div class="hm-cta">
+          <button type="button" class="hm-btn" onclick="showView('leaders')">Browse leaders <i class="fa-solid fa-arrow-right" style="font-size:.78em"></i></button>
+          <button type="button" class="hm-btn ghost" onclick="var e=document.getElementById('pdf-links'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});">HR forms</button>
+        </div>
+      </div>
+      <div class="hm-visual" aria-hidden="true">
+        <svg viewBox="0 0 440 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="hm1f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#23262c"/><stop offset="1" stop-color="#0c0d11"/></linearGradient>
+            <filter id="hm1b" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="17"/></filter>
+          </defs>
+          <polygon points="168,60 236,190 168,320 100,190" fill="#ffffff" opacity="0.022"/>
+          <polygon points="208,60 276,190 208,320 140,190" fill="#ffffff" opacity="0.045"/>
+          <polygon points="252,60 322,190 252,320 182,190" fill="#2563eb" opacity="0.20" filter="url(#hm1b)"/>
+          <polygon points="252,60 322,190 252,320 182,190" fill="url(#hm1f)" stroke="#3b82f6" stroke-width="1.7" stroke-linejoin="round"/>
+          <rect x="70" y="166" width="92" height="14" rx="7" fill="#ffffff" opacity="0.06"/>
+          <rect x="60" y="220" width="70" height="12" rx="6" fill="#ffffff" opacity="0.04"/>
+          <circle cx="118" cy="108" r="2.2" fill="#ffffff" opacity="0.22"/>
+          <circle cx="322" cy="128" r="2.2" fill="#ffffff" opacity="0.16"/>
+          <circle cx="150" cy="272" r="2.2" fill="#ffffff" opacity="0.18"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ EXPLAINER ============ -->
+    <section class="hm-info">
+      <div class="hm-info-eyebrow">What is Collection Barq?</div>
+      <h2 class="hm-info-title">Your whole leadership toolkit, on one screen</h2>
+      <p class="hm-info-lead">Collection Barq brings the leaders directory, escalation channels, quick links, and HR forms together in one fast, simple workspace — so you spend less time searching and more time getting things done.</p>
+      <div class="hm-feat-grid">
+        <div class="hm-feat"><div class="hm-feat-ic">👥</div><h3>Leaders Directory</h3><p>Find any leader instantly — name, role, department, email, phone, and a one-tap Microsoft Teams chat.</p></div>
+        <div class="hm-feat"><div class="hm-feat-ic">🔗</div><h3>Escalation Links</h3><p>Direct, one-click access to every key escalation channel and its tracker — no digging through folders.</p></div>
+        <div class="hm-feat"><div class="hm-feat-ic">⚡</div><h3>Quick Access</h3><p>Sprinklr, ITSM, Microsoft Teams, Outlook, and the company intranet — all from a single screen.</p></div>
+        <div class="hm-feat"><div class="hm-feat-ic">📄</div><h3>Smart HR Forms</h3><p>Generate violation, resignation, and leave requests in seconds — pre-filled, signed, and ready to send.</p></div>
+        <div class="hm-feat"><div class="hm-feat-ic">🌐</div><h3>Fully Bilingual</h3><p>Work in English or Arabic with instant right-to-left switching across the entire experience.</p></div>
+        <div class="hm-feat"><div class="hm-feat-ic">🔒</div><h3>Secure by Design</h3><p>Protected by company sign-in — only approved <strong style="color:#cbd5e1">@barq.com</strong> accounts get inside.</p></div>
+      </div>
     </section>
 
     <!-- ============ QUICK LINKS ============ -->
@@ -549,13 +802,58 @@
   <section id="view-notes" class="dash-view">
     <div class="view-head">
       <h2 class="view-title"><i class="fa-solid fa-note-sticky"></i> <span data-i18n="navNotes">Notes &amp; Tasks</span></h2>
-      <p class="view-sub" data-i18n="notesSub">Your private checklist — saved in this browser only.</p>
+      <p class="view-sub">Your private checklist — saved in this browser only.</p>
     </div>
-    <div class="note-add" style="margin-bottom:16px">
-      <input id="noteInput" class="set-input" placeholder="Add a note or task, then press Enter…" onkeydown="if(event.key==='Enter')addNote()" />
-      <button class="set-btn" onclick="addNote()" data-i18n="notesAdd">Add</button>
+
+    <div class="nt-shell">
+      <!-- LEFT: stepper of note-lists -->
+      <aside class="nt-rail">
+        <div class="nt-brand">
+          <span class="nt-brand-mark"><i class="fa-solid fa-layer-group"></i></span>
+          <span class="nt-brand-word">Barq <b>Notes</b></span>
+        </div>
+
+        <nav id="ntStepper" class="nt-stepper" aria-label="Note lists"></nav>
+
+        <button type="button" class="nt-newlist" onclick="ntAddList()">
+          <i class="fa-solid fa-plus"></i><span>New list</span>
+        </button>
+      </aside>
+
+      <!-- RIGHT: active list -->
+      <section class="nt-main">
+        <header class="nt-main-head">
+          <h1 id="ntTitle" class="nt-title" contenteditable="true" spellcheck="false"
+              onblur="ntRenameActive(this.innerText)"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"></h1>
+          <button type="button" class="icon-btn del nt-dellist" title="Delete this list" onclick="ntDeleteActive()">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </header>
+
+        <div class="seg nt-seg" id="ntFilter" role="tablist">
+          <button class="active" type="button" data-f="all" onclick="ntSetFilter('all')">All</button>
+          <button type="button" data-f="active" onclick="ntSetFilter('active')">Active</button>
+          <button type="button" data-f="done" onclick="ntSetFilter('done')">Done</button>
+        </div>
+
+        <div class="nt-banner" role="note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span id="ntHint">Click a task to edit it inline, check it off when done. Everything is stored only in this browser.</span>
+        </div>
+
+        <div id="ntTasks" class="nt-tasks"></div>
+
+        <div class="nt-add">
+          <input id="noteInput" class="set-input nt-input" type="text" autocomplete="off" maxlength="300"
+                 placeholder="Add a task and press Enter…"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();addNote();}" />
+          <button type="button" class="set-btn nt-primary" onclick="addNote()">
+            <i class="fa-solid fa-plus"></i> Add task
+          </button>
+        </div>
+      </section>
     </div>
-    <div id="notesList" class="notes-wrap"></div>
   </section>
 
   <!-- ============ SETTINGS VIEW ============ -->
@@ -1647,31 +1945,347 @@
       if(name==='settings'){ try{ initSettings(); }catch(e){} }
     };
 
-    /* ============ NOTES & TASKS PAGE ============ */
-    (function(){
-      var KEY='barq_notes_v2';
-      window.getNotes=function(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } };
-      function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){} }
-      window.renderNotes=function(){
-        var list=document.getElementById('notesList'); if(!list) return;
-        var notes=getNotes();
-        if(!notes.length){ list.innerHTML='<div class="emp-empty">No notes yet — add your first task above.</div>'; return; }
-        list.innerHTML='';
-        notes.forEach(function(n,i){
-          var row=document.createElement('div'); row.className='note-item'+(n.done?' done':'');
-          row.innerHTML='<button class="note-check"></button><div class="note-txt"></div><button class="note-del"><i class="fa-solid fa-trash"></i></button>';
-          row.querySelector('.note-check').innerHTML = n.done ? '<i class="fa-solid fa-check"></i>' : '';
-          row.querySelector('.note-txt').textContent=n.text;
-          row.querySelector('.note-check').onclick=function(){ var a=getNotes(); a[i].done=!a[i].done; save(a); renderNotes(); };
-          row.querySelector('.note-del').onclick=function(){ var a=getNotes(); a.splice(i,1); save(a); renderNotes(); };
-          list.appendChild(row);
+    /* ===== Collection Barq — Notes & Tasks (SignVault-style rebuild) ===== */
+    (function () {
+      var LS_V3 = "barq_notes_v3";
+      var LS_V1 = "barq_tasks_v1";
+      var LS_V2 = "barq_notes_v2";
+
+      function uid() {
+        return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      }
+
+      function defaultModel() {
+        return { active: 0, lists: [{ id: uid(), title: "My Tasks", tasks: [] }] };
+      }
+
+      function cleanTasks(arr) {
+        if (!Array.isArray(arr)) return [];
+        return arr
+          .map(function (t) {
+            if (typeof t === "string") return { text: t, done: false };
+            if (t && typeof t === "object") return { text: String(t.text == null ? "" : t.text), done: !!t.done };
+            return null;
+          })
+          .filter(function (t) { return t !== null; });
+      }
+
+      function normalize(m) {
+        if (!m || typeof m !== "object" || !Array.isArray(m.lists) || !m.lists.length) {
+          return defaultModel();
+        }
+        m.lists = m.lists.map(function (l) {
+          return {
+            id: (l && l.id) ? String(l.id) : uid(),
+            title: (l && typeof l.title === "string") ? l.title : "My Tasks",
+            tasks: cleanTasks(l && l.tasks)
+          };
         });
+        var a = parseInt(m.active, 10);
+        if (isNaN(a) || a < 0 || a >= m.lists.length) a = 0;
+        m.active = a;
+        return m;
+      }
+
+      /* ---- load + one-time migration (never throw) ---- */
+      function load() {
+        try {
+          var raw = localStorage.getItem(LS_V3);
+          if (raw) {
+            var m = JSON.parse(raw);
+            if (m && Array.isArray(m.lists) && m.lists.length) return normalize(m);
+          }
+        } catch (e) { /* fall through to migrate */ }
+
+        var model = null;
+
+        // (a) barq_tasks_v1 -> map pages to lists
+        try {
+          var v1raw = localStorage.getItem(LS_V1);
+          if (v1raw) {
+            var v1 = JSON.parse(v1raw);
+            if (v1 && Array.isArray(v1.pages) && v1.pages.length) {
+              var lists = v1.pages.map(function (p) {
+                return {
+                  id: uid(),
+                  title: (p && p.title) ? String(p.title) : "My Tasks",
+                  tasks: cleanTasks(p && p.tasks)
+                };
+              });
+              var act = (typeof v1.page === "number" && v1.page >= 0 && v1.page < lists.length) ? v1.page : 0;
+              model = { active: act, lists: lists };
+            }
+          }
+        } catch (e) { model = null; }
+
+        // (b) barq_notes_v2 -> single list
+        if (!model) {
+          try {
+            var v2raw = localStorage.getItem(LS_V2);
+            if (v2raw) {
+              var v2 = JSON.parse(v2raw);
+              if (Array.isArray(v2)) {
+                model = { active: 0, lists: [{ id: uid(), title: "My Tasks", tasks: cleanTasks(v2) }] };
+              }
+            }
+          } catch (e) { model = null; }
+        }
+
+        // (c) default empty
+        if (!model) model = defaultModel();
+
+        model = normalize(model);
+        save(model);
+        return model;
+      }
+
+      function save(m) {
+        try { localStorage.setItem(LS_V3, JSON.stringify(m)); } catch (e) {}
+      }
+
+      /* ---- state (module-scoped, exposed via window funcs) ---- */
+      var state = null;     // the model
+      var filter = "all";   // all | active | done
+
+      function model() {
+        if (!state) state = load();
+        return state;
+      }
+      function activeList() {
+        var m = model();
+        if (!m.lists.length) m.lists.push({ id: uid(), title: "My Tasks", tasks: [] });
+        if (m.active < 0 || m.active >= m.lists.length) m.active = 0;
+        return m.lists[m.active];
+      }
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+
+      /* ---- rendering ---- */
+      function renderStepper() {
+        var el = document.getElementById("ntStepper");
+        if (!el) return;
+        var m = model();
+        var html = "";
+        m.lists.forEach(function (l, i) {
+          var total = l.tasks.length;
+          var done = l.tasks.filter(function (t) { return t.done; }).length;
+          var allDone = total > 0 && done === total;
+          var dot = allDone
+            ? '<span class="nt-dot done"><i class="fa-solid fa-check"></i></span>'
+            : '<span class="nt-dot"></span>';
+          var sub = total ? (done + "/" + total + " done") : "No tasks yet";
+          html +=
+            '<button type="button" class="nt-step' + (i === m.active ? " active" : "") + '" ' +
+            'onclick="ntSwitchList(' + i + ')">' +
+              dot +
+              '<span class="nt-step-body">' +
+                '<span class="nt-step-label">' + esc(l.title || "Untitled") + '</span>' +
+                '<span class="nt-step-sub">' + sub + '</span>' +
+              '</span>' +
+            '</button>';
+        });
+        el.innerHTML = html;
+      }
+
+      function renderTitle() {
+        var t = document.getElementById("ntTitle");
+        if (t) t.innerText = activeList().title || "Untitled";
+      }
+
+      function renderFilterSeg() {
+        var seg = document.getElementById("ntFilter");
+        if (!seg) return;
+        var btns = seg.querySelectorAll("button");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].classList.toggle("active", btns[i].getAttribute("data-f") === filter);
+        }
+      }
+
+      function renderHint() {
+        var el = document.getElementById("ntHint");
+        if (!el) return;
+        var l = activeList();
+        var total = l.tasks.length;
+        var done = l.tasks.filter(function (t) { return t.done; }).length;
+        el.textContent = total
+          ? (done + " of " + total + " complete. Click a task to edit it inline; everything is stored only in this browser.")
+          : "Click a task to edit it inline, check it off when done. Everything is stored only in this browser.";
+      }
+
+      function renderTasks() {
+        var box = document.getElementById("ntTasks");
+        if (!box) return;
+        var tasks = activeList().tasks;
+
+        var visible = tasks
+          .map(function (t, idx) { return { t: t, idx: idx }; })
+          .filter(function (o) {
+            if (filter === "active") return !o.t.done;
+            if (filter === "done") return o.t.done;
+            return true;
+          });
+
+        if (!visible.length) {
+          var msg = tasks.length
+            ? (filter === "done" ? "Nothing completed yet." : (filter === "active" ? "No active tasks — all done!" : "No matching tasks."))
+            : "No tasks in this list yet. Add your first one below.";
+          box.innerHTML =
+            '<div class="nt-empty"><i class="fa-solid fa-clipboard-list"></i>' + esc(msg) + '</div>';
+          return;
+        }
+
+        var html = "";
+        visible.forEach(function (o) {
+          var t = o.t, idx = o.idx;
+          html +=
+            '<div class="nt-row' + (t.done ? " done" : "") + '">' +
+              '<span class="nt-check' + (t.done ? " on" : "") + '" role="checkbox" ' +
+              'aria-checked="' + (t.done ? "true" : "false") + '" ' +
+              'onclick="ntToggleTask(' + idx + ')"><i class="fa-solid fa-check"></i></span>' +
+              '<span class="nt-text" contenteditable="true" spellcheck="false" ' +
+              'onblur="ntEditTask(' + idx + ', this.innerText)" ' +
+              'onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}">' +
+              esc(t.text) + '</span>' +
+              '<button type="button" class="nt-del" title="Delete task" ' +
+              'onclick="ntDeleteTask(' + idx + ')"><i class="fa-solid fa-xmark"></i></button>' +
+            '</div>';
+        });
+        box.innerHTML = html;
+      }
+
+      function renderAll() {
+        renderStepper();
+        renderTitle();
+        renderFilterSeg();
+        renderHint();
+        renderTasks();
+      }
+
+      /* ---- public actions (all on window for inline handlers) ---- */
+      window.renderNotes = function () {
+        state = load();          // refresh from storage each open
+        filter = "all";
+        renderAll();
       };
-      window.addNote=function(){
-        var inp=document.getElementById('noteInput'); if(!inp) return;
-        var v=(inp.value||'').trim(); if(!v) return;
-        var a=getNotes(); a.unshift({text:v,done:false}); save(a); inp.value=''; renderNotes();
+
+      window.getNotes = function () { return model(); };
+
+      window.ntSwitchList = function (i) {
+        var m = model();
+        if (i < 0 || i >= m.lists.length) return;
+        m.active = i;
+        filter = "all";
+        save(m);
+        renderAll();
       };
+
+      window.ntAddList = function () {
+        var m = model();
+        m.lists.push({ id: uid(), title: "New list", tasks: [] });
+        m.active = m.lists.length - 1;
+        filter = "all";
+        save(m);
+        renderAll();
+        var t = document.getElementById("ntTitle");
+        if (t) {
+          t.focus();
+          try {
+            var r = document.createRange(); r.selectNodeContents(t);
+            var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+          } catch (e) {}
+        }
+      };
+
+      window.ntDeleteActive = function () {
+        var m = model();
+        if (m.lists.length <= 1) {
+          // never zero lists — clear the only list's tasks after confirm
+          if (!window.confirm("This is your only list. Clear all its tasks?")) return;
+          m.lists[0].tasks = [];
+          filter = "all";
+          save(m);
+          renderAll();
+          return;
+        }
+        var name = m.lists[m.active].title || "this list";
+        if (!window.confirm('Delete "' + name + '" and all its tasks?')) return;
+        m.lists.splice(m.active, 1);
+        if (m.active >= m.lists.length) m.active = m.lists.length - 1;
+        filter = "all";
+        save(m);
+        renderAll();
+      };
+
+      window.ntRenameActive = function (txt) {
+        var m = model();
+        var v = (txt == null ? "" : String(txt)).replace(/\s+/g, " ").trim();
+        m.lists[m.active].title = v || "Untitled";
+        save(m);
+        renderStepper();     // reflect new title in the rail
+        renderTitle();       // normalize displayed text
+      };
+
+      window.ntSetFilter = function (f) {
+        filter = (f === "active" || f === "done") ? f : "all";
+        renderFilterSeg();
+        renderTasks();
+      };
+
+      // addNote = add a task to the active list (kept as global per contract)
+      window.addNote = function () {
+        var inp = document.getElementById("noteInput");
+        if (!inp) return;
+        var v = inp.value.trim();
+        if (!v) { inp.focus(); return; }
+        var m = model();
+        m.lists[m.active].tasks.push({ text: v, done: false });
+        save(m);
+        inp.value = "";
+        renderStepper();
+        renderHint();
+        renderTasks();
+        inp.focus();
+      };
+
+      window.ntToggleTask = function (idx) {
+        var l = activeList();
+        if (!l.tasks[idx]) return;
+        l.tasks[idx].done = !l.tasks[idx].done;
+        save(model());
+        renderStepper();
+        renderHint();
+        renderTasks();
+      };
+
+      window.ntEditTask = function (idx, txt) {
+        var l = activeList();
+        if (!l.tasks[idx]) return;
+        var v = (txt == null ? "" : String(txt)).replace(/\s+/g, " ").trim();
+        if (!v) { l.tasks.splice(idx, 1); }   // emptying a task removes it
+        else { l.tasks[idx].text = v; }
+        save(model());
+        renderStepper();
+        renderHint();
+        renderTasks();
+      };
+
+      window.ntDeleteTask = function (idx) {
+        var l = activeList();
+        if (!l.tasks[idx]) return;
+        l.tasks.splice(idx, 1);
+        save(model());
+        renderStepper();
+        renderHint();
+        renderTasks();
+      };
+
+      // If the view is already mounted when this code loads, render now.
+      if (document.getElementById("ntStepper")) {
+        try { window.renderNotes(); } catch (e) {}
+      }
     })();
 
     /* ============ SETTINGS PAGE (account · employees · theme) ============ */
