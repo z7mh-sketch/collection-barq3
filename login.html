@@ -21,6 +21,9 @@
     --gold:#E7E9EE;
   }
   html,body{background:var(--bg);}
+  /* hide scrollbars (scrolling still works) */
+  *{ scrollbar-width:none !important; -ms-overflow-style:none !important; }
+  *::-webkit-scrollbar{ width:0 !important; height:0 !important; display:none !important; }
   body{
     font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     color:var(--white);
