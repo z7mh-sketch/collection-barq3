@@ -96,6 +96,24 @@
       border-color:rgba(59,130,246,.45) !important;
     }
 
+    /* premium PDF feature cards (3D glass + blue accent) */
+    .feat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+    .feat-card{ background:#0d0d0f; border:1px solid var(--fx-border); border-radius:16px; padding:24px 24px 30px; cursor:pointer; display:flex; flex-direction:column; transition:border-color .2s ease, transform .2s ease; }
+    .feat-card:hover{ border-color:rgba(59,130,246,.5); transform:translateY(-3px); }
+    .feat-card:hover .feat-tile::after{ opacity:1; }
+    .feat-illus{ height:200px; display:grid; place-items:center; perspective:820px; margin-bottom:20px; }
+    .feat-tile{ position:relative; width:148px; height:118px; border-radius:18px; transform:rotateX(56deg) rotateZ(-44deg); transform-style:preserve-3d; display:grid; place-items:center;
+      background:linear-gradient(150deg, rgba(255,255,255,.12), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 26px 44px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.18); }
+    .feat-tile::before{ content:""; position:absolute; inset:0; border-radius:18px; transform:translateZ(-22px); background:rgba(255,255,255,.035); box-shadow:0 0 0 1px rgba(255,255,255,.05); }
+    .feat-tile::after{ content:""; position:absolute; left:6%; right:6%; bottom:-12px; height:28px; border-radius:50%; background:radial-gradient(closest-side, #2563eb, rgba(37,99,235,0)); filter:blur(7px); opacity:.85; transition:opacity .2s ease; }
+    .feat-tile i{ font-size:2.7rem; color:rgba(255,255,255,.62); }
+    .feat-badge{ width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,.05); border:1px solid var(--fx-border); display:grid; place-items:center; color:#cbd5e1; font-size:.95rem; margin-bottom:14px; }
+    .feat-h{ font-size:1.15rem; font-weight:800; color:#fff; line-height:1.3; margin-bottom:9px; }
+    .feat-p{ font-size:.9rem; color:var(--fx-muted); line-height:1.75; margin:0; }
+    @media(max-width:900px){ .feat-grid{ grid-template-columns:1fr; } }
+
     @media(max-width:860px){
       .app-shell{ flex-direction:column; }
       .dash-sidebar{ width:100%; height:auto; position:relative; flex-direction:row; flex-wrap:wrap; gap:6px; align-items:center; padding:12px; }
@@ -314,8 +332,29 @@
           <i class="fa-solid fa-file-pdf"></i>
           <span data-i18n="pdfLabel">ملفات PDF</span>
         </h3>
+        <span class="section-subtitle">نماذج جاهزة — اختر النموذج لتعبئته وإصداره</span>
       </div>
-      <div id="pdfGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+      <div class="feat-grid">
+        <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج المخالفة');openVfLaunch();">
+          <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
+          <div class="feat-badge"><i class="fa-solid fa-gavel"></i></div>
+          <h4 class="feat-h">نموذج المخالفة</h4>
+          <p class="feat-p">إنشاء وإصدار نموذج مخالفة موظف، معبّأ تلقائياً بالبيانات وتوقيع المدير، وجاهز للإرسال.</p>
+        </div>
+        <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج الاستقالة');openRfLaunch();">
+          <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-file-signature"></i></div></div>
+          <div class="feat-badge"><i class="fa-solid fa-file-lines"></i></div>
+          <h4 class="feat-h">نموذج الاستقالة</h4>
+          <p class="feat-p">تجهيز نموذج استقالة معبّأ بمعلومات الموظف وتوقيع المدير المباشر وتاريخه.</p>
+        </div>
+        <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج إجازة');openLfLaunch();">
+          <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-plane-departure"></i></div></div>
+          <div class="feat-badge"><i class="fa-solid fa-calendar-check"></i></div>
+          <h4 class="feat-h">طلب إجازة</h4>
+          <p class="feat-p">تقديم طلب إجازة وسفر معبّأ ببيانات الموظف ونوع الإجازة والتواريخ تلقائياً.</p>
+        </div>
+      </div>
+      <div id="pdfGrid" style="display:none"></div>
     </section>
 
     <!-- ============ ESCALATION QUICK LINKS ============ -->
