@@ -199,6 +199,64 @@
 <body>
 
   <!-- ============ WELCOME MODAL ============ -->
+  <style id="pages-css">
+    /* ===== Page views (navigate, not popups) ===== */
+    .dash-view{ display:none; }
+    .dash-view.active{ display:block; animation:viewFade .28s ease; }
+    @keyframes viewFade{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    #view-leaders, #view-notes, #view-settings{ max-width:1100px; margin:0 auto; padding:28px 24px 64px; }
+    .view-head{ margin-bottom:22px; }
+    .view-title{ font-size:1.5rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+    .view-title i{ color:#3b82f6; font-size:1.1rem; }
+    .view-sub{ color:#9ca3af; font-size:.9rem; margin-top:6px; }
+
+    /* ===== Settings ===== */
+    .set-card{ background:#0d0d0f; border:1px solid rgba(255,255,255,.07); border-radius:16px; padding:22px; margin-bottom:18px; }
+    .set-card h3{ color:#fff; font-size:1.02rem; font-weight:700; margin-bottom:4px; display:flex; align-items:center; gap:.5rem; }
+    .set-card h3 i{ color:#3b82f6; font-size:.95rem; }
+    .set-card .hint{ color:#71717a; font-size:.82rem; margin-bottom:16px; }
+    .set-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-top:1px solid rgba(255,255,255,.05); }
+    .set-row:first-of-type{ border-top:none; }
+    .set-row .lbl{ color:#cbd5e1; font-size:.9rem; }
+    .set-row .val{ color:#9ca3af; font-size:.88rem; word-break:break-all; }
+    .set-input{ background:#15171b; border:1px solid rgba(255,255,255,.1); border-radius:9px; color:#e7e9ee; padding:10px 12px; font-family:inherit; font-size:.9rem; width:100%; }
+    .set-input:focus{ outline:none; border-color:#3b82f6; }
+    .set-btn{ background:#2563eb; color:#fff; border:none; border-radius:9px; padding:10px 16px; font-family:inherit; font-weight:600; font-size:.85rem; cursor:pointer; transition:background .2s; white-space:nowrap; }
+    .set-btn:hover{ background:#1d4ed8; }
+    .set-btn.ghost{ background:#15171b; border:1px solid rgba(255,255,255,.1); color:#cbd5e1; }
+    .set-btn.ghost:hover{ background:#1f2228; }
+    .seg{ display:inline-flex; background:#15171b; border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:3px; gap:3px; }
+    .seg button{ background:transparent; border:none; color:#9ca3af; padding:8px 20px; border-radius:7px; font-family:inherit; font-weight:600; font-size:.85rem; cursor:pointer; }
+    .seg button.active{ background:#2563eb; color:#fff; }
+    /* employees */
+    .emp-list{ display:flex; flex-direction:column; gap:8px; }
+    .emp-row{ display:flex; align-items:center; gap:12px; background:#15171b; border:1px solid rgba(255,255,255,.06); border-radius:11px; padding:11px 14px; }
+    .emp-row .emp-av{ width:34px; height:34px; border-radius:9px; background:#1f2937; color:#93c5fd; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; }
+    .emp-row .emp-info{ flex:1; min-width:0; }
+    .emp-row .emp-name{ color:#e7e9ee; font-weight:600; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .emp-row .emp-meta{ color:#71717a; font-size:.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .emp-row .emp-acts{ display:flex; gap:6px; flex-shrink:0; }
+    .icon-btn{ width:32px; height:32px; border-radius:8px; border:1px solid rgba(255,255,255,.1); background:#0d0d0f; color:#9ca3af; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.8rem; }
+    .icon-btn:hover{ color:#fff; }
+    .icon-btn.del:hover{ color:#f87171; border-color:rgba(239,68,68,.4); }
+    .emp-empty{ color:#71717a; font-size:.86rem; text-align:center; padding:20px; }
+    /* notes */
+    .notes-wrap{ display:flex; flex-direction:column; gap:10px; }
+    .note-add{ display:flex; gap:10px; }
+    .note-item{ display:flex; align-items:flex-start; gap:12px; background:#0d0d0f; border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:13px 15px; }
+    .note-item.done .note-txt{ text-decoration:line-through; color:#52525b; }
+    .note-check{ width:21px; height:21px; border-radius:6px; border:1.5px solid #3f3f46; background:transparent; cursor:pointer; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; color:transparent; font-size:.7rem; }
+    .note-item.done .note-check{ background:#2563eb; border-color:#2563eb; color:#fff; }
+    .note-txt{ flex:1; color:#e7e9ee; font-size:.92rem; line-height:1.6; word-break:break-word; white-space:pre-wrap; }
+    .note-del{ background:none; border:none; color:#52525b; cursor:pointer; font-size:.9rem; padding:2px 4px; }
+    .note-del:hover{ color:#f87171; }
+    /* logout in sidebar */
+    .sb-logout{ display:flex; align-items:center; gap:10px; width:100%; background:transparent; border:1px solid rgba(255,255,255,.08); color:#cbd5e1; border-radius:11px; padding:10px 12px; font-family:inherit; font-size:.88rem; cursor:pointer; margin-top:10px; }
+    .sb-logout:hover{ background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.35); color:#f87171; }
+    .sb-logout svg{ width:18px; height:18px; flex-shrink:0; }
+    .dash-sidebar.collapsed .sb-logout span{ display:none; }
+  </style>
+
   <div id="welcomeModal" class="wm-overlay">
     <div class="wm-box">
       <button class="wm-close" onclick="closeWelcome()" aria-label="Close">✕</button>
@@ -332,21 +390,24 @@
       <div class="dash-menu-label">القائمة الرئيسية</div>
 
       <nav class="dash-nav">
-        <a href="#quick-links" class="dash-nav-item active" data-i18n="navQuickLinks"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>روابط سريعة</span></a>
-        <button id="leadersNavBtn" class="dash-nav-item nav-link nav-link-btn" data-i18n="navLeaders"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>الليدرز</span></button>
-        <a href="#pdf-links" class="dash-nav-item"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></a>
+        <button type="button" class="dash-nav-item active" data-view="home" onclick="showView('home')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/></svg><span data-i18n="navHome">الرئيسية</span></button>
+        <button id="leadersNavBtn" class="dash-nav-item nav-link nav-link-btn" data-view="leaders"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="navLeaders">الليدرز</span></button>
+        <button type="button" class="dash-nav-item" onclick="showView('home'); setTimeout(function(){var e=document.getElementById('pdf-links'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});},70);"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></button>
+        <button type="button" class="dash-nav-item" data-view="notes" onclick="showView('notes')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h4"/></svg><span data-i18n="navNotes">الملاحظات والمهام</span></button>
 
         <!-- expandable group -->
         <div class="sb-group">
           <button type="button" class="dash-nav-item sb-exp" onclick="toggleGroup(this)"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>التصعيد</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
           <div class="sb-sub">
-            <a href="#escalation-quick-links" data-i18n="escalationQuickLabel">روابط التصعيد</a>
+            <a href="#" onclick="showView('home'); setTimeout(function(){var e=document.getElementById('escalation-quick-links'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});},70); return false;" data-i18n="escalationQuickLabel">روابط التصعيد</a>
             <button id="escalationNavBtn" class="nav-link nav-link-btn maint" data-i18n="navEscalation" disabled>دليل التصعيد</button>
           </div>
         </div>
 
-        <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" data-i18n="navOrgChart" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3"/><path d="M6 16v-2h12v2"/></svg><span>الهيكل التنظيمي</span><span class="tag">🔧</span></button>
+        <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3"/><path d="M6 16v-2h12v2"/></svg><span data-i18n="navOrgChart">الهيكل التنظيمي</span><span class="tag">🔧</span></button>
         <button id="bookletNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>أحدث بكليت</span><span class="tag">🔧</span></button>
+
+        <button type="button" class="dash-nav-item" data-view="settings" onclick="showView('settings')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="navSettings">الإعدادات</span></button>
       </nav>
 
       <!-- bottom -->
@@ -355,64 +416,38 @@
           <div class="sb-promo-title">Collection Barq</div>
           <div class="sb-promo-sub">مرجعك الداخلي — يتطوّر باستمرار ✨</div>
         </div>
-        <div class="sb-theme">
-          <button type="button" class="sb-theme-btn" onclick="var t=document.getElementById('themeToggle'); if(t) t.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg><span>فاتح</span></button>
-          <button type="button" class="sb-theme-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg><span>داكن</span></button>
-        </div>
+        <button id="logoutBtn" class="sb-logout" title="تسجيل الخروج">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          <span data-i18n="logoutBtn">Log out</span>
+        </button>
       </div>
     </aside>
 
     <!-- CONTENT -->
     <div class="dash-content">
 
-      <!-- TOP BAR -->
+      <!-- TOP BAR (site name only) -->
       <header class="dash-topbar">
         <button id="mobileMenuBtn" class="dash-hamburger" aria-label="القائمة"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
         <h1 class="dash-page-title" dir="ltr">Collection Barq</h1>
         <div class="dash-topbar-spacer"></div>
-
-
-        <!-- Presence Widget -->
-        <div id="presenceWidget" class="presence-widget hidden">
-          <div class="presence-item">
-            <span class="presence-dot online"></span>
-            <span id="onlineNum">0</span>
-            <div class="presence-tooltip" id="onlineTooltip"></div>
-          </div>
-          <div class="presence-item">
-            <span class="presence-dot idle"></span>
-            <span id="idleNum">0</span>
-            <div class="presence-tooltip" id="idleTooltip"></div>
-          </div>
-        </div>
-
-        <!-- Language Toggle -->
-        <div class="lang-toggle">
-          <button class="lang-btn active" data-lang="ar">ع</button>
-          <button class="lang-btn"        data-lang="en">EN</button>
-        </div>
-
-        <!-- Theme Toggle -->
-        <button id="themeToggle" class="theme-btn" title="تبديل الوضع">
-          <i class="fa-solid fa-moon"></i>
-        </button>
-
-        <!-- Logout -->
-        <button id="logoutBtn" class="logout-btn" title="تسجيل الخروج">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span data-i18n="logoutBtn">تسجيل الخروج</span>
-        </button>
       </header>
+
+      <!-- presence kept hidden (still updated by presence.js) -->
+      <div id="presenceWidget" class="presence-widget" style="display:none">
+        <div class="presence-item"><span class="presence-dot online"></span><span id="onlineNum">0</span><div class="presence-tooltip" id="onlineTooltip"></div></div>
+        <div class="presence-item"><span class="presence-dot idle"></span><span id="idleNum">0</span><div class="presence-tooltip" id="idleTooltip"></div></div>
+      </div>
 
   <!-- Mobile nav dropdown -->
   <div id="mobileMenu" class="mobile-menu-panel hidden md:hidden">
-    <a href="#quick-links" class="mobile-nav-link" data-i18n="navQuickLinks" onclick="closeMobileMenu()">روابط سريعة</a>
-    <button class="mobile-nav-link" data-i18n="navLeaders"     onclick="document.getElementById('leadersNavBtn').click();closeMobileMenu()">الليدرز</button>
-    <button class="mobile-nav-link" data-i18n="navOrgChart"    onclick="document.getElementById('orgChartNavBtn').click();closeMobileMenu()">الهيكل التنظيمي</button>
-    <button class="mobile-nav-link" data-i18n="navEscalation"  onclick="document.getElementById('escalationNavBtn').click();closeMobileMenu()">دليل التصعيد</button>
+    <button class="mobile-nav-link" data-i18n="navHome"     onclick="showView('home');closeMobileMenu()">الرئيسية</button>
+    <button class="mobile-nav-link" data-i18n="navLeaders"  onclick="showView('leaders');closeMobileMenu()">الليدرز</button>
+    <button class="mobile-nav-link" data-i18n="navNotes"    onclick="showView('notes');closeMobileMenu()">الملاحظات والمهام</button>
+    <button class="mobile-nav-link" data-i18n="navSettings" onclick="showView('settings');closeMobileMenu()">الإعدادات</button>
   </div>
 
-  <main class="max-w-7xl mx-auto px-4 py-8 space-y-12">
+  <main id="view-home" class="dash-view active max-w-7xl mx-auto px-4 py-8 space-y-12">
 
     <!-- ============ HERO ============ -->
     <section class="hero-section rounded-2xl p-7 md:p-10">
@@ -489,6 +524,94 @@
     </section>
 
   </main>
+
+  <!-- ============ LEADERS VIEW ============ -->
+  <section id="view-leaders" class="dash-view">
+    <div class="view-head">
+      <h2 class="view-title"><i class="fa-solid fa-user-group"></i> <span data-i18n="leadersLabel">الليدرز</span> <span id="leadersCount" class="text-sm font-normal" style="color:#71717a"></span></h2>
+    </div>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <div class="relative flex-1" style="min-width:200px">
+        <input id="searchInput" type="search"
+          data-i18n-placeholder="searchPlaceholder"
+          placeholder="ابحث باسم الليدر أو المنصب أو القسم..."
+          class="search-input" style="width:100%" />
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      </div>
+    </div>
+    <div id="departmentFilters" class="flex flex-wrap gap-2 mb-4"></div>
+    <div id="leadersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <div id="noResults" class="hidden text-center py-12" style="color:#71717a">
+      <i class="fa-solid fa-magnifying-glass text-3xl mb-3" style="color:#d4d4d8;display:block;margin-bottom:.75rem"></i>
+      <p data-i18n="noResultsText">لا توجد نتائج مطابقة، جرّب كلمة أخرى.</p>
+    </div>
+  </section>
+
+  <!-- ============ NOTES VIEW ============ -->
+  <section id="view-notes" class="dash-view">
+    <div class="view-head">
+      <h2 class="view-title"><i class="fa-solid fa-note-sticky"></i> <span data-i18n="navNotes">Notes &amp; Tasks</span></h2>
+      <p class="view-sub" data-i18n="notesSub">Your private checklist — saved in this browser only.</p>
+    </div>
+    <div class="note-add" style="margin-bottom:16px">
+      <input id="noteInput" class="set-input" placeholder="Add a note or task, then press Enter…" onkeydown="if(event.key==='Enter')addNote()" />
+      <button class="set-btn" onclick="addNote()" data-i18n="notesAdd">Add</button>
+    </div>
+    <div id="notesList" class="notes-wrap"></div>
+  </section>
+
+  <!-- ============ SETTINGS VIEW ============ -->
+  <section id="view-settings" class="dash-view">
+    <div class="view-head">
+      <h2 class="view-title"><i class="fa-solid fa-gear"></i> <span data-i18n="navSettings">Settings</span></h2>
+      <p class="view-sub" data-i18n="settingsSub">Manage your language, account, employees and appearance.</p>
+    </div>
+
+    <!-- Language -->
+    <div class="set-card">
+      <h3><i class="fa-solid fa-language"></i> <span data-i18n="setLang">Language</span></h3>
+      <div class="hint" data-i18n="setLangHint">Choose the site language.</div>
+      <div class="seg">
+        <button class="lang-btn" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="ar">العربية</button>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="set-card">
+      <h3><i class="fa-solid fa-circle-user"></i> <span data-i18n="setAccount">Your account</span></h3>
+      <div class="hint" data-i18n="setAccountHint">The profile your teammates see.</div>
+      <div class="set-row"><span class="lbl" data-i18n="setDisplayName">Display name</span><span class="val" id="accName">—</span></div>
+      <div class="set-row"><span class="lbl" data-i18n="setEmail">Email</span><span class="val" id="accEmail">—</span></div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <input id="accNameInput" class="set-input" placeholder="Edit display name…" />
+        <button class="set-btn" onclick="saveAccountName()" data-i18n="setSave">Save</button>
+      </div>
+    </div>
+
+    <!-- Employees -->
+    <div class="set-card">
+      <h3><i class="fa-solid fa-users"></i> <span data-i18n="setEmployees">Your employees</span></h3>
+      <div class="hint" data-i18n="setEmployeesHint">Edit or remove the employees under you. Changes are saved on this device.</div>
+      <div id="empList" class="emp-list"></div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        <button class="set-btn ghost" onclick="addEmployee()"><i class="fa-solid fa-plus"></i> <span data-i18n="setAddEmp">Add employee</span></button>
+        <button class="set-btn ghost" onclick="resetEmployees()" data-i18n="setResetEmp">Reset to default</button>
+      </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="set-card">
+      <h3><i class="fa-solid fa-palette"></i> <span data-i18n="setAppearance">Appearance</span></h3>
+      <div class="hint" data-i18n="setAppearanceHint">Switch between dark and light mode.</div>
+      <div class="seg" id="themeSeg">
+        <button data-theme="dark" onclick="setThemeMode('dark')" data-i18n="setDark">Dark</button>
+        <button data-theme="light" onclick="setThemeMode('light')" data-i18n="setLight">Light</button>
+      </div>
+      <!-- hidden real toggle used by existing theme JS (initTheme) -->
+      <button id="themeToggle" class="theme-btn" title="تبديل الوضع" style="display:none"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </section>
 
   <footer class="site-footer">
     <span data-i18n="footerText">Collection Barq · مرجع داخلي للاستخدام ضمن الشركة فقط</span>
@@ -1030,35 +1153,7 @@
   </div>
 
   <!-- ============ LEADERS MODAL ============ -->
-  <div id="leadersModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
-    <div class="modal-box w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-      <div class="modal-header">
-        <h4 class="modal-title flex items-center gap-2">
-          <i class="fa-solid fa-user-group" style="color:#E7E9EE"></i>
-          <span data-i18n="leadersLabel">الليدرز</span>
-          <span id="leadersCount" class="text-sm font-normal" style="color:#71717a"></span>
-        </h4>
-        <button id="leadersModalClose" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="p-5">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <div class="relative flex-1" style="min-width:200px">
-            <input id="searchInput" type="search"
-              data-i18n-placeholder="searchPlaceholder"
-              placeholder="ابحث باسم الليدر أو المنصب أو القسم..."
-              class="search-input" style="width:100%" />
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          </div>
-        </div>
-        <div id="departmentFilters" class="flex flex-wrap gap-2 mb-4"></div>
-        <div id="leadersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <div id="noResults" class="hidden text-center py-12" style="color:#71717a">
-          <i class="fa-solid fa-magnifying-glass text-3xl mb-3" style="color:#d4d4d8;display:block;margin-bottom:.75rem"></i>
-          <p data-i18n="noResultsText">لا توجد نتائج مطابقة، جرّب كلمة أخرى.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Leaders moved to #view-leaders page (no longer a modal) -->
 
   <!-- ============ ORG CHART MODAL ============ -->
   <div id="orgChartModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.75)">
@@ -1539,6 +1634,114 @@
     window.toggleFast = function(){ var b=document.getElementById('sbFastBtn'), m=document.getElementById('sbFastMenu'); if(!m) return; var open=m.classList.toggle('open'); if(b) b.classList.toggle('open', open); };
     window.toggleGroup = function(btn){ var g=btn.closest('.sb-group'); if(g) g.classList.toggle('open'); };
     (function(){ try{ var n=(localStorage.getItem('presenceName')||'').trim(); if(n){ var el=document.getElementById('sbName'); if(el){ el.textContent=n; el.removeAttribute('dir'); } var av=document.getElementById('sbAvatar'); if(av) av.textContent=n.charAt(0).toUpperCase(); } }catch(e){} })();
+
+    /* ============ VIEW ROUTER (everything is a page, no popups) ============ */
+    window.showView = function(name){
+      var views = document.querySelectorAll('.dash-view');
+      for(var i=0;i<views.length;i++){ views[i].classList.remove('active'); }
+      var target = document.getElementById('view-'+name) || document.getElementById('view-home');
+      if(target) target.classList.add('active');
+      var items = document.querySelectorAll('.dash-nav-item');
+      for(var j=0;j<items.length;j++){ items[j].classList.toggle('active', items[j].getAttribute('data-view')===name); }
+      try{ window.scrollTo(0,0); }catch(e){}
+      if(name==='leaders'){ try{ renderDepartmentFilters(); renderLeaders(); }catch(e){} }
+      if(name==='notes'){ try{ renderNotes(); }catch(e){} }
+      if(name==='settings'){ try{ initSettings(); }catch(e){} }
+    };
+
+    /* ============ NOTES & TASKS PAGE ============ */
+    (function(){
+      var KEY='barq_notes_v2';
+      window.getNotes=function(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } };
+      function save(a){ try{ localStorage.setItem(KEY, JSON.stringify(a)); }catch(e){} }
+      window.renderNotes=function(){
+        var list=document.getElementById('notesList'); if(!list) return;
+        var notes=getNotes();
+        if(!notes.length){ list.innerHTML='<div class="emp-empty">No notes yet — add your first task above.</div>'; return; }
+        list.innerHTML='';
+        notes.forEach(function(n,i){
+          var row=document.createElement('div'); row.className='note-item'+(n.done?' done':'');
+          row.innerHTML='<button class="note-check"></button><div class="note-txt"></div><button class="note-del"><i class="fa-solid fa-trash"></i></button>';
+          row.querySelector('.note-check').innerHTML = n.done ? '<i class="fa-solid fa-check"></i>' : '';
+          row.querySelector('.note-txt').textContent=n.text;
+          row.querySelector('.note-check').onclick=function(){ var a=getNotes(); a[i].done=!a[i].done; save(a); renderNotes(); };
+          row.querySelector('.note-del').onclick=function(){ var a=getNotes(); a.splice(i,1); save(a); renderNotes(); };
+          list.appendChild(row);
+        });
+      };
+      window.addNote=function(){
+        var inp=document.getElementById('noteInput'); if(!inp) return;
+        var v=(inp.value||'').trim(); if(!v) return;
+        var a=getNotes(); a.unshift({text:v,done:false}); save(a); inp.value=''; renderNotes();
+      };
+    })();
+
+    /* ============ SETTINGS PAGE (account · employees · theme) ============ */
+    (function(){
+      var EMP_KEY='barq_emp_overrides_v1';
+      function curEmail(){ try{ return (localStorage.getItem('userEmail')||'').trim().toLowerCase(); }catch(e){ return ''; } }
+      function baseEmployees(){ var em=curEmail(); try{ if(typeof VF_EMPLOYEES!=='undefined' && VF_EMPLOYEES[em]) return VF_EMPLOYEES[em]; }catch(e){} return []; }
+      function getOverrides(){ try{ return JSON.parse(localStorage.getItem(EMP_KEY)||'{}'); }catch(e){ return {}; } }
+      function saveOverrides(o){ try{ localStorage.setItem(EMP_KEY, JSON.stringify(o)); }catch(e){} }
+      function getMy(){ var ov=getOverrides(), em=curEmail(); if(ov[em]) return ov[em]; return baseEmployees().map(function(e){ return {name:e.name,hrid:e.hrid,email:e.email,title:e.title}; }); }
+      function persist(list){ var ov=getOverrides(); ov[curEmail()]=list; saveOverrides(ov); }
+      window.renderEmployees=function(){
+        var box=document.getElementById('empList'); if(!box) return;
+        var list=getMy();
+        if(!list.length){ box.innerHTML='<div class="emp-empty">No employees found for your account.</div>'; return; }
+        box.innerHTML='';
+        list.forEach(function(e,i){
+          var row=document.createElement('div'); row.className='emp-row';
+          row.innerHTML='<div class="emp-av"></div><div class="emp-info"><div class="emp-name"></div><div class="emp-meta"></div></div><div class="emp-acts"><button class="icon-btn edit" title="Edit"><i class="fa-solid fa-pen"></i></button><button class="icon-btn del" title="Delete"><i class="fa-solid fa-trash"></i></button></div>';
+          row.querySelector('.emp-av').textContent=((e.name||'?').trim().charAt(0)||'?').toUpperCase();
+          row.querySelector('.emp-name').textContent=e.name||'(no name)';
+          row.querySelector('.emp-meta').textContent=[e.title,e.hrid,e.email].filter(Boolean).join(' · ');
+          row.querySelector('.edit').onclick=function(){ editEmployee(i); };
+          row.querySelector('.del').onclick=function(){ if(confirm('Delete '+(e.name||'this employee')+'?')){ var l=getMy(); l.splice(i,1); persist(l); renderEmployees(); } };
+          box.appendChild(row);
+        });
+      };
+      window.editEmployee=function(i){
+        var l=getMy(); var e=l[i]||{};
+        var name=prompt('Name:', e.name||''); if(name===null) return;
+        var title=prompt('Job title:', e.title||''); if(title===null) return;
+        var hrid=prompt('HR ID:', e.hrid||''); if(hrid===null) return;
+        var email=prompt('Email:', e.email||''); if(email===null) return;
+        l[i]={name:name.trim(),title:title.trim(),hrid:hrid.trim(),email:email.trim()}; persist(l); renderEmployees();
+      };
+      window.addEmployee=function(){
+        var name=prompt('Name:',''); if(!name) return;
+        var title=prompt('Job title:','')||''; var hrid=prompt('HR ID:','')||''; var email=prompt('Email:','')||'';
+        var l=getMy(); l.push({name:name.trim(),title:title.trim(),hrid:hrid.trim(),email:email.trim()}); persist(l); renderEmployees();
+      };
+      window.resetEmployees=function(){ if(!confirm('Reset your employee list to the default?')) return; var ov=getOverrides(); delete ov[curEmail()]; saveOverrides(ov); renderEmployees(); };
+      window.saveAccountName=function(){
+        var inp=document.getElementById('accNameInput'); if(!inp) return;
+        var v=(inp.value||'').trim(); if(!v) return;
+        try{ localStorage.setItem('presenceName', v); }catch(e){}
+        var an=document.getElementById('accName'); if(an) an.textContent=v;
+        var sb=document.getElementById('sbName'); if(sb){ sb.textContent=v; sb.removeAttribute('dir'); }
+        var av=document.getElementById('sbAvatar'); if(av) av.textContent=v.charAt(0).toUpperCase();
+        inp.value='';
+      };
+      function isLight(){ return !document.documentElement.classList.contains('dark'); }
+      window.setThemeMode=function(mode){
+        var cur=isLight()?'light':'dark';
+        if(cur!==mode){ var t=document.getElementById('themeToggle'); if(t) t.click(); }
+        setTimeout(updateThemeSeg,30);
+      };
+      window.updateThemeSeg=function(){
+        var cur=isLight()?'light':'dark';
+        document.querySelectorAll('#themeSeg button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-theme')===cur); });
+      };
+      window.initSettings=function(){
+        var nm=''; var em='';
+        try{ nm=(localStorage.getItem('presenceName')||'').trim(); em=(localStorage.getItem('userEmail')||'').trim(); }catch(e){}
+        var an=document.getElementById('accName'); if(an) an.textContent=nm||'—';
+        var ae=document.getElementById('accEmail'); if(ae) ae.textContent=em||'—';
+        renderEmployees(); updateThemeSeg();
+      };
+    })();
   </script>
 </body>
 </html>

@@ -464,40 +464,38 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('modalClose').addEventListener('click', closeLeaderModal);
   document.getElementById('leaderModal').addEventListener('click', e => { if (e.target.id === 'leaderModal') closeLeaderModal(); });
 
-  // Leaders modal
-  const leadersModal = document.getElementById('leadersModal');
-  document.getElementById('leadersNavBtn').addEventListener('click', () => {
-    leadersModal.classList.remove('hidden');
-    renderDepartmentFilters();
-    renderLeaders();
+  // Leaders -> page view (no longer a modal)
+  const leadersNavBtn = document.getElementById('leadersNavBtn');
+  if (leadersNavBtn) leadersNavBtn.addEventListener('click', () => {
+    if (window.showView) { showView('leaders'); }
+    else { renderDepartmentFilters(); renderLeaders(); }
   });
-  document.getElementById('leadersModalClose').addEventListener('click', () => leadersModal.classList.add('hidden'));
-  leadersModal.addEventListener('click', e => { if (e.target.id === 'leadersModal') leadersModal.classList.add('hidden'); });
 
-  // Org chart modal
+  // Org chart modal (maintenance — kept for later)
   const orgChartModal = document.getElementById('orgChartModal');
-  document.getElementById('orgChartNavBtn').addEventListener('click', () => {
-    orgChartModal.classList.remove('hidden');
-    renderOrgChart();
-  });
-  document.getElementById('orgChartClose').addEventListener('click', () => orgChartModal.classList.add('hidden'));
-  orgChartModal.addEventListener('click', e => { if (e.target.id === 'orgChartModal') orgChartModal.classList.add('hidden'); });
+  const orgChartNavBtn = document.getElementById('orgChartNavBtn');
+  if (orgChartModal && orgChartNavBtn) {
+    orgChartNavBtn.addEventListener('click', () => { orgChartModal.classList.remove('hidden'); renderOrgChart(); });
+    const oc = document.getElementById('orgChartClose');
+    if (oc) oc.addEventListener('click', () => orgChartModal.classList.add('hidden'));
+    orgChartModal.addEventListener('click', e => { if (e.target.id === 'orgChartModal') orgChartModal.classList.add('hidden'); });
+  }
 
-  // Escalation modal
+  // Escalation modal (maintenance — kept for later)
   const escalationModal = document.getElementById('escalationModal');
-  document.getElementById('escalationNavBtn').addEventListener('click', () => {
-    escalationModal.classList.remove('hidden');
-    renderEscalationGuide();
-  });
-  document.getElementById('escalationModalClose').addEventListener('click', () => escalationModal.classList.add('hidden'));
-  escalationModal.addEventListener('click', e => { if (e.target.id === 'escalationModal') escalationModal.classList.add('hidden'); });
+  const escalationNavBtn = document.getElementById('escalationNavBtn');
+  if (escalationModal && escalationNavBtn) {
+    escalationNavBtn.addEventListener('click', () => { escalationModal.classList.remove('hidden'); renderEscalationGuide(); });
+    const ec = document.getElementById('escalationModalClose');
+    if (ec) ec.addEventListener('click', () => escalationModal.classList.add('hidden'));
+    escalationModal.addEventListener('click', e => { if (e.target.id === 'escalationModal') escalationModal.classList.add('hidden'); });
+  }
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeLeaderModal();
-      leadersModal.classList.add('hidden');
-      orgChartModal.classList.add('hidden');
-      escalationModal.classList.add('hidden');
+      if (orgChartModal) orgChartModal.classList.add('hidden');
+      if (escalationModal) escalationModal.classList.add('hidden');
     }
   });
 });
