@@ -376,50 +376,52 @@
   }
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* ============ AUTH (centered welcome screen) ============ */
-  .auth-view{
-    display:none;
-    position:fixed; inset:0; z-index:60;
-    background:#000;
-    align-items:center; justify-content:center;
-    padding:2rem;
+  /* ============ AUTH — split-screen sign in ============ */
+  .auth-view{ display:none; position:fixed; inset:0; z-index:60; background:#000; }
+  .auth-view.show{ display:block; animation:authFade .25s ease; }
+  @keyframes authFade{ from{opacity:0;} to{opacity:1;} }
+  .auth-split{ display:flex; height:100%; width:100%; }
+
+  /* visual panel (left) */
+  .auth-visual{ flex:1.15; position:relative; overflow:hidden; display:flex; align-items:flex-end; padding:52px;
+    background:radial-gradient(130% 120% at 72% 18%, #0c0f15 0%, #000 68%); border-inline-start:1px solid rgba(255,255,255,.06); }
+  .auth-visual::before{ content:""; position:absolute; inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px); background-size:22px 22px;
+    -webkit-mask-image:radial-gradient(120% 90% at 60% 32%, #000, transparent 72%); mask-image:radial-gradient(120% 90% at 60% 32%, #000, transparent 72%); opacity:.45; }
+  .auth-illus{ position:absolute; inset:0; pointer-events:none; }
+  .auth-illus span{ position:absolute; }
+  .gi-d1{ left:54%; top:42%; width:230px; height:230px; transform:translate(-50%,-50%) rotate(45deg); border-radius:34px;
+    border:1.5px solid rgba(59,130,246,.7); background:linear-gradient(135deg, rgba(59,130,246,.12), rgba(255,255,255,.015));
+    box-shadow:0 0 90px rgba(37,99,235,.30), inset 0 0 50px rgba(255,255,255,.03); }
+  .gi-d2{ left:44%; top:42%; width:230px; height:230px; transform:translate(-50%,-50%) rotate(45deg); border-radius:34px;
+    background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.06); }
+  .gi-d3{ left:34%; top:42%; width:230px; height:230px; transform:translate(-50%,-50%) rotate(45deg); border-radius:34px;
+    background:rgba(255,255,255,.014); border:1px solid rgba(255,255,255,.04); }
+  .gi-orb{ left:67%; top:31%; width:118px; height:118px; border-radius:50%;
+    background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.22), rgba(0,0,0,.7) 70%);
+    border:1px solid rgba(255,255,255,.14); box-shadow:0 0 60px rgba(37,99,235,.22); }
+  .auth-visual-txt{ position:relative; z-index:2; }
+  .auth-visual-txt h3{ color:#e7e9ee; font-family:'Tajawal',sans-serif; font-size:1.5rem; font-weight:700; line-height:1.7; max-width:24ch; }
+
+  /* form panel (right) */
+  .auth-pane{ width:min(440px,44vw); flex-shrink:0; background:#000; padding:56px 50px; display:flex; flex-direction:column; justify-content:center; font-family:'Tajawal',sans-serif; overflow-y:auto; }
+  .auth-logo{ width:42px; height:42px; margin-bottom:34px; display:block; }
+  .auth-title{ font-family:'Inter','Tajawal',sans-serif; color:#fff; font-weight:800; font-size:2rem; margin-bottom:26px; }
+  .fld-label{ display:block; color:#9ca3af; font-size:.8rem; font-weight:600; margin-bottom:8px; }
+  .fld{ display:flex; align-items:center; gap:10px; background:#0d0d0f; border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:0 14px; margin-bottom:18px; transition:border-color .18s ease; }
+  .fld:focus-within{ border-color:#2563eb; }
+  .fld i{ color:#6b7280; font-size:.95rem; }
+  .fld input{ flex:1; background:transparent; border:none; outline:none; color:#f4f4f5; font-family:'Tajawal',sans-serif; font-size:.95rem; padding:13px 0; direction:rtl; text-align:right; }
+  .fld input::placeholder{ color:#52525b; }
+  .forgot{ display:inline-block; color:#9ca3af; font-size:.78rem; font-weight:600; text-decoration:none; margin:2px 0 22px; }
+  .forgot:hover{ color:#fff; text-decoration:underline; }
+  .btn-signin{ width:100%; padding:15px; border:none; border-radius:10px; background:#2563eb; color:#fff; font-family:'Tajawal',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; transition:background .2s ease; }
+  .btn-signin:hover{ background:#1d4ed8; }
+  @media(max-width:820px){
+    .auth-split{ flex-direction:column; }
+    .auth-visual{ display:none; }
+    .auth-pane{ width:100%; flex:1; padding:48px 28px; justify-content:flex-start; }
   }
-  .auth-view.show{display:flex; animation:authFade .25s ease;}
-  @keyframes authFade{from{opacity:0;}to{opacity:1;}}
-  .auth-box{
-    position:relative;
-    width:min(360px,100%);
-    display:flex; flex-direction:column;
-    font-family:'Tajawal',sans-serif;
-  }
-  .auth-logo{ width:46px; height:46px; margin:0 auto 1rem; display:block; }
-  .auth-h{ font-family:'Inter','Tajawal',sans-serif; color:#fff; font-weight:800; font-size:1.55rem; line-height:1.25; text-align:center; }
-  .auth-p{ color:#71717a; font-weight:800; font-size:1.55rem; line-height:1.25; text-align:center; margin-bottom:1.7rem; }
-  .btn-google{
-    width:100%; padding:.8rem 1rem; border:none; border-radius:.6rem;
-    background:#e8e8eb; color:#111;
-    font-family:'Tajawal',sans-serif; font-weight:700; font-size:.95rem;
-    display:flex; align-items:center; justify-content:center; gap:.55rem;
-    cursor:pointer; transition:opacity .2s ease;
-  }
-  .btn-google:hover{ opacity:.9; }
-  .auth-or{ display:flex; align-items:center; gap:.75rem; margin:1rem 0; color:#52525b; font-size:.8rem; font-weight:700; }
-  .auth-or::before,.auth-or::after{ content:""; flex:1; height:1px; background:rgba(255,255,255,.1); }
-  .auth-box input{
-    width:100%; padding:.8rem .9rem; margin-bottom:.7rem;
-    background:#1c1c1f; border:1px solid rgba(255,255,255,.09); border-radius:.6rem;
-    color:#f4f4f5; font-family:'Tajawal',sans-serif; font-size:.92rem; outline:none;
-    direction:rtl; text-align:right; transition:border-color .18s ease;
-  }
-  .auth-box input:focus{ border-color:#3b82f6; }
-  .auth-box input::placeholder{ color:#6b7280; }
-  .btn-cont{
-    width:100%; padding:.85rem; border:none; border-radius:.6rem;
-    background:#2a2a2e; color:#fff;
-    font-family:'Tajawal',sans-serif; font-weight:700; font-size:.95rem;
-    cursor:pointer; transition:background .2s ease;
-  }
-  .btn-cont:hover{ background:#34343a; }
   .auth-back{
     position:fixed; top:22px; right:24px; z-index:61;
     background:transparent; border:none; color:#9ca3af;
@@ -670,37 +672,54 @@
 
         <!-- AUTH (centered welcome screen — same page, no navigation) -->
         <div id="authView" class="auth-view">
-          <button type="button" class="auth-back" onclick="closeAuth()">‹ رجوع</button>
-          <div class="auth-box" dir="rtl">
-            <img class="auth-logo" src="assets/logo.svg" alt="">
-            <h2 class="auth-h">مرحباً بك في Collection Barq</h2>
-            <p class="auth-p">سجّل دخولك للمتابعة.</p>
-            <div id="alertMsg" class="msg"></div>
+          <button type="button" class="auth-back" onclick="closeAuth()">✕</button>
+          <div class="auth-split">
 
-            <!-- Sign in -->
-            <div class="panel active" id="panelSignin">
-              <button type="button" class="btn-google" onclick="handleGoogle()">
-                <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.96a9 9 0 0 0 0 8.08l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96L3.97 7.3C4.68 5.17 6.66 3.58 9 3.58z"/></svg>
-                المتابعة عبر Google
-              </button>
-              <div class="auth-or"><span>أو</span></div>
-              <form id="formSignin" onsubmit="handleSignIn(event)">
-                <input type="email" id="siEmail" placeholder="اكتب بريد العمل..." autocomplete="email" required>
-                <input type="password" id="siPassword" placeholder="كلمة المرور" autocomplete="current-password" required>
-                <button type="submit" class="btn-cont" id="btnSignIn">دخول</button>
-              </form>
-              <p class="switch-link">أول مرة هنا؟ <a href="#" onclick="switchTab('request');return false;">أرسل طلب وصول جديد</a></p>
+            <!-- Visual panel -->
+            <div class="auth-visual">
+              <div class="auth-illus">
+                <span class="gi-d3"></span>
+                <span class="gi-d2"></span>
+                <span class="gi-d1"></span>
+                <span class="gi-orb"></span>
+              </div>
+              <div class="auth-visual-txt">
+                <h3>طريقة جديدة للوصول إلى قادتك وكل ما تحتاجه — في مكان واحد.</h3>
+              </div>
             </div>
 
-            <!-- Request access -->
-            <div class="panel" id="panelRequest">
-              <form id="formRequest" onsubmit="handleRequestAccess(event)">
-                <input type="text" id="rqName" placeholder="الاسم الكامل" required>
-                <input type="email" id="rqEmail" placeholder="بريدك على ‎@barq.com" autocomplete="email" required>
-                <input type="password" id="rqPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="new-password" required minlength="6">
-                <button type="submit" class="btn-cont" id="btnRequest">إرسال الطلب</button>
-              </form>
-              <p class="switch-link">عندك حساب معتمد؟ <a href="#" onclick="switchTab('signin');return false;">تسجيل الدخول</a></p>
+            <!-- Form panel -->
+            <div class="auth-pane" dir="rtl">
+              <img class="auth-logo" src="assets/logo.svg" alt="">
+              <h2 class="auth-title">تسجيل الدخول</h2>
+              <div id="alertMsg" class="msg"></div>
+
+              <!-- Sign in -->
+              <div class="panel active" id="panelSignin">
+                <form id="formSignin" onsubmit="handleSignIn(event)">
+                  <label class="fld-label" for="siEmail">البريد الإلكتروني</label>
+                  <div class="fld"><i class="fa-solid fa-envelope"></i><input type="email" id="siEmail" placeholder="name@barq.com" autocomplete="email" required></div>
+                  <label class="fld-label" for="siPassword">كلمة المرور</label>
+                  <div class="fld"><i class="fa-solid fa-lock"></i><input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password" required></div>
+                  <a href="#" class="forgot" onclick="handleForgot();return false;">نسيت كلمة المرور؟</a>
+                  <button type="submit" class="btn-signin" id="btnSignIn">تسجيل الدخول</button>
+                </form>
+                <p class="switch-link">ما عندك حساب؟ <a href="#" onclick="switchTab('request');return false;">أنشئ طلب وصول جديد</a></p>
+              </div>
+
+              <!-- Request access -->
+              <div class="panel" id="panelRequest">
+                <form id="formRequest" onsubmit="handleRequestAccess(event)">
+                  <label class="fld-label" for="rqName">الاسم الكامل</label>
+                  <div class="fld"><i class="fa-solid fa-user"></i><input type="text" id="rqName" placeholder="برق بن براق" required></div>
+                  <label class="fld-label" for="rqEmail">البريد الإلكتروني</label>
+                  <div class="fld"><i class="fa-solid fa-envelope"></i><input type="email" id="rqEmail" placeholder="name@barq.com" autocomplete="email" required></div>
+                  <label class="fld-label" for="rqPassword">كلمة المرور</label>
+                  <div class="fld"><i class="fa-solid fa-lock"></i><input type="password" id="rqPassword" placeholder="6 أحرف على الأقل" autocomplete="new-password" required minlength="6"></div>
+                  <button type="submit" class="btn-signin" id="btnRequest">إرسال الطلب</button>
+                </form>
+                <p class="switch-link">عندك حساب معتمد؟ <a href="#" onclick="switchTab('signin');return false;">تسجيل الدخول</a></p>
+              </div>
             </div>
           </div>
         </div>
@@ -752,7 +771,8 @@
       createUserWithEmailAndPassword,
       signOut,
       GoogleAuthProvider,
-      signInWithPopup
+      signInWithPopup,
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
     import {
       doc, setDoc, serverTimestamp
@@ -902,26 +922,19 @@
       document.body.style.overflow = '';
       clearMsg();
     };
-    // ── Continue with Google (Firebase Google provider) ─────────────────────
-    window.handleGoogle = async function() {
+    // ── Forgot password (Firebase reset email) ──────────────────────────────
+    window.handleForgot = async function() {
       clearMsg();
+      const email = (document.getElementById('siEmail').value || '').trim().toLowerCase();
+      if (!email.endsWith('@barq.com')) {
+        showMsg('اكتب بريدك على @barq.com في الحقل أعلاه ثم اضغط "نسيت كلمة المرور"', 'info');
+        return;
+      }
       try {
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ hd: 'barq.com', prompt: 'select_account' });
-        const res = await signInWithPopup(auth, provider);
-        const email = (res.user.email || '').toLowerCase();
-        if (!email.endsWith('@barq.com')) {
-          await signOut(auth);
-          showMsg('يجب استخدام حساب @barq.com فقط', 'error');
-          return;
-        }
-        try { localStorage.setItem('barq_lastActive', String(Date.now())); } catch (_) {}
-        location.replace('index.html');
+        await sendPasswordResetEmail(auth, email);
+        showMsg('أرسلنا رابط إعادة تعيين كلمة المرور إلى بريدك ✓', 'success');
       } catch (err) {
-        const m = (err && err.code === 'auth/operation-not-allowed')
-          ? 'الدخول عبر Google غير مفعّل بعد في Firebase — استخدم البريد وكلمة المرور.'
-          : 'تعذّر الدخول عبر Google، استخدم البريد وكلمة المرور.';
-        showMsg(m, 'error');
+        showMsg('تعذّر إرسال الرابط، تأكد من البريد وحاول مجدداً', 'error');
       }
     };
     document.addEventListener('keydown', (e) => {
