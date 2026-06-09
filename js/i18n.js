@@ -65,7 +65,7 @@ const translations = {
   }
 };
 
-let currentLang = localStorage.getItem('lang') || 'ar';
+let currentLang = localStorage.getItem('lang') || 'en';
 
 function t(key) {
   return translations[currentLang]?.[key] ?? translations.ar[key] ?? key;
