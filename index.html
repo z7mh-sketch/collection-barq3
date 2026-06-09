@@ -61,6 +61,75 @@
     .dash-nav-item.maint{ opacity:.45; cursor:not-allowed; pointer-events:none; }
     .dash-nav-item .tag{ display:none; }
 
+    /* ===== rich sidebar (Intelinvest-style) ===== */
+    .dash-sidebar{ gap:0; padding:16px 12px; }
+    .sb-head{ display:flex; align-items:center; justify-content:space-between; padding:4px 6px 14px; }
+    .sb-collapse{ width:30px; height:30px; border-radius:8px; background:transparent; border:1px solid var(--fx-border); color:#9ca3af; display:grid; place-items:center; cursor:pointer; flex-shrink:0; transition:background .15s, color .15s; }
+    .sb-collapse:hover{ color:#fff; background:rgba(255,255,255,.04); }
+    .sb-collapse svg{ width:16px; height:16px; }
+
+    .sb-search{ display:flex; align-items:center; gap:8px; background:#0d0d0f; border:1px solid var(--fx-border); border-radius:10px; padding:0 12px; margin-bottom:14px; }
+    .sb-search:focus-within{ border-color:var(--fx-blue); }
+    .sb-search svg{ width:16px; height:16px; color:#6b7280; flex-shrink:0; }
+    .sb-search input{ flex:1; min-width:0; background:transparent; border:none; outline:none; color:#e7e9ee; font-family:inherit; font-size:.88rem; padding:10px 0; }
+    .sb-search input::placeholder{ color:#6b7280; }
+
+    .sb-profile{ display:flex; align-items:center; gap:10px; padding:8px 6px; margin-bottom:8px; }
+    .sb-avatar{ width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; display:grid; place-items:center; font-weight:800; font-size:.95rem; flex-shrink:0; }
+    .sb-name{ flex:1; min-width:0; color:#e7e9ee; font-weight:600; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sb-badge{ font-size:.58rem; font-weight:800; letter-spacing:.05em; color:#bfdbfe; background:rgba(59,130,246,.18); border:1px solid rgba(59,130,246,.4); padding:3px 7px; border-radius:6px; flex-shrink:0; }
+
+    .sb-fast{ display:flex; align-items:center; gap:11px; width:100%; padding:9px 12px; border-radius:11px; background:transparent; border:1px solid var(--fx-border); color:#e7e9ee; font-family:inherit; font-weight:600; font-size:.92rem; cursor:pointer; margin-bottom:8px; }
+    .sb-fast:hover{ background:rgba(255,255,255,.03); }
+    .sb-fast-ic{ width:24px; height:24px; border-radius:50%; background:var(--fx-blue); color:#fff; display:grid; place-items:center; flex-shrink:0; transition:transform .2s ease; }
+    .sb-fast-ic svg{ width:13px; height:13px; }
+    .sb-fast.open .sb-fast-ic{ transform:rotate(135deg); }
+    .sb-fast-menu{ display:none; flex-direction:column; gap:2px; border:1px solid rgba(59,130,246,.3); border-radius:11px; padding:6px; margin-bottom:10px; }
+    .sb-fast-menu.open{ display:flex; }
+    .sb-fast-menu a{ padding:9px 12px; border-radius:8px; color:#cbd5e1; font-size:.85rem; text-decoration:none; border:1px solid transparent; }
+    .sb-fast-menu a:hover{ background:rgba(255,255,255,.04); color:#fff; border-color:var(--fx-border); }
+
+    /* active = blue (matches reference) */
+    .dash-nav-item.active{ background:rgba(59,130,246,.10) !important; border-color:rgba(59,130,246,.25) !important; box-shadow:none !important; color:#fff; }
+    .dash-nav-item.active svg.ni{ color:var(--fx-blue); opacity:1; }
+
+    .sb-group{ display:flex; flex-direction:column; }
+    .sb-exp .chev{ margin-inline-start:auto; width:15px; height:15px; transition:transform .2s ease; opacity:.7; }
+    .sb-group.open .sb-exp .chev{ transform:rotate(180deg); }
+    .sb-sub{ display:none; flex-direction:column; gap:1px; padding:2px 0 4px; }
+    .sb-group.open .sb-sub{ display:flex; }
+    .sb-sub a, .sb-sub button{ padding:8px 14px; margin-inline-start:30px; border-radius:9px; color:#9ca3af; font-size:.86rem; text-decoration:none; background:transparent; border:none; cursor:pointer; text-align:start; font-family:inherit; }
+    .sb-sub a:hover, .sb-sub button:hover{ color:#fff; background:rgba(255,255,255,.03); }
+    .sb-sub button.maint{ opacity:.45; cursor:not-allowed; pointer-events:none; }
+
+    .sb-bottom{ margin-top:auto; padding-top:14px; }
+    .sb-promo{ background:linear-gradient(135deg,#1d4ed8,#2563eb); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+    .sb-promo-title{ color:#fff; font-weight:800; font-size:.95rem; margin-bottom:3px; }
+    .sb-promo-sub{ color:rgba(255,255,255,.82); font-size:.74rem; line-height:1.55; }
+    .sb-theme{ display:flex; gap:6px; background:#0d0d0f; border:1px solid var(--fx-border); border-radius:10px; padding:4px; }
+    .sb-theme-btn{ flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:8px; border-radius:7px; background:transparent; border:none; color:#9ca3af; font-family:inherit; font-size:.8rem; font-weight:600; cursor:pointer; }
+    .sb-theme-btn svg{ width:15px; height:15px; }
+    .sb-theme-btn.active{ background:#1b1e24; color:#fff; }
+
+    /* collapsed rail */
+    .dash-sidebar.collapsed{ width:74px; }
+    .dash-sidebar.collapsed .dash-brand b,
+    .dash-sidebar.collapsed .sb-search input,
+    .dash-sidebar.collapsed .sb-name,
+    .dash-sidebar.collapsed .sb-badge,
+    .dash-sidebar.collapsed .dash-nav-item span:not(.tag),
+    .dash-sidebar.collapsed .sb-fast span:last-child,
+    .dash-sidebar.collapsed .dash-menu-label,
+    .dash-sidebar.collapsed .sb-sub,
+    .dash-sidebar.collapsed .sb-promo,
+    .dash-sidebar.collapsed .sb-theme-btn span,
+    .dash-sidebar.collapsed .chev{ display:none !important; }
+    .dash-sidebar.collapsed .dash-nav-item,
+    .dash-sidebar.collapsed .sb-fast,
+    .dash-sidebar.collapsed .sb-search,
+    .dash-sidebar.collapsed .sb-profile{ justify-content:center; }
+    .dash-sidebar.collapsed .sb-collapse svg{ transform:scaleX(-1); }
+
     .dash-content{ flex:1; min-width:0; display:flex; flex-direction:column; min-height:100vh; }
     .dash-topbar{
       height:64px; flex-shrink:0; display:flex; align-items:center; gap:12px;
@@ -229,21 +298,68 @@
   <div class="app-shell">
 
     <!-- SIDEBAR -->
-    <aside class="dash-sidebar">
-      <div class="dash-brand">
-        <img src="assets/logo.svg" alt="logo" />
-        <b dir="ltr">Collection Barq</b>
+    <aside class="dash-sidebar" id="dashSidebar">
+      <!-- header -->
+      <div class="sb-head">
+        <div class="dash-brand"><img src="assets/logo.svg" alt="logo" /><b dir="ltr">Collection Barq</b></div>
+        <button type="button" class="sb-collapse" onclick="toggleSidebar()" title="طيّ القائمة" aria-label="طيّ القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
-      <div class="dash-menu-label">MAIN MENU</div>
+
+      <!-- search -->
+      <div class="sb-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-3.5-3.5"/></svg>
+        <input id="headerSearchInput" type="search" placeholder="بحث..." data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
+      </div>
+
+      <!-- profile -->
+      <div class="sb-profile">
+        <span class="sb-avatar" id="sbAvatar">B</span>
+        <span class="sb-name" id="sbName" dir="ltr">Collection Barq</span>
+        <span class="sb-badge">معتمد</span>
+      </div>
+
+      <!-- fast actions -->
+      <button type="button" class="sb-fast" id="sbFastBtn" onclick="toggleFast()">
+        <span class="sb-fast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span>إجراءات سريعة</span>
+      </button>
+      <div class="sb-fast-menu" id="sbFastMenu">
+        <a href="#" onclick="trackDownload('نموذج المخالفة');openVfLaunch();return false;">نموذج مخالفة</a>
+        <a href="#" onclick="trackDownload('نموذج الاستقالة');openRfLaunch();return false;">نموذج استقالة</a>
+        <a href="#" onclick="trackDownload('نموذج إجازة');openLfLaunch();return false;">طلب إجازة</a>
+      </div>
+
+      <div class="dash-menu-label">القائمة الرئيسية</div>
+
       <nav class="dash-nav">
         <a href="#quick-links" class="dash-nav-item active" data-i18n="navQuickLinks"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>روابط سريعة</span></a>
         <button id="leadersNavBtn" class="dash-nav-item nav-link nav-link-btn" data-i18n="navLeaders"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>الليدرز</span></button>
         <a href="#pdf-links" class="dash-nav-item"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></a>
-        <a href="#escalation-quick-links" class="dash-nav-item"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span data-i18n="escalationQuickLabel">روابط التصعيد</span></a>
+
+        <!-- expandable group -->
+        <div class="sb-group">
+          <button type="button" class="dash-nav-item sb-exp" onclick="toggleGroup(this)"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>التصعيد</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="sb-sub">
+            <a href="#escalation-quick-links" data-i18n="escalationQuickLabel">روابط التصعيد</a>
+            <button id="escalationNavBtn" class="nav-link nav-link-btn maint" data-i18n="navEscalation" disabled>دليل التصعيد</button>
+          </div>
+        </div>
+
         <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" data-i18n="navOrgChart" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3"/><path d="M6 16v-2h12v2"/></svg><span>الهيكل التنظيمي</span><span class="tag">🔧</span></button>
-        <button id="escalationNavBtn" class="dash-nav-item nav-link nav-link-btn maint" data-i18n="navEscalation" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>دليل التصعيد</span><span class="tag">🔧</span></button>
         <button id="bookletNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>أحدث بكليت</span><span class="tag">🔧</span></button>
       </nav>
+
+      <!-- bottom -->
+      <div class="sb-bottom">
+        <div class="sb-promo">
+          <div class="sb-promo-title">Collection Barq</div>
+          <div class="sb-promo-sub">مرجعك الداخلي — يتطوّر باستمرار ✨</div>
+        </div>
+        <div class="sb-theme">
+          <button type="button" class="sb-theme-btn" onclick="var t=document.getElementById('themeToggle'); if(t) t.click();"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg><span>فاتح</span></button>
+          <button type="button" class="sb-theme-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg><span>داكن</span></button>
+        </div>
+      </div>
     </aside>
 
     <!-- CONTENT -->
@@ -255,13 +371,6 @@
         <h1 class="dash-page-title" dir="ltr">Collection Barq</h1>
         <div class="dash-topbar-spacer"></div>
 
-        <!-- Header Search -->
-        <div class="header-search-wrap">
-          <input id="headerSearchInput" type="search" class="header-search-input"
-            placeholder="شبيك لبيك برق بين يديك"
-            autocomplete="off" />
-          <i class="fa-solid fa-magnifying-glass header-search-icon"></i>
-        </div>
 
         <!-- Presence Widget -->
         <div id="presenceWidget" class="presence-widget hidden">
@@ -1424,6 +1533,12 @@
       // close when scrolling
       window.addEventListener('scroll', closeMobileMenu, { passive: true });
     })();
+  </script>
+  <script>
+    window.toggleSidebar = function(){ var s=document.getElementById('dashSidebar'); if(s) s.classList.toggle('collapsed'); };
+    window.toggleFast = function(){ var b=document.getElementById('sbFastBtn'), m=document.getElementById('sbFastMenu'); if(!m) return; var open=m.classList.toggle('open'); if(b) b.classList.toggle('open', open); };
+    window.toggleGroup = function(btn){ var g=btn.closest('.sb-group'); if(g) g.classList.toggle('open'); };
+    (function(){ try{ var n=(localStorage.getItem('presenceName')||'').trim(); if(n){ var el=document.getElementById('sbName'); if(el){ el.textContent=n; el.removeAttribute('dir'); } var av=document.getElementById('sbAvatar'); if(av) av.textContent=n.charAt(0).toUpperCase(); } }catch(e){} })();
   </script>
 </body>
 </html>
