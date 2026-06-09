@@ -1,4 +1,4 @@
-$root = "C:\Users\SaudKhalidAlghamdi\leaders-hub"
+$root = $PSScriptRoot
 $port = 3030
 
 $mime = @{
@@ -135,6 +135,7 @@ while ($true) {
 
         # ── Send email via Outlook COM ──
         try {
+          throw 'outlook-send-disabled'  # disabled: Outlook COM was blocking the single-threaded server (site hang). JSON logging above still runs.
           $ol   = New-Object -ComObject Outlook.Application
           $mail = $ol.CreateItem(0)
           $mail.To      = 'salghamdi.c@barq.com'
@@ -163,6 +164,42 @@ while ($true) {
     }
     elseif ($path -eq '/api/downloads' -and $method -eq 'GET') {
       $logFile = Join-Path $root 'downloads.json'
+      if (Test-Path $logFile) {
+        $content = [System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' $content
+      } else {
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '[]'
+      }
+    }
+    elseif ($path -eq '/api/report' -and $method -eq 'POST') {
+      try {
+        $data   = $bodyText | ConvertFrom-Json
+        $rName  = ("$($data.name)").Trim()
+        $rEmail = ("$($data.email)").Trim()
+        $rPage  = ("$($data.page)").Trim()
+        $rMsg   = ("$($data.message)").Trim()
+        try {
+          $rTime = [System.TimeZoneInfo]::ConvertTimeFromUtc([DateTime]::UtcNow,[System.TimeZoneInfo]::FindSystemTimeZoneById('Arab Standard Time')).ToString('yyyy-MM-dd HH:mm')
+        } catch { $rTime = [DateTime]::Now.ToString('yyyy-MM-dd HH:mm') }
+        $logFile = Join-Path $root 'reports.json'
+        $sn = ($rName  -replace '\\','\\' -replace '"','\"')
+        $se = ($rEmail -replace '\\','\\' -replace '"','\"')
+        $sp = ($rPage  -replace '\\','\\' -replace '"','\"')
+        $sm = ($rMsg   -replace '\\','\\' -replace '"','\"' -replace "`r",' ' -replace "`n",' ')
+        $entry = "{`"name`":`"$sn`",`"email`":`"$se`",`"page`":`"$sp`",`"message`":`"$sm`",`"time`":`"$rTime`"}"
+        if (Test-Path $logFile) {
+          $cur = ([System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)).Trim()
+          if ($cur -eq '[]' -or $cur -eq '') { $json = "[$entry]" }
+          else { $json = $cur.TrimEnd(']') + ",$entry]" }
+        } else { $json = "[$entry]" }
+        [System.IO.File]::WriteAllText($logFile, $json, [System.Text.Encoding]::UTF8)
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":true}'
+      } catch {
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":false}'
+      }
+    }
+    elseif ($path -eq '/api/reports' -and $method -eq 'GET') {
+      $logFile = Join-Path $root 'reports.json'
       if (Test-Path $logFile) {
         $content = [System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)
         Send-Response $stream '200 OK' 'application/json; charset=utf-8' $content

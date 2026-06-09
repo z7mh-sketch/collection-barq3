@@ -414,6 +414,7 @@
         <button class="tab"        data-tab="approved" onclick="switchTab('approved')">معتمدة <span class="count" id="countApproved">0</span></button>
         <button class="tab"        data-tab="rejected"  onclick="switchTab('rejected')">مرفوضة <span class="count" id="countRejected">0</span></button>
         <button class="tab"        data-tab="downloads" onclick="switchTab('downloads')">التحميلات <span class="count" id="countDownloads">0</span></button>
+        <button class="tab"        data-tab="reports"   onclick="switchTab('reports')">البلاغات <span class="count" id="countReports">0</span></button>
       </div>
 
       <div id="loadingState" class="empty"><span class="spinner"></span> جاري التحميل...</div>
@@ -423,6 +424,7 @@
       <div id="panelApproved" class="panel"><div class="user-list" id="listApproved"></div></div>
       <div id="panelRejected"  class="panel"><div class="user-list" id="listRejected"></div></div>
       <div id="panelDownloads" class="panel"><div id="downloadsList"></div></div>
+      <div id="panelReports" class="panel"><div id="reportsList"></div></div>
     </div>
   </div>
 
@@ -668,6 +670,7 @@
     window.switchTab = function (tab) {
       _orig(tab);
       if (tab === 'downloads') _loadDownloads();
+      if (tab === 'reports') _loadReports();
     };
   });
 
@@ -730,6 +733,33 @@
   }
 
   window._loadDownloads = _loadDownloads;
+
+  async function _loadReports() {
+    var box = document.getElementById('reportsList');
+    if (!box) return;
+    box.innerHTML = '<div class="empty"><span class="spinner"></span> جاري التحميل...</div>';
+    try {
+      var res  = await fetch('/api/reports');
+      var logs = await res.json();
+      document.getElementById('countReports').textContent = logs.length;
+      if (!logs.length) { box.innerHTML = '<div class="empty">لا توجد بلاغات بعد</div>'; return; }
+      var reversed = logs.slice().reverse();
+      box.innerHTML = reversed.map(function (r) {
+        return "<div style='background:#111;border:1px solid #27272a;border-radius:.85rem;padding:1rem 1.25rem;margin-bottom:.75rem'>" +
+          "<div style='display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem'>" +
+          "<span style='font-weight:700;color:#FBBF24'>&#128100; " + _esc(r.name || 'غير معروف') + "</span>" +
+          (r.email ? "<span style='font-size:.78rem;color:#52525b;direction:ltr'>" + _esc(r.email) + "</span>" : '') +
+          "<span style='font-size:.72rem;background:#1e293b;color:#93c5fd;padding:.15rem .5rem;border-radius:.35rem'>" + _esc(r.page || '') + "</span>" +
+          "<span style='font-size:.72rem;color:#52525b;direction:ltr;margin-right:auto'>" + _esc(r.time || '') + "</span>" +
+          "</div>" +
+          "<div style='color:#e2e8f0;font-size:.9rem;line-height:1.6;white-space:pre-wrap'>" + _esc(r.message || '') + "</div>" +
+          "</div>";
+      }).join('');
+    } catch (err) {
+      box.innerHTML = '<div class="empty">تعذر التحميل</div>';
+    }
+  }
+  window._loadReports = _loadReports;
 })();
 </script>
 </body>
