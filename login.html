@@ -400,6 +400,19 @@
   .gi-orb{ left:67%; top:31%; width:118px; height:118px; border-radius:50%;
     background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.22), rgba(0,0,0,.7) 70%);
     border:1px solid rgba(255,255,255,.14); box-shadow:0 0 60px rgba(37,99,235,.22); }
+  /* cycling scenes (crossfade every 3s) */
+  .gi-scene{ position:absolute; inset:0; opacity:0; transition:opacity 1.4s ease; }
+  .gi-scene.active{ opacity:1; }
+  /* scene 2 — documents */
+  .gi-doc{ position:absolute; width:172px; height:222px; border-radius:12px; transform:rotate(-20deg) skewX(-6deg); background:rgba(255,255,255,.022); border:1px solid rgba(255,255,255,.06); }
+  .gi-doc.doc1{ left:45%; top:30%; border:1.5px solid rgba(59,130,246,.7); background:linear-gradient(135deg, rgba(59,130,246,.10), rgba(255,255,255,.015)); box-shadow:0 0 60px rgba(37,99,235,.22); }
+  .gi-doc.doc2{ left:39%; top:35%; opacity:.6; }
+  .gi-doc.doc3{ left:33%; top:40%; opacity:.4; }
+  .gi-sm-orb{ position:absolute; left:62%; top:28%; width:78px; height:78px; border-radius:50%; background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.2), rgba(0,0,0,.7) 70%); border:1px solid rgba(255,255,255,.12); box-shadow:0 0 40px rgba(37,99,235,.18); }
+  /* scene 3 — spheres */
+  .gi-sphere{ position:absolute; left:36%; top:36%; width:178px; height:178px; border-radius:50%; background:radial-gradient(circle at 36% 30%, rgba(255,255,255,.26), #0a0a0c 72%); border:1px solid rgba(255,255,255,.12); box-shadow:0 0 70px rgba(0,0,0,.6), inset 0 0 40px rgba(255,255,255,.04); }
+  .gi-ring{ position:absolute; left:54%; top:33%; width:150px; height:150px; border-radius:50%; border:1.5px solid rgba(59,130,246,.7); box-shadow:0 0 50px rgba(37,99,235,.22); }
+  .gi-panel{ position:absolute; left:46%; top:52%; width:230px; height:135px; border-radius:14px; transform:rotate(-18deg) skewX(-6deg); background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.05); }
   .auth-visual-txt{ position:relative; z-index:2; }
   .auth-visual-txt h3{ color:#e7e9ee; font-family:'Tajawal',sans-serif; font-size:1.5rem; font-weight:700; line-height:1.7; max-width:24ch; }
 
@@ -678,10 +691,23 @@
             <!-- Visual panel -->
             <div class="auth-visual">
               <div class="auth-illus">
-                <span class="gi-d3"></span>
-                <span class="gi-d2"></span>
-                <span class="gi-d1"></span>
-                <span class="gi-orb"></span>
+                <div class="gi-scene active">
+                  <span class="gi-d3"></span>
+                  <span class="gi-d2"></span>
+                  <span class="gi-d1"></span>
+                  <span class="gi-orb"></span>
+                </div>
+                <div class="gi-scene">
+                  <span class="gi-doc doc3"></span>
+                  <span class="gi-doc doc2"></span>
+                  <span class="gi-doc doc1"></span>
+                  <span class="gi-sm-orb"></span>
+                </div>
+                <div class="gi-scene">
+                  <span class="gi-panel"></span>
+                  <span class="gi-sphere"></span>
+                  <span class="gi-ring"></span>
+                </div>
               </div>
               <div class="auth-visual-txt">
                 <h3>طريقة جديدة للوصول إلى قادتك وكل ما تحتاجه — في مكان واحد.</h3>
@@ -953,5 +979,17 @@
       showMsg('انتهت الجلسة بعد 12 ساعة من الخمول، سجّل دخولك مرة أخرى.', 'info');
     }
 </script>
+  <script>
+    (function(){
+      var scenes = document.querySelectorAll('#authView .gi-scene');
+      if (scenes.length < 2) return;
+      var i = 0;
+      setInterval(function(){
+        scenes[i].classList.remove('active');
+        i = (i + 1) % scenes.length;
+        scenes[i].classList.add('active');
+      }, 3000);
+    })();
+  </script>
 </body>
 </html>
