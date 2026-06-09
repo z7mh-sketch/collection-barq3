@@ -35,7 +35,8 @@
     body{ color:var(--fx-text); min-height:100vh; }
 
     .app-shell{ display:flex; direction:ltr; min-height:100vh; align-items:stretch; }
-    .app-shell > .dash-sidebar, .app-shell > .dash-content{ direction:rtl; }
+    .app-shell > .dash-content{ direction:rtl; }
+    .app-shell > .dash-sidebar{ direction:ltr; }
 
     .dash-sidebar{
       width:242px; flex-shrink:0; background:var(--fx-panel);
@@ -197,6 +198,33 @@
 </head>
 
 <body>
+
+  <!-- ============ BOOT LOADER ============ -->
+  <style id="boot-css">
+    #bootLoader{position:fixed;inset:0;z-index:99999;background:#05060a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;transition:opacity .55s ease,visibility .55s ease;}
+    #bootLoader.bl-hide{opacity:0;visibility:hidden;}
+    #bootLoader .bl-aura{position:absolute;left:50%;top:50%;width:620px;height:400px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(37,99,235,.20),rgba(37,99,235,.05) 55%,transparent 72%);filter:blur(24px);pointer-events:none;}
+    #bootLoader .bl-logo{position:relative;z-index:2;width:70px;height:auto;filter:brightness(0) invert(1) drop-shadow(0 0 18px rgba(96,165,250,.45));opacity:0;animation:blLogoIn .9s ease forwards .1s;}
+    @keyframes blLogoIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+    #bootLoader .bl-track{position:relative;z-index:2;width:min(470px,74vw);height:2px;background:rgba(255,255,255,.07);border-radius:2px;}
+    #bootLoader .bl-fill{position:absolute;left:0;top:0;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,rgba(37,99,235,0),#1d4ed8 35%,#3b82f6 70%,#93c5fd 92%,#e0f2fe 100%);box-shadow:0 0 10px rgba(59,130,246,.7),0 0 26px rgba(37,99,235,.45);animation:blFill 2s cubic-bezier(.45,.05,.18,1) forwards;will-change:width;}
+    #bootLoader .bl-fill::after{content:"";position:absolute;right:-1px;top:50%;width:7px;height:7px;border-radius:50%;transform:translateY(-50%);background:#e0f2fe;box-shadow:0 0 10px 3px rgba(147,197,253,.9),0 0 22px 6px rgba(59,130,246,.55);}
+    @keyframes blFill{0%{width:0}100%{width:100%}}
+    @media(prefers-reduced-motion:reduce){#bootLoader .bl-fill{animation-duration:.6s}}
+  </style>
+  <div id="bootLoader" aria-hidden="true">
+    <div class="bl-aura"></div>
+    <img class="bl-logo" src="assets/logo.svg" alt="">
+    <div class="bl-track"><div class="bl-fill"></div></div>
+  </div>
+  <script>
+    (function(){
+      var t0=Date.now();
+      function hide(){var el=document.getElementById('bootLoader');if(!el)return;el.classList.add('bl-hide');setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);},650);}
+      function done(){setTimeout(hide,Math.max(0,2200-(Date.now()-t0)));}
+      if(document.readyState==='complete')done();else window.addEventListener('load',done);
+    })();
+  </script>
 
   <!-- ============ WELCOME MODAL ============ -->
   <style id="pages-css">
@@ -574,34 +602,27 @@
       <!-- header -->
       <div class="sb-head">
         <div class="dash-brand"><img src="assets/logo.svg" alt="logo" /><b dir="ltr">Collection Barq</b></div>
-        <button type="button" class="sb-collapse" onclick="toggleSidebar()" title="طيّ القائمة" aria-label="طيّ القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+        <button type="button" class="sb-collapse" onclick="toggleSidebar()" title="Collapse menu" aria-label="Collapse menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
 
       <!-- search -->
       <div class="sb-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-3.5-3.5"/></svg>
-        <input id="headerSearchInput" type="search" placeholder="بحث..." data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
-      </div>
-
-      <!-- profile -->
-      <div class="sb-profile">
-        <span class="sb-avatar" id="sbAvatar">B</span>
-        <span class="sb-name" id="sbName" dir="ltr">Collection Barq</span>
-        <span class="sb-badge">معتمد</span>
+        <input id="headerSearchInput" type="search" placeholder="Search by name, title or department..." data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
       </div>
 
       <!-- fast actions -->
       <button type="button" class="sb-fast" id="sbFastBtn" onclick="toggleFast()">
         <span class="sb-fast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
-        <span>إجراءات سريعة</span>
+        <span>Quick actions</span>
       </button>
       <div class="sb-fast-menu" id="sbFastMenu">
-        <a href="#" onclick="trackDownload('نموذج المخالفة');openVfLaunch();return false;">نموذج مخالفة</a>
-        <a href="#" onclick="trackDownload('نموذج الاستقالة');openRfLaunch();return false;">نموذج استقالة</a>
-        <a href="#" onclick="trackDownload('نموذج إجازة');openLfLaunch();return false;">طلب إجازة</a>
+        <a href="#" onclick="trackDownload('Violation form');openVfLaunch();return false;">Violation form</a>
+        <a href="#" onclick="trackDownload('Resignation form');openRfLaunch();return false;">Resignation form</a>
+        <a href="#" onclick="trackDownload('Leave request');openLfLaunch();return false;">Leave request</a>
       </div>
 
-      <div class="dash-menu-label">القائمة الرئيسية</div>
+      <div class="dash-menu-label">Main menu</div>
 
       <nav class="dash-nav">
         <button type="button" class="dash-nav-item active" data-view="home" onclick="showView('home')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/></svg><span data-i18n="navHome">الرئيسية</span></button>
@@ -612,7 +633,7 @@
 
         <!-- expandable group -->
         <div class="sb-group">
-          <button type="button" class="dash-nav-item sb-exp" onclick="toggleGroup(this)"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>التصعيد</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+          <button type="button" class="dash-nav-item sb-exp" onclick="toggleGroup(this)"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>Escalation</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
           <div class="sb-sub">
             <a href="#" onclick="showView('escalation-links');return false;" data-i18n="escalationQuickLabel">روابط التصعيد</a>
             <button id="escalationNavBtn" class="nav-link nav-link-btn maint" data-i18n="navEscalation" disabled>دليل التصعيد</button>
@@ -620,18 +641,19 @@
         </div>
 
         <button id="orgChartNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v3"/><path d="M6 16v-2h12v2"/></svg><span data-i18n="navOrgChart">الهيكل التنظيمي</span><span class="tag">🔧</span></button>
-        <button id="bookletNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>أحدث بكليت</span><span class="tag">🔧</span></button>
+        <button id="bookletNavBtn" class="dash-nav-item nav-link nav-link-btn maint" disabled><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>Latest booklet</span><span class="tag">🔧</span></button>
 
         <button type="button" class="dash-nav-item" data-view="settings" onclick="showView('settings')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="navSettings">الإعدادات</span></button>
       </nav>
 
-      <!-- bottom -->
+      <!-- bottom: account + logout -->
       <div class="sb-bottom">
-        <div class="sb-promo">
-          <div class="sb-promo-title">Collection Barq</div>
-          <div class="sb-promo-sub">مرجعك الداخلي — يتطوّر باستمرار ✨</div>
+        <div class="sb-profile">
+          <span class="sb-avatar" id="sbAvatar">B</span>
+          <span class="sb-name" id="sbName" dir="ltr">Collection Barq</span>
+          <span class="sb-badge">Verified</span>
         </div>
-        <button id="logoutBtn" class="sb-logout" title="تسجيل الخروج">
+        <button id="logoutBtn" class="sb-logout" title="Log out">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
           <span data-i18n="logoutBtn">Log out</span>
         </button>
@@ -643,7 +665,7 @@
 
       <!-- TOP BAR (site name only) -->
       <header class="dash-topbar">
-        <button id="mobileMenuBtn" class="dash-hamburger" aria-label="القائمة"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
+        <button id="mobileMenuBtn" class="dash-hamburger" aria-label="Menu"><i class="fa-solid fa-bars" id="mobileMenuIcon"></i></button>
         <h1 class="dash-page-title" dir="ltr">Collection Barq</h1>
         <div class="dash-topbar-spacer"></div>
       </header>
@@ -722,26 +744,26 @@
   <section id="view-pdf" class="dash-view">
     <div class="view-head">
       <h2 class="view-title"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="pdfLabel">ملفات PDF</span></h2>
-      <p class="view-sub">نماذج جاهزة — اختر النموذج لتعبئته وإصداره</p>
+      <p class="view-sub">Ready-to-use forms — pick one to fill and issue.</p>
     </div>
     <div class="feat-grid">
-      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج المخالفة');openVfLaunch();">
+      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('Violation form');openVfLaunch();">
         <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
         <div class="feat-badge"><i class="fa-solid fa-gavel"></i></div>
-        <h4 class="feat-h">نموذج المخالفة</h4>
-        <p class="feat-p">إنشاء وإصدار نموذج مخالفة موظف، معبّأ تلقائياً بالبيانات وتوقيع المدير، وجاهز للإرسال.</p>
+        <h4 class="feat-h">Violation Form</h4>
+        <p class="feat-p">Create and issue an employee violation form — auto-filled with the data and the manager's signature, ready to send.</p>
       </div>
-      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج الاستقالة');openRfLaunch();">
+      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('Resignation form');openRfLaunch();">
         <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-file-signature"></i></div></div>
         <div class="feat-badge"><i class="fa-solid fa-file-lines"></i></div>
-        <h4 class="feat-h">نموذج الاستقالة</h4>
-        <p class="feat-p">تجهيز نموذج استقالة معبّأ بمعلومات الموظف وتوقيع المدير المباشر وتاريخه.</p>
+        <h4 class="feat-h">Resignation Form</h4>
+        <p class="feat-p">Prepare a resignation form pre-filled with the employee's details and the line manager's signature and date.</p>
       </div>
-      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج إجازة');openLfLaunch();">
+      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('Leave request');openLfLaunch();">
         <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-plane-departure"></i></div></div>
         <div class="feat-badge"><i class="fa-solid fa-calendar-check"></i></div>
-        <h4 class="feat-h">طلب إجازة</h4>
-        <p class="feat-p">تقديم طلب إجازة وسفر معبّأ ببيانات الموظف ونوع الإجازة والتواريخ تلقائياً.</p>
+        <h4 class="feat-h">Leave Request</h4>
+        <p class="feat-p">Submit a leave &amp; travel request auto-filled with the employee's details, leave type, and dates.</p>
       </div>
     </div>
     <div id="pdfGrid" style="display:none"></div>
@@ -849,7 +871,7 @@
       <div class="hint" data-i18n="setLangHint">Choose the site language.</div>
       <div class="seg">
         <button class="lang-btn" data-lang="en">English</button>
-        <button class="lang-btn" data-lang="ar">العربية</button>
+        <button class="lang-btn" data-lang="ar">Arabic</button>
       </div>
     </div>
 
@@ -885,13 +907,13 @@
         <button data-theme="light" onclick="setThemeMode('light')" data-i18n="setLight">Light</button>
       </div>
       <!-- hidden real toggle used by existing theme JS (initTheme) -->
-      <button id="themeToggle" class="theme-btn" title="تبديل الوضع" style="display:none"><i class="fa-solid fa-moon"></i></button>
+      <button id="themeToggle" class="theme-btn" title="Toggle theme" style="display:none"><i class="fa-solid fa-moon"></i></button>
     </div>
   </section>
 
   <footer class="site-footer">
     <span data-i18n="footerText">Collection Barq · مرجع داخلي للاستخدام ضمن الشركة فقط</span>
-    <span style="display:block;font-size:.7rem;color:#52525b;margin-top:.3rem">🚧 الموقع مازال تحت التطوير — لا تصيح</span>
+    <span style="display:block;font-size:.7rem;color:#52525b;margin-top:.3rem">🚧 Still under development — more to come</span>
     <a id="adminLink" href="admin.html"
        style="display:none;margin-top:.6rem;font-size:.78rem;color:#E7E9EE;text-decoration:none;align-items:center;gap:.35rem;justify-content:center">
       <i class="fa-solid fa-shield-halved"></i>

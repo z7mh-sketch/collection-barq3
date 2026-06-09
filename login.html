@@ -655,6 +655,33 @@
 </head>
 <body>
 
+  <!-- ============ BOOT LOADER ============ -->
+  <style id="boot-css">
+    #bootLoader{position:fixed;inset:0;z-index:99999;background:#05060a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;transition:opacity .55s ease,visibility .55s ease;}
+    #bootLoader.bl-hide{opacity:0;visibility:hidden;}
+    #bootLoader .bl-aura{position:absolute;left:50%;top:50%;width:620px;height:400px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(37,99,235,.20),rgba(37,99,235,.05) 55%,transparent 72%);filter:blur(24px);pointer-events:none;}
+    #bootLoader .bl-logo{position:relative;z-index:2;width:70px;height:auto;filter:brightness(0) invert(1) drop-shadow(0 0 18px rgba(96,165,250,.45));opacity:0;animation:blLogoIn .9s ease forwards .1s;}
+    @keyframes blLogoIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+    #bootLoader .bl-track{position:relative;z-index:2;width:min(470px,74vw);height:2px;background:rgba(255,255,255,.07);border-radius:2px;}
+    #bootLoader .bl-fill{position:absolute;left:0;top:0;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,rgba(37,99,235,0),#1d4ed8 35%,#3b82f6 70%,#93c5fd 92%,#e0f2fe 100%);box-shadow:0 0 10px rgba(59,130,246,.7),0 0 26px rgba(37,99,235,.45);animation:blFill 2s cubic-bezier(.45,.05,.18,1) forwards;will-change:width;}
+    #bootLoader .bl-fill::after{content:"";position:absolute;right:-1px;top:50%;width:7px;height:7px;border-radius:50%;transform:translateY(-50%);background:#e0f2fe;box-shadow:0 0 10px 3px rgba(147,197,253,.9),0 0 22px 6px rgba(59,130,246,.55);}
+    @keyframes blFill{0%{width:0}100%{width:100%}}
+    @media(prefers-reduced-motion:reduce){#bootLoader .bl-fill{animation-duration:.6s}}
+  </style>
+  <div id="bootLoader" aria-hidden="true">
+    <div class="bl-aura"></div>
+    <img class="bl-logo" src="assets/logo.svg" alt="">
+    <div class="bl-track"><div class="bl-fill"></div></div>
+  </div>
+  <script>
+    (function(){
+      var t0=Date.now();
+      function hide(){var el=document.getElementById('bootLoader');if(!el)return;el.classList.add('bl-hide');setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);},650);}
+      function done(){setTimeout(hide,Math.max(0,2200-(Date.now()-t0)));}
+      if(document.readyState==='complete')done();else window.addEventListener('load',done);
+    })();
+  </script>
+
   <!-- ============ NAV ============ -->
   <header class="container">
     <nav class="nav">

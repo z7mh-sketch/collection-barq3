@@ -176,7 +176,7 @@ function renderEscalationQuickLinks() {
     const parentCard = `
       <a class="quick-card" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
         <div class="quick-icon">${iconHtml}</div>
-        <span>${escapeHtml(link.label)}</span>
+        <span>${escapeHtml(td(link, 'label'))}</span>
       </a>`;
     if (link.children && link.children.length) {
       const childCards = link.children.map(child => {
