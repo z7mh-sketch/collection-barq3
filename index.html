@@ -274,8 +274,10 @@
     .hm-btn:hover{ background:#1d4ed8; transform:translateY(-1px); }
     .hm-btn.ghost{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); color:#e7e9ee; }
     .hm-btn.ghost:hover{ background:rgba(255,255,255,.08); }
-    .hm-visual{ position:relative; z-index:2; flex-shrink:0; width:300px; height:264px; }
-    .hm-visual svg{ width:100%; height:100%; }
+    .hm-visual{ position:relative; z-index:2; flex-shrink:0; width:340px; height:300px; }
+    .hm-visual svg, .hm-visual video{ width:100%; height:100%; }
+    .hm-keycap{ object-fit:contain; mix-blend-mode:screen; filter:drop-shadow(0 26px 60px rgba(37,99,235,.28)); animation:hmFloat 6s ease-in-out infinite; }
+    @keyframes hmFloat{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
     /* ===== Explainer ===== */
     .hm-info-eyebrow{ color:#60a5fa; font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
     .hm-info-title{ margin-top:12px; font-size:clamp(1.5rem,3vw,2.1rem); font-weight:800; line-height:1.12; letter-spacing:-.02em; color:#fff; }
@@ -604,14 +606,15 @@
       <nav class="dash-nav">
         <button type="button" class="dash-nav-item active" data-view="home" onclick="showView('home')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/></svg><span data-i18n="navHome">الرئيسية</span></button>
         <button id="leadersNavBtn" class="dash-nav-item nav-link nav-link-btn" data-view="leaders"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="navLeaders">الليدرز</span></button>
-        <button type="button" class="dash-nav-item" onclick="showView('home'); setTimeout(function(){var e=document.getElementById('pdf-links'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});},70);"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></button>
+        <button type="button" class="dash-nav-item" data-view="quicklinks" onclick="showView('quicklinks')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg><span data-i18n="navQuickLinks">روابط سريعة</span></button>
+        <button type="button" class="dash-nav-item" data-view="pdf" onclick="showView('pdf')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span data-i18n="pdfLabel">ملفات PDF</span></button>
         <button type="button" class="dash-nav-item" data-view="notes" onclick="showView('notes')"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h4"/></svg><span data-i18n="navNotes">الملاحظات والمهام</span></button>
 
         <!-- expandable group -->
         <div class="sb-group">
           <button type="button" class="dash-nav-item sb-exp" onclick="toggleGroup(this)"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg><span>التصعيد</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
           <div class="sb-sub">
-            <a href="#" onclick="showView('home'); setTimeout(function(){var e=document.getElementById('escalation-quick-links'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});},70); return false;" data-i18n="escalationQuickLabel">روابط التصعيد</a>
+            <a href="#" onclick="showView('escalation-links');return false;" data-i18n="escalationQuickLabel">روابط التصعيد</a>
             <button id="escalationNavBtn" class="nav-link nav-link-btn maint" data-i18n="navEscalation" disabled>دليل التصعيد</button>
           </div>
         </div>
@@ -655,6 +658,9 @@
   <div id="mobileMenu" class="mobile-menu-panel hidden md:hidden">
     <button class="mobile-nav-link" data-i18n="navHome"     onclick="showView('home');closeMobileMenu()">الرئيسية</button>
     <button class="mobile-nav-link" data-i18n="navLeaders"  onclick="showView('leaders');closeMobileMenu()">الليدرز</button>
+    <button class="mobile-nav-link" data-i18n="navQuickLinks" onclick="showView('quicklinks');closeMobileMenu()">روابط سريعة</button>
+    <button class="mobile-nav-link" data-i18n="pdfLabel"    onclick="showView('pdf');closeMobileMenu()">ملفات PDF</button>
+    <button class="mobile-nav-link" data-i18n="escalationQuickLabel" onclick="showView('escalation-links');closeMobileMenu()">روابط التصعيد</button>
     <button class="mobile-nav-link" data-i18n="navNotes"    onclick="showView('notes');closeMobileMenu()">الملاحظات والمهام</button>
     <button class="mobile-nav-link" data-i18n="navSettings" onclick="showView('settings');closeMobileMenu()">الإعدادات</button>
   </div>
@@ -671,25 +677,11 @@
         <p class="hm-lead">Your unified workspace for the company's leaders — the full directory, escalation channels, quick links to every system, and ready-to-send HR forms. Fast, bilingual, and secure behind company sign-in.</p>
         <div class="hm-cta">
           <button type="button" class="hm-btn" onclick="showView('leaders')">Browse leaders <i class="fa-solid fa-arrow-right" style="font-size:.78em"></i></button>
-          <button type="button" class="hm-btn ghost" onclick="var e=document.getElementById('pdf-links'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});">HR forms</button>
+          <button type="button" class="hm-btn ghost" onclick="showView('pdf')">HR forms</button>
         </div>
       </div>
       <div class="hm-visual" aria-hidden="true">
-        <svg viewBox="0 0 440 380" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="hm1f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#23262c"/><stop offset="1" stop-color="#0c0d11"/></linearGradient>
-            <filter id="hm1b" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="17"/></filter>
-          </defs>
-          <polygon points="168,60 236,190 168,320 100,190" fill="#ffffff" opacity="0.022"/>
-          <polygon points="208,60 276,190 208,320 140,190" fill="#ffffff" opacity="0.045"/>
-          <polygon points="252,60 322,190 252,320 182,190" fill="#2563eb" opacity="0.20" filter="url(#hm1b)"/>
-          <polygon points="252,60 322,190 252,320 182,190" fill="url(#hm1f)" stroke="#3b82f6" stroke-width="1.7" stroke-linejoin="round"/>
-          <rect x="70" y="166" width="92" height="14" rx="7" fill="#ffffff" opacity="0.06"/>
-          <rect x="60" y="220" width="70" height="12" rx="6" fill="#ffffff" opacity="0.04"/>
-          <circle cx="118" cy="108" r="2.2" fill="#ffffff" opacity="0.22"/>
-          <circle cx="322" cy="128" r="2.2" fill="#ffffff" opacity="0.16"/>
-          <circle cx="150" cy="272" r="2.2" fill="#ffffff" opacity="0.18"/>
-        </svg>
+        <video class="hm-keycap" src="assets/keycap.mp4" poster="assets/keycap.png" autoplay loop muted playsinline></video>
       </div>
     </section>
 
@@ -708,73 +700,61 @@
       </div>
     </section>
 
-    <!-- ============ QUICK LINKS ============ -->
-    <section id="quick-links">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="fa-solid fa-bolt"></i>
-          <span data-i18n="quickLinksLabel">روابط سريعة</span>
-        </h3>
-        <span class="section-subtitle" data-i18n="quickLinksSubtitle">الأنظمة المهمة في الشركة</span>
-      </div>
-      <div id="quickLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-    </section>
-
-    <!-- ============ PDF FILES ============ -->
-    <section id="pdf-links">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="fa-solid fa-file-pdf"></i>
-          <span data-i18n="pdfLabel">ملفات PDF</span>
-        </h3>
-        <span class="section-subtitle">نماذج جاهزة — اختر النموذج لتعبئته وإصداره</span>
-      </div>
-      <div class="feat-grid">
-        <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج المخالفة');openVfLaunch();">
-          <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
-          <div class="feat-badge"><i class="fa-solid fa-gavel"></i></div>
-          <h4 class="feat-h">نموذج المخالفة</h4>
-          <p class="feat-p">إنشاء وإصدار نموذج مخالفة موظف، معبّأ تلقائياً بالبيانات وتوقيع المدير، وجاهز للإرسال.</p>
-        </div>
-        <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج الاستقالة');openRfLaunch();">
-          <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-file-signature"></i></div></div>
-          <div class="feat-badge"><i class="fa-solid fa-file-lines"></i></div>
-          <h4 class="feat-h">نموذج الاستقالة</h4>
-          <p class="feat-p">تجهيز نموذج استقالة معبّأ بمعلومات الموظف وتوقيع المدير المباشر وتاريخه.</p>
-        </div>
-        <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج إجازة');openLfLaunch();">
-          <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-plane-departure"></i></div></div>
-          <div class="feat-badge"><i class="fa-solid fa-calendar-check"></i></div>
-          <h4 class="feat-h">طلب إجازة</h4>
-          <p class="feat-p">تقديم طلب إجازة وسفر معبّأ ببيانات الموظف ونوع الإجازة والتواريخ تلقائياً.</p>
-        </div>
-      </div>
-      <div id="pdfGrid" style="display:none"></div>
-    </section>
-
-    <!-- ============ ESCALATION QUICK LINKS ============ -->
-    <section id="escalation-quick-links">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          <span data-i18n="escalationQuickLabel">روابط التصعيد</span>
-        </h3>
-      </div>
-      <div id="escalationQuickGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-    </section>
-
-    <!-- ============ ADDITIONAL LINKS ============ -->
-    <section id="additional-links">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="fa-solid fa-link"></i>
-          <span>Additional Links</span>
-        </h3>
-      </div>
-      <div id="additionalLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
-    </section>
+    <!-- Quick Links / PDF / Escalation / Additional moved to their own sidebar pages -->
 
   </main>
+
+  <!-- ============ QUICK LINKS VIEW ============ -->
+  <section id="view-quicklinks" class="dash-view">
+    <div class="view-head">
+      <h2 class="view-title"><i class="fa-solid fa-bolt"></i> <span data-i18n="quickLinksLabel">روابط سريعة</span></h2>
+      <p class="view-sub" data-i18n="quickLinksSubtitle">الأنظمة المهمة في الشركة</p>
+    </div>
+    <div id="quickLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+
+    <div class="view-head" style="margin-top:38px">
+      <h2 class="view-title"><i class="fa-solid fa-link"></i> <span>Additional Links</span></h2>
+    </div>
+    <div id="additionalLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+  </section>
+
+  <!-- ============ PDF / FORMS VIEW ============ -->
+  <section id="view-pdf" class="dash-view">
+    <div class="view-head">
+      <h2 class="view-title"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="pdfLabel">ملفات PDF</span></h2>
+      <p class="view-sub">نماذج جاهزة — اختر النموذج لتعبئته وإصداره</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج المخالفة');openVfLaunch();">
+        <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-triangle-exclamation"></i></div></div>
+        <div class="feat-badge"><i class="fa-solid fa-gavel"></i></div>
+        <h4 class="feat-h">نموذج المخالفة</h4>
+        <p class="feat-p">إنشاء وإصدار نموذج مخالفة موظف، معبّأ تلقائياً بالبيانات وتوقيع المدير، وجاهز للإرسال.</p>
+      </div>
+      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج الاستقالة');openRfLaunch();">
+        <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-file-signature"></i></div></div>
+        <div class="feat-badge"><i class="fa-solid fa-file-lines"></i></div>
+        <h4 class="feat-h">نموذج الاستقالة</h4>
+        <p class="feat-p">تجهيز نموذج استقالة معبّأ بمعلومات الموظف وتوقيع المدير المباشر وتاريخه.</p>
+      </div>
+      <div class="feat-card" role="button" tabindex="0" onclick="trackDownload('نموذج إجازة');openLfLaunch();">
+        <div class="feat-illus"><div class="feat-tile"><i class="fa-solid fa-plane-departure"></i></div></div>
+        <div class="feat-badge"><i class="fa-solid fa-calendar-check"></i></div>
+        <h4 class="feat-h">طلب إجازة</h4>
+        <p class="feat-p">تقديم طلب إجازة وسفر معبّأ ببيانات الموظف ونوع الإجازة والتواريخ تلقائياً.</p>
+      </div>
+    </div>
+    <div id="pdfGrid" style="display:none"></div>
+  </section>
+
+  <!-- ============ ESCALATION LINKS VIEW ============ -->
+  <section id="view-escalation-links" class="dash-view">
+    <div class="view-head">
+      <h2 class="view-title"><i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="escalationQuickLabel">روابط التصعيد</span></h2>
+      <p class="view-sub" data-i18n="escalationQuickSubtitle">الروابط المباشرة لأهم قنوات التصعيد</p>
+    </div>
+    <div id="escalationQuickGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+  </section>
 
   <!-- ============ LEADERS VIEW ============ -->
   <section id="view-leaders" class="dash-view">
