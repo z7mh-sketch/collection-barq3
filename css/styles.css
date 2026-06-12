@@ -856,6 +856,53 @@ textarea.pf-ctrl { resize: vertical; }
 .dark .modal-section-title { color: #52525b; }
 .dark mark.search-hit { background: #854d0e; color: #fef9c3; }
 
+/* ========== Dark mode: blue glow + brighter legibility ========== */
+/* Glowing blue edges on all cards/containers */
+.dark .leader-card,
+.dark .quick-card,
+.dark .escalation-item,
+.dark .org-chart-box,
+.dark .modal-link {
+  background: #0e1525;
+  border-color: rgba(96,165,250,.55);
+  box-shadow: 0 0 0 1px rgba(59,130,246,.30), 0 0 16px rgba(37,99,235,.28);
+}
+.dark .leader-card:hover,
+.dark .quick-card:hover,
+.dark .escalation-item.open,
+.dark .modal-link:hover {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px rgba(96,165,250,.85), 0 0 28px rgba(59,130,246,.6), 0 8px 26px rgba(0,0,0,.5);
+}
+.dark .modal-box {
+  background: #0c1322;
+  border-color: rgba(96,165,250,.45);
+  box-shadow: 0 0 0 1px rgba(59,130,246,.28), 0 0 44px rgba(37,99,235,.32), 0 24px 64px rgba(0,0,0,.6);
+}
+
+/* Brighter, higher-contrast text */
+.dark body                  { color: #f8fafc; }
+.dark .section-title        { color: #ffffff; }
+.dark .section-subtitle     { color: #aeb8c9; }
+.dark .leader-name          { color: #ffffff; }
+.dark .leader-title         { color: #d7deea; }
+.dark .leader-dept          { color: #aab4c6; }
+.dark .escalation-step      { color: #d2dae8; }
+.dark .escalation-category  { color: #ffffff; }
+.dark .quick-card,
+.dark .quick-card span      { color: #f1f5f9; }
+.dark .modal-title          { color: #ffffff; }
+.dark .modal-section-title  { color: #8fb3ff; }
+.dark .dept-chip {
+  color: #cbd5e1;
+  background: #0e1525;
+  border-color: rgba(96,165,250,.45);
+}
+
+/* Brighter, blue-tinted contact buttons */
+.dark .contact-btn          { background: #16223d; color: #e7eeff; }
+.dark .contact-btn:hover    { background: #3b82f6; color: #fff; box-shadow: 0 0 16px rgba(59,130,246,.55); }
+
 /* ========== Contact Modal ========== */
 .contact-modal-opt {
   display: flex; align-items: center; gap: 1rem;
