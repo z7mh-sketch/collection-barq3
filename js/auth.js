@@ -105,6 +105,20 @@ function grantAccess(user, userData, approvalData) {
   if (user?.email) {
     try { localStorage.setItem('userEmail', user.email.toLowerCase()); } catch (_) {}
   }
+  // Log this login once per browser session (for the admin dashboard analytics)
+  try {
+    if (!sessionStorage.getItem('barq_login_logged')) {
+      sessionStorage.setItem('barq_login_logged', '1');
+      fetch('/api/log-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: (localStorage.getItem('presenceName') || '').trim(),
+          email: (user?.email || '').toLowerCase()
+        })
+      }).catch(() => {});
+    }
+  } catch (_) {}
   overlay.style.opacity = '0';
   overlay.style.transition = 'opacity .35s';
   setTimeout(() => { overlay.remove(); document.documentElement.style.overflow = ''; }, 380);

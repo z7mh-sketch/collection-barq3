@@ -1804,6 +1804,19 @@ function vfDoSendEmail() {
   // حفظ سجل المخالفة
   _vfSaveViolationLog();
 
+  // Log the email send for the admin dashboard analytics
+  try {
+    fetch('/api/log-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: (localStorage.getItem('presenceName') || '').trim(),
+        email: (localStorage.getItem('userEmail') || '').trim(),
+        form: 'violation'
+      })
+    }).catch(() => {});
+  } catch (_) {}
+
   function closeModals() {
     ['vfEmailPreviewModal','vfEmailModal'].forEach(id => {
       document.getElementById(id)?.classList.add('hidden');

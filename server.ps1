@@ -210,6 +210,42 @@ while ($true) {
         Send-Response $stream '200 OK' 'application/json; charset=utf-8' '[]'
       }
     }
+    elseif (($path -eq '/api/log-login' -or $path -eq '/api/log-email') -and $method -eq 'POST') {
+      try {
+        $data = $bodyText | ConvertFrom-Json
+        $eName  = ("$($data.name)").Trim()
+        $eEmail = ("$($data.email)").Trim().ToLower()
+        $eExtra = ("$($data.form)").Trim()
+        try {
+          $eTime = [System.TimeZoneInfo]::ConvertTimeFromUtc([DateTime]::UtcNow,[System.TimeZoneInfo]::FindSystemTimeZoneById('Arab Standard Time')).ToString('yyyy-MM-dd HH:mm')
+        } catch { $eTime = [DateTime]::Now.ToString('yyyy-MM-dd HH:mm') }
+        $fileName = if ($path -eq '/api/log-login') { 'logins.json' } else { 'emails.json' }
+        $logFile = Join-Path $root $fileName
+        $sn = ($eName  -replace '\\','\\' -replace '"','\"')
+        $se = ($eEmail -replace '\\','\\' -replace '"','\"')
+        $sx = ($eExtra -replace '\\','\\' -replace '"','\"')
+        $entry = "{`"name`":`"$sn`",`"email`":`"$se`",`"form`":`"$sx`",`"time`":`"$eTime`"}"
+        if (Test-Path $logFile) {
+          $cur = ([System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)).Trim()
+          if ($cur -eq '[]' -or $cur -eq '') { $json = "[$entry]" }
+          else { $json = $cur.TrimEnd(']') + ",$entry]" }
+        } else { $json = "[$entry]" }
+        [System.IO.File]::WriteAllText($logFile, $json, [System.Text.Encoding]::UTF8)
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":true}'
+      } catch {
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '{"ok":false}'
+      }
+    }
+    elseif (($path -eq '/api/logins' -or $path -eq '/api/emails') -and $method -eq 'GET') {
+      $fileName = if ($path -eq '/api/logins') { 'logins.json' } else { 'emails.json' }
+      $logFile = Join-Path $root $fileName
+      if (Test-Path $logFile) {
+        $content = [System.IO.File]::ReadAllText($logFile,[System.Text.Encoding]::UTF8)
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' $content
+      } else {
+        Send-Response $stream '200 OK' 'application/json; charset=utf-8' '[]'
+      }
+    }
     else {
       if ($path -eq '/') { $path = '/index.html' }
       $file = Join-Path $root ($path.TrimStart('/').Replace('/', '\'))
