@@ -624,14 +624,26 @@ header.site-header {
 .sub-connector i { display: none; }
 
 .sub-conn-line {
-  width: 40px;
-  height: 66px;
+  width: 3px;
+  height: 56px;
   overflow: hidden;
   position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1px;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, transparent, rgba(59,130,246,.35) 20%, rgba(59,130,246,.35) 80%, transparent);
+}
+.sub-conn-line::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 16px;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, transparent, #60a5fa, transparent);
+  box-shadow: 0 0 8px 1px rgba(59,130,246,.7);
+  animation: connFlow 2.4s linear infinite;
+}
+@keyframes connFlow {
+  from { top: -16px; }
+  to   { top: 56px; }
 }
 /*
   Matrix-style digital rain — built by initRainConnectors() in render.js.

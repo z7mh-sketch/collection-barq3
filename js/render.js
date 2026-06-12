@@ -207,22 +207,8 @@ const RAIN_COLORS = ['#22c55e','#16a34a','#4ade80','#86efac','#15803d','#34d399'
 function _rrand(a, b) { return a + Math.random() * (b - a); }
 function _rpick(arr) { return arr[(Math.random() * arr.length) | 0]; }
 function initRainConnectors() {
-  document.querySelectorAll('.sub-conn-line').forEach(line => {
-    line.textContent = '';
-    for (let c = 0; c < 4; c++) {
-      const col = document.createElement('span');
-      col.className = 'rain-col';
-      // own random speed (fast / faster / slow / medium — all different) + random phase
-      col.style.animationDuration = _rrand(1.5, 5).toFixed(2) + 's';
-      col.style.animationDelay    = (-_rrand(0, 6)).toFixed(2) + 's';
-      let html = '';
-      for (let r = 0; r < 11; r++) {
-        html += `<b style="color:${_rpick(RAIN_COLORS)};opacity:${_rrand(0.45, 1).toFixed(2)}">${_rpick(RAIN_GLYPHS)}</b>`;
-      }
-      col.innerHTML = html + html; // duplicate → seamless loop
-      line.appendChild(col);
-    }
-  });
+  // Matrix rain removed — connectors are now a clean blue flowing line (see .sub-conn-line in styles.css)
+  document.querySelectorAll('.sub-conn-line').forEach(line => { line.textContent = ''; });
 }
 
 // ----------- Department Filters -----------
