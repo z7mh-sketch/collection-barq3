@@ -431,7 +431,7 @@
   <script type="module">
     import { auth, db } from './js/firebase-config.js';
     import {
-      onAuthStateChanged, signInWithEmailAndPassword, signOut
+      onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
     import {
       doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, orderBy, serverTimestamp
@@ -506,6 +506,18 @@
 
     window.doSignOut = function() {
       signOut(auth).then(() => location.reload());
+    };
+
+    // ── إرسال رابط إعادة تعيين كلمة المرور (آمن — لا يكشف كلمة المرور) ──
+    window.resetUserPassword = async function(email) {
+      if (!email) return;
+      if (!confirm('إرسال رابط إعادة تعيين كلمة المرور إلى:\n' + email + ' ؟')) return;
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showMsg(dashMsg, '✓ أرسلنا رابط استعادة كلمة المرور إلى ' + email, 'success');
+      } catch (err) {
+        showMsg(dashMsg, 'تعذّر الإرسال: ' + (err && err.message ? err.message : err), 'error');
+      }
     };
 
     // ── Load users by status ─────────────────────────────────────────────
@@ -598,7 +610,7 @@
             <div class="user-email">${email}</div>
             <div class="user-date">${formatDate(u.createdAt)}</div>
           </div>
-          <div class="user-actions">${actions}</div>
+          <div class="user-actions">${actions}<button class="btn-action" style="background:#2563eb;color:#fff" title="إرسال رابط استعادة كلمة المرور" onclick="resetUserPassword('${(u.email||'').replace(/'/g,'')}')">&#128273; استعادة</button></div>
         </div>`;
       }).join('');
     }
