@@ -51,6 +51,7 @@ const translations = {
     teamsChat: 'محادثة على Teams',
     themeLabel: 'تبديل الوضع',
     logoutBtn: 'تسجيل الخروج',
+    dailyToggle: 'مهمة يومية',
   },
   en: {
     navQuickLinks: 'Quick Links',
@@ -104,6 +105,7 @@ const translations = {
     teamsChat: 'Chat on Teams',
     themeLabel: 'Toggle theme',
     logoutBtn: 'Log out',
+    dailyToggle: 'Daily Task',
   }
 };
 

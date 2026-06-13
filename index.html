@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132027" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132035" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -251,6 +251,16 @@
     html:not(.dark) .nt-pri-picker{ background:#ffffff; border-color:rgba(37,99,235,.3); }
     html:not(.dark) .nt-pri-picker .nt-pri-opt{ color:#0f172a; }
     html:not(.dark) .nt-pri-picker .nt-pri-opt:hover{ background:rgba(37,99,235,.10); }
+
+    /* Home view stays solid black in BOTH themes (keycap video needs a dark backdrop) */
+    #view-home{ background:#000 !important; }
+    #view-home .hm-hero{ background:#000 !important; }
+    #view-home .hm-feat{ background:#0d0d0f !important; }
+    html:not(.dark) #view-home .hm-title,
+    html:not(.dark) #view-home .hm-info-title,
+    html:not(.dark) #view-home .hm-feat h3{ color:#fff !important; }
+    html:not(.dark) #view-home .hm-info-lead,
+    html:not(.dark) #view-home .hm-feat p{ color:#9ca3af !important; }
   </style>
 </head>
 
@@ -486,9 +496,9 @@
   padding:24px 26px;
 }
 
-#view-notes .nt-main-head{ display:flex; align-items:flex-start; gap:12px; }
+#view-notes .nt-main-head{ display:flex; align-items:center; gap:10px; flex-wrap:nowrap; }
 #view-notes .nt-title{
-  flex:1; min-width:0;
+  flex:0 1 auto; min-width:0;
   font-size:26px; font-weight:700; color:#fff; line-height:1.25;
   margin:0; padding:2px 6px; border-radius:8px;
   outline:none; border:1px solid transparent;
@@ -601,7 +611,7 @@
 
 /* daily recurring tasks */
 #view-notes .nt-daily-toggle{
-  flex:0 0 auto; margin-top:4px; margin-inline-start:auto;
+  flex:0 0 auto;
   display:inline-flex; align-items:center; gap:6px;
   padding:7px 13px; border-radius:999px;
   background:rgba(59,130,246,.10); color:#93c5fd;
@@ -1697,19 +1707,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132027"></script>
-  <script src="js/data.js?v=202606132027"></script>
-  <script src="js/i18n.js?v=202606132027"></script>
-  <script src="js/render.js?v=202606132027"></script>
-  <script src="js/search.js?v=202606132027"></script>
-  <script src="js/presence.js?v=202606132027"></script>
-  <script src="js/animations.js?v=202606132027"></script>
+  <script type="module" src="js/auth.js?v=202606132035"></script>
+  <script src="js/data.js?v=202606132035"></script>
+  <script src="js/i18n.js?v=202606132035"></script>
+  <script src="js/render.js?v=202606132035"></script>
+  <script src="js/search.js?v=202606132035"></script>
+  <script src="js/presence.js?v=202606132035"></script>
+  <script src="js/animations.js?v=202606132035"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132027"></script>
-  <script src="js/resign-forms.js?v=202606132027"></script>
-  <script src="js/leave-forms.js?v=202606132027"></script>
+  <script src="js/pdf-forms.js?v=202606132035"></script>
+  <script src="js/resign-forms.js?v=202606132035"></script>
+  <script src="js/leave-forms.js?v=202606132035"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2284,6 +2294,12 @@
             if (filter === "done") return dn(o.t);
             return true;
           });
+        // important tasks float to the top: high → medium → low → none (stable)
+        visible.sort(function (a, b) {
+          var pa = (typeof a.t.pri === "number") ? a.t.pri : 99;
+          var pb = (typeof b.t.pri === "number") ? b.t.pri : 99;
+          return (pa - pb) || (a.idx - b.idx);
+        });
 
         if (!visible.length) {
           var msg = tasks.length
