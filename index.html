@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132035" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132040" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -653,6 +653,29 @@
 #view-notes .nt-day .d-stat.full{ color:#34d399; }
 #view-notes .nt-day .d-stat.some{ color:#93c5fd; }
 #view-notes .nt-day .d-stat.none{ color:#71717a; }
+#view-notes .nt-day{ cursor:pointer; transition:border-color .15s, box-shadow .15s, transform .12s; }
+#view-notes .nt-day:hover{ border-color:#60a5fa; transform:translateY(-2px); box-shadow:0 0 14px rgba(59,130,246,.35); }
+/* per-day scheduled tasks modal */
+.nt-day-modal{ position:fixed; inset:0; z-index:100000; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:1rem; }
+.nt-day-box{ width:min(420px,100%); background:#0e1525; border:1px solid rgba(96,165,250,.4); border-radius:16px; padding:18px; box-shadow:0 24px 60px rgba(0,0,0,.6); direction:rtl; }
+.nts-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.nts-head b{ color:#fff; font-size:1.05rem; }
+.nts-x{ background:transparent; border:none; color:#94a3b8; font-size:.95rem; cursor:pointer; width:30px; height:30px; border-radius:8px; }
+.nts-x:hover{ background:rgba(255,255,255,.07); color:#fff; }
+.nts-list{ display:flex; flex-direction:column; gap:8px; max-height:48vh; overflow-y:auto; margin-bottom:14px; }
+.nts-empty{ color:#94a3b8; font-size:13px; text-align:center; padding:20px 8px; }
+.nts-row{ display:flex; align-items:center; gap:10px; background:#0b1018; border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:9px 12px; }
+.nts-check{ flex:0 0 20px; width:20px; height:20px; border-radius:6px; display:grid; place-items:center; cursor:pointer; background:#0d0d0f; border:2px solid rgba(255,255,255,.22); color:#fff; font-size:11px; }
+.nts-check.on{ background:#16a34a; border-color:#16a34a; }
+.nts-text{ flex:1; color:#e7eeff; font-size:14px; line-height:1.5; word-break:break-word; }
+.nts-row.done .nts-text{ text-decoration:line-through; color:#71717a; }
+.nts-del{ background:transparent; border:none; color:#71717a; cursor:pointer; font-size:13px; flex:0 0 auto; }
+.nts-del:hover{ color:#f87171; }
+.nts-add{ display:flex; gap:8px; }
+.nts-add input{ flex:1; min-width:0; background:#0b1018; border:1px solid rgba(96,165,250,.35); border-radius:10px; padding:10px 12px; color:#e7eeff; font-family:inherit; font-size:14px; outline:none; }
+.nts-add input:focus{ border-color:#60a5fa; }
+.nts-add button{ flex:0 0 auto; background:#2563eb; border:none; color:#fff; border-radius:10px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:13px; cursor:pointer; }
+.nts-add button:hover{ background:#1d4ed8; }
 </style>
 
   <div id="welcomeModal" class="wm-overlay">
@@ -1707,19 +1730,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132035"></script>
-  <script src="js/data.js?v=202606132035"></script>
-  <script src="js/i18n.js?v=202606132035"></script>
-  <script src="js/render.js?v=202606132035"></script>
-  <script src="js/search.js?v=202606132035"></script>
-  <script src="js/presence.js?v=202606132035"></script>
-  <script src="js/animations.js?v=202606132035"></script>
+  <script type="module" src="js/auth.js?v=202606132040"></script>
+  <script src="js/data.js?v=202606132040"></script>
+  <script src="js/i18n.js?v=202606132040"></script>
+  <script src="js/render.js?v=202606132040"></script>
+  <script src="js/search.js?v=202606132040"></script>
+  <script src="js/presence.js?v=202606132040"></script>
+  <script src="js/animations.js?v=202606132040"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132035"></script>
-  <script src="js/resign-forms.js?v=202606132035"></script>
-  <script src="js/leave-forms.js?v=202606132035"></script>
+  <script src="js/pdf-forms.js?v=202606132040"></script>
+  <script src="js/resign-forms.js?v=202606132040"></script>
+  <script src="js/leave-forms.js?v=202606132040"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2125,6 +2148,7 @@
             title: (l && typeof l.title === "string") ? l.title : "My Tasks",
             daily: !!(l && l.daily),
             log: (l && l.log && typeof l.log === "object") ? l.log : {},
+            sched: (l && l.sched && typeof l.sched === "object") ? l.sched : {},
             tasks: cleanTasks(l && l.tasks)
           };
         });
@@ -2351,17 +2375,28 @@
 
         var dayNames = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         var cal = "";
-        for (var i = 6; i >= 0; i--) {
-          var ds = dayStr(-i);
-          var d = new Date(); d.setDate(d.getDate() - i);
-          var cnt = (l.log && Array.isArray(l.log[ds])) ? l.log[ds].length : 0;
-          if (i === 0) cnt = doneToday;
-          var cls = (total > 0 && cnt >= total) ? "full" : (cnt > 0 ? "some" : "none");
+        for (var k = -3; k <= 10; k++) {
+          var ds = dayStr(k);
+          var d = new Date(); d.setDate(d.getDate() + k);
+          var schedArr = (l.sched && Array.isArray(l.sched[ds])) ? l.sched[ds] : [];
+          var schedN = schedArr.length;
+          var schedDone = schedArr.filter(function (s) { return s.done; }).length;
+          var stat, cls;
+          if (schedN > 0) {
+            stat = "📌 " + schedDone + "/" + schedN;
+            cls = (schedDone >= schedN) ? "full" : "some";
+          } else if (k <= 0) {
+            var cnt = (k === 0) ? doneToday : ((l.log && Array.isArray(l.log[ds])) ? l.log[ds].length : 0);
+            stat = cnt + "/" + total;
+            cls = (total > 0 && cnt >= total) ? "full" : (cnt > 0 ? "some" : "none");
+          } else {
+            stat = "＋"; cls = "none";
+          }
           cal +=
-            '<div class="nt-day' + (i === 0 ? " today" : "") + '">' +
+            '<div class="nt-day' + (k === 0 ? " today" : "") + '" onclick="ntOpenDay(\'' + ds + '\')" title="اضغط لإضافة/عرض مهام هذا اليوم">' +
               '<div class="d-name">' + dayNames[d.getDay()] + '</div>' +
               '<div class="d-num">' + d.getDate() + '</div>' +
-              '<div class="d-stat ' + cls + '">' + cnt + '/' + total + '</div>' +
+              '<div class="d-stat ' + cls + '">' + stat + '</div>' +
             '</div>';
         }
 
@@ -2383,9 +2418,64 @@
               '<div class="nt-rem"><b style="font-size:11px;color:#93c5fd">باقي من أمس:</b>' + remList(remYest) + '</div>' +
             '</div>' +
           '</div>' +
-          '<div class="nt-cal-title">آخر ٧ أيام</div>' +
+          '<div class="nt-cal-title">خطّط أيامك — اضغط أي يوم لإضافة مهمة مستقبلية 📌</div>' +
           '<div class="nt-cal">' + cal + '</div>';
       }
+
+      /* ---- per-day scheduled (future) tasks ---- */
+      var _ntDay = null;
+      var _ntDayNames = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+      var _ntMonths = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+      function renderDayModal() {
+        var old = document.getElementById("ntDayModal"); if (old) old.remove();
+        var ds = _ntDay; if (!ds) return;
+        var l = activeList(); if (!l.sched) l.sched = {};
+        var arr = Array.isArray(l.sched[ds]) ? l.sched[ds] : [];
+        var d = new Date(ds + "T00:00:00");
+        var title = _ntDayNames[d.getDay()] + " " + d.getDate() + " " + _ntMonths[d.getMonth()];
+        var rows = arr.length
+          ? arr.map(function (s, i) {
+              return '<div class="nts-row' + (s.done ? " done" : "") + '">' +
+                '<span class="nts-check' + (s.done ? " on" : "") + '" onclick="ntToggleSched(' + i + ')">' + (s.done ? "✓" : "") + '</span>' +
+                '<span class="nts-text">' + esc(s.text) + '</span>' +
+                '<button class="nts-del" onclick="ntDelSched(' + i + ')">✕</button></div>';
+            }).join("")
+          : '<div class="nts-empty">لا مهام لهذا اليوم بعد — أضف أول مهمة 👇</div>';
+        var ov = document.createElement("div");
+        ov.id = "ntDayModal"; ov.className = "nt-day-modal";
+        ov.onclick = function (e) { if (e.target === ov) ntCloseDay(); };
+        ov.innerHTML =
+          '<div class="nt-day-box">' +
+            '<div class="nts-head"><b>📌 ' + esc(title) + '</b>' +
+              '<button class="nts-x" onclick="ntCloseDay()" aria-label="إغلاق">✕</button></div>' +
+            '<div class="nts-list">' + rows + '</div>' +
+            '<div class="nts-add">' +
+              '<input id="ntSchedInput" type="text" maxlength="200" placeholder="أضف مهمة لهذا اليوم…" ' +
+              'onkeydown="if(event.key===\'Enter\'){event.preventDefault();ntAddSched();}">' +
+              '<button onclick="ntAddSched()">إضافة</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(ov);
+        var inp = document.getElementById("ntSchedInput"); if (inp) inp.focus();
+      }
+      window.ntOpenDay = function (ds) { _ntDay = ds; renderDayModal(); };
+      window.ntCloseDay = function () { var m = document.getElementById("ntDayModal"); if (m) m.remove(); _ntDay = null; };
+      window.ntAddSched = function () {
+        var inp = document.getElementById("ntSchedInput"); if (!inp) return;
+        var v = inp.value.trim(); if (!v) { inp.focus(); return; }
+        var l = activeList(); if (!l.sched) l.sched = {};
+        if (!Array.isArray(l.sched[_ntDay])) l.sched[_ntDay] = [];
+        l.sched[_ntDay].push({ text: v, done: false });
+        save(model()); renderDayModal(); renderDaily();
+      };
+      window.ntToggleSched = function (i) {
+        var l = activeList(); var a = l.sched && l.sched[_ntDay];
+        if (a && a[i]) { a[i].done = !a[i].done; save(model()); renderDayModal(); renderDaily(); }
+      };
+      window.ntDelSched = function (i) {
+        var l = activeList(); var a = l.sched && l.sched[_ntDay];
+        if (a && a[i]) { a.splice(i, 1); if (!a.length) delete l.sched[_ntDay]; save(model()); renderDayModal(); renderDaily(); }
+      };
 
       function renderAll() {
         renderStepper();
