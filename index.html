@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132119" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132124" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -241,16 +241,13 @@
     html:not(.dark) .feat-badge{ background:#eff4ff; color:#2563eb; }
     html:not(.dark) .header-search-input{ background:#ffffff !important; color:#0f172a !important; }
     html:not(.dark) .dash-topbar .logout-btn{ color:#0f172a !important; }
-    /* notes view */
-    html:not(.dark) #view-notes .nt-row{ background:#ffffff; border-color:rgba(15,23,42,.12); }
-    html:not(.dark) #view-notes .nt-text{ color:#0f172a; }
-    html:not(.dark) #view-notes .nt-check{ background:#f1f4f9; border-color:rgba(15,23,42,.25); }
-    html:not(.dark) #view-notes .nt-banner{ background:#eff4ff; color:#1e40af; }
-    html:not(.dark) #view-notes .nt-sumcard, html:not(.dark) #view-notes .nt-day{ background:#ffffff; border-color:rgba(37,99,235,.25); }
-    html:not(.dark) #view-notes .nt-sum-title, html:not(.dark) #view-notes .nt-cal-title{ color:#334155; }
-    html:not(.dark) .nt-pri-picker{ background:#ffffff; border-color:rgba(37,99,235,.3); }
-    html:not(.dark) .nt-pri-picker .nt-pri-opt{ color:#0f172a; }
-    html:not(.dark) .nt-pri-picker .nt-pri-opt:hover{ background:rgba(37,99,235,.10); }
+    /* page headings + chrome that were white-on-white in light mode */
+    html:not(.dark) .view-title, html:not(.dark) .view-title span,
+    html:not(.dark) .dash-page-title{ color:#0f172a !important; }
+    html:not(.dark) .view-sub{ color:#5b6675 !important; }
+    html:not(.dark) .sb-badge{ color:#1d4ed8 !important; background:rgba(37,99,235,.12); border-color:rgba(37,99,235,.35); }
+    html:not(.dark) #adminLink, html:not(.dark) #adminLink span{ color:#334155 !important; }
+    /* Notes view stays a dark card-island in light mode — fully readable, no white-on-white */
 
     /* Home view stays solid black in BOTH themes (keycap video needs a dark backdrop) */
     #view-home{ background:#000 !important; }
@@ -1763,19 +1760,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132119"></script>
-  <script src="js/data.js?v=202606132119"></script>
-  <script src="js/i18n.js?v=202606132119"></script>
-  <script src="js/render.js?v=202606132119"></script>
-  <script src="js/search.js?v=202606132119"></script>
-  <script src="js/presence.js?v=202606132119"></script>
-  <script src="js/animations.js?v=202606132119"></script>
+  <script type="module" src="js/auth.js?v=202606132124"></script>
+  <script src="js/data.js?v=202606132124"></script>
+  <script src="js/i18n.js?v=202606132124"></script>
+  <script src="js/render.js?v=202606132124"></script>
+  <script src="js/search.js?v=202606132124"></script>
+  <script src="js/presence.js?v=202606132124"></script>
+  <script src="js/animations.js?v=202606132124"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132119"></script>
-  <script src="js/resign-forms.js?v=202606132119"></script>
-  <script src="js/leave-forms.js?v=202606132119"></script>
+  <script src="js/pdf-forms.js?v=202606132124"></script>
+  <script src="js/resign-forms.js?v=202606132124"></script>
+  <script src="js/leave-forms.js?v=202606132124"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
