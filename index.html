@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132124" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132131" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -248,6 +248,18 @@
     html:not(.dark) .sb-badge{ color:#1d4ed8 !important; background:rgba(37,99,235,.12); border-color:rgba(37,99,235,.35); }
     html:not(.dark) #adminLink, html:not(.dark) #adminLink span{ color:#334155 !important; }
     /* Notes view stays a dark card-island in light mode — fully readable, no white-on-white */
+
+    /* ===== arrange / resize notes panels ===== */
+    #view-notes .nt-grip{ position:absolute; top:6px; inset-inline-start:6px; z-index:8; width:28px; height:28px; border-radius:8px; background:rgba(59,130,246,.20); border:1px solid rgba(96,165,250,.5); color:#bfdbfe; cursor:move; display:none; align-items:center; justify-content:center; font-size:13px; touch-action:none; }
+    #view-notes.arrange .nt-grip{ display:inline-flex; }
+    #view-notes.arrange .nt-rail, #view-notes.arrange .nt-main, #view-notes.arrange .nt-side-card{ resize:both; overflow:auto; outline:2px dashed rgba(96,165,250,.5); outline-offset:3px; min-width:220px; min-height:150px; }
+    .nt-arrange-bar{ display:flex; gap:8px; align-items:center; margin:0 0 14px; flex-wrap:wrap; }
+    .nt-arrange-btn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:10px; background:rgba(59,130,246,.12); border:1px solid rgba(96,165,250,.4); color:#bfdbfe; font:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:border-color .15s,color .15s,background .15s; }
+    .nt-arrange-btn:hover{ border-color:#60a5fa; color:#fff; }
+    .nt-arrange-btn.on{ background:#2563eb; color:#fff; border-color:#3b82f6; }
+    .nt-arrange-hint{ font-size:12px; color:#93c5fd; }
+    html:not(.dark) .nt-arrange-btn{ color:#1d4ed8; }
+    html:not(.dark) .nt-arrange-hint{ color:#2563eb; }
 
     /* Home view stays solid black in BOTH themes (keycap video needs a dark backdrop) */
     #view-home{ background:#000 !important; }
@@ -985,6 +997,12 @@
     <div class="view-head">
       <h2 class="view-title"><i class="fa-solid fa-note-sticky"></i> <span data-i18n="navNotes">Notes &amp; Tasks</span></h2>
       <p class="view-sub">Your private checklist — saved in this browser only.</p>
+    </div>
+
+    <div class="nt-arrange-bar">
+      <button type="button" id="ntArrangeBtn" class="nt-arrange-btn" onclick="ntToggleArrange()"><i class="fa-solid fa-up-down-left-right"></i><span>ترتيب وحجم</span></button>
+      <button type="button" class="nt-arrange-btn" onclick="ntResetArrange()"><i class="fa-solid fa-rotate-left"></i><span>إعادة تعيين</span></button>
+      <span class="nt-arrange-hint" id="ntArrangeHint"></span>
     </div>
 
     <div class="nt-shell">
@@ -1760,19 +1778,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132124"></script>
-  <script src="js/data.js?v=202606132124"></script>
-  <script src="js/i18n.js?v=202606132124"></script>
-  <script src="js/render.js?v=202606132124"></script>
-  <script src="js/search.js?v=202606132124"></script>
-  <script src="js/presence.js?v=202606132124"></script>
-  <script src="js/animations.js?v=202606132124"></script>
+  <script type="module" src="js/auth.js?v=202606132131"></script>
+  <script src="js/data.js?v=202606132131"></script>
+  <script src="js/i18n.js?v=202606132131"></script>
+  <script src="js/render.js?v=202606132131"></script>
+  <script src="js/search.js?v=202606132131"></script>
+  <script src="js/presence.js?v=202606132131"></script>
+  <script src="js/animations.js?v=202606132131"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132124"></script>
-  <script src="js/resign-forms.js?v=202606132124"></script>
-  <script src="js/leave-forms.js?v=202606132124"></script>
+  <script src="js/pdf-forms.js?v=202606132131"></script>
+  <script src="js/resign-forms.js?v=202606132131"></script>
+  <script src="js/leave-forms.js?v=202606132131"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2947,6 +2965,85 @@
       };
       document.getElementById('reportModal').addEventListener('click', function(e){ if(e.target.id==='reportModal') closeReport(); });
     })();
+  </script>
+
+  <script>
+  /* ===== Notes: drag-to-move + resize panels (arrange mode), persisted ===== */
+  (function(){
+    var LS="barq_nt_layout_v1";
+    var KEYS={ rail:"#view-notes .nt-rail", main:"#view-notes .nt-main", side:"#ntSide" };
+    function el(k){ return document.querySelector(KEYS[k]); }
+    function shell(){ return document.querySelector("#view-notes .nt-shell"); }
+    function loadL(){ try{ return JSON.parse(localStorage.getItem(LS)||"{}")||{}; }catch(e){ return {}; } }
+    function saveL(o){ try{ localStorage.setItem(LS, JSON.stringify(o)); }catch(e){} }
+    function applyLayout(){
+      var sh=shell(); if(!sh) return; var L=loadL();
+      if(!Object.keys(L).length){
+        ["rail","main","side"].forEach(function(k){ var e=el(k); if(e){ e.style.position=""; e.style.left=e.style.top=e.style.width=e.style.height=""; } });
+        sh.style.position=""; sh.style.minHeight=""; return;
+      }
+      sh.style.position="relative"; var maxB=0;
+      ["rail","main","side"].forEach(function(k){
+        var e=el(k), p=L[k]; if(!e||!p) return;
+        e.style.position="absolute"; e.style.left=p.l+"px"; e.style.top=p.t+"px";
+        if(p.w) e.style.width=p.w+"px"; if(p.h) e.style.height=p.h+"px";
+        maxB=Math.max(maxB, p.t + (p.h||e.offsetHeight));
+      });
+      sh.style.minHeight=(maxB+24)+"px";
+    }
+    function snap(){
+      var sh=shell(); if(!sh) return; var sr=sh.getBoundingClientRect(); var L={};
+      ["rail","main","side"].forEach(function(k){
+        var e=el(k); if(!e||e.hidden||!e.offsetParent) return; var r=e.getBoundingClientRect();
+        L[k]={ l:Math.round(r.left-sr.left), t:Math.round(r.top-sr.top), w:Math.round(r.width), h:Math.round(r.height) };
+      });
+      saveL(L);
+    }
+    function ensureAbsolute(){
+      var m=el("main"); if(m && getComputedStyle(m).position==="absolute") return;
+      snap(); applyLayout();
+    }
+    function injectGrips(){
+      ["rail","main","side"].forEach(function(k){
+        var e=el(k); if(!e || e.querySelector(":scope > .nt-grip")) return;
+        if(getComputedStyle(e).position==="static") e.style.position="relative";
+        var g=document.createElement("div"); g.className="nt-grip"; g.title="اسحب لتحريك"; g.innerHTML='<i class="fa-solid fa-up-down-left-right"></i>';
+        g.addEventListener("pointerdown", function(ev){ startDrag(ev,e); });
+        e.appendChild(g);
+      });
+    }
+    var drag=null;
+    function startDrag(ev,e){
+      ev.preventDefault(); ensureAbsolute();
+      var sh=shell(); var sr=sh.getBoundingClientRect(); var r=e.getBoundingClientRect();
+      drag={ e:e, sr:sr, offX:ev.clientX-r.left, offY:ev.clientY-r.top };
+      e.style.zIndex=30;
+      window.addEventListener("pointermove", onDrag); window.addEventListener("pointerup", endDrag);
+    }
+    function onDrag(ev){
+      if(!drag) return;
+      var l=Math.max(0, ev.clientX-drag.sr.left-drag.offX);
+      var t=Math.max(0, ev.clientY-drag.sr.top-drag.offY);
+      drag.e.style.left=l+"px"; drag.e.style.top=t+"px";
+    }
+    function endDrag(){ if(!drag) return; drag.e.style.zIndex=""; drag=null; snap(); applyLayout(); window.removeEventListener("pointermove",onDrag); window.removeEventListener("pointerup",endDrag); }
+    window.ntToggleArrange=function(){
+      var v=document.getElementById("view-notes"); if(!v) return;
+      var on=v.classList.toggle("arrange");
+      var b=document.getElementById("ntArrangeBtn"); if(b) b.classList.toggle("on",on);
+      var h=document.getElementById("ntArrangeHint"); if(h) h.textContent = on ? "اسحب من المقبض ✥ · كبّر من الزاوية ↘ · يُحفظ تلقائياً" : "";
+      if(on){ ensureAbsolute(); injectGrips(); } else { snap(); applyLayout(); }
+    };
+    window.ntResetArrange=function(){
+      try{ localStorage.removeItem(LS); }catch(e){}
+      var v=document.getElementById("view-notes"); if(v) v.classList.remove("arrange");
+      var b=document.getElementById("ntArrangeBtn"); if(b) b.classList.remove("on");
+      var h=document.getElementById("ntArrangeHint"); if(h) h.textContent="";
+      applyLayout();
+    };
+    document.addEventListener("pointerup", function(){ var v=document.getElementById("view-notes"); if(v&&v.classList.contains("arrange")) snap(); });
+    window.addEventListener("load", function(){ setTimeout(applyLayout, 400); });
+  })();
   </script>
 </body>
 </html>
