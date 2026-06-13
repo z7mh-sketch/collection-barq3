@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132006" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132011" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -495,6 +495,20 @@
   transition:color .15s, background .15s, border-color .15s; font-size:13px;
 }
 #view-notes .nt-del:hover{ color:#f87171; background:rgba(248,113,113,.10); border-color:rgba(248,113,113,.25); }
+
+/* task importance / priority */
+#view-notes .nt-pri{
+  flex:0 0 auto; width:15px; height:15px; border-radius:50%;
+  background:transparent; border:2px solid #4b5468; cursor:pointer; padding:0;
+  transition:transform .15s, border-color .15s, background .15s, box-shadow .15s;
+}
+#view-notes .nt-pri:hover{ border-color:#94a3b8; transform:scale(1.18); }
+#view-notes .nt-pri.p0{ background:#ef4444; border-color:#ef4444; box-shadow:0 0 8px rgba(239,68,68,.65); }
+#view-notes .nt-pri.p1{ background:#f97316; border-color:#f97316; box-shadow:0 0 8px rgba(249,115,22,.55); }
+#view-notes .nt-pri.p2{ background:#22c55e; border-color:#22c55e; box-shadow:0 0 8px rgba(34,197,94,.5); }
+#view-notes .nt-row.pri-0{ border-inline-start:3px solid #ef4444; }
+#view-notes .nt-row.pri-1{ border-inline-start:3px solid #f97316; }
+#view-notes .nt-row.pri-2{ border-inline-start:3px solid #22c55e; }
 
 #view-notes .nt-empty{
   text-align:center; color:#71717a; padding:34px 16px; font-size:13px;
@@ -1609,19 +1623,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132006"></script>
-  <script src="js/data.js?v=202606132006"></script>
-  <script src="js/i18n.js?v=202606132006"></script>
-  <script src="js/render.js?v=202606132006"></script>
-  <script src="js/search.js?v=202606132006"></script>
-  <script src="js/presence.js?v=202606132006"></script>
-  <script src="js/animations.js?v=202606132006"></script>
+  <script type="module" src="js/auth.js?v=202606132011"></script>
+  <script src="js/data.js?v=202606132011"></script>
+  <script src="js/i18n.js?v=202606132011"></script>
+  <script src="js/render.js?v=202606132011"></script>
+  <script src="js/search.js?v=202606132011"></script>
+  <script src="js/presence.js?v=202606132011"></script>
+  <script src="js/animations.js?v=202606132011"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132006"></script>
-  <script src="js/resign-forms.js?v=202606132006"></script>
-  <script src="js/leave-forms.js?v=202606132006"></script>
+  <script src="js/pdf-forms.js?v=202606132011"></script>
+  <script src="js/resign-forms.js?v=202606132011"></script>
+  <script src="js/leave-forms.js?v=202606132011"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2010,8 +2024,8 @@
         if (!Array.isArray(arr)) return [];
         return arr
           .map(function (t) {
-            if (typeof t === "string") return { text: t, done: false, doneDate: null };
-            if (t && typeof t === "object") return { text: String(t.text == null ? "" : t.text), done: !!t.done, doneDate: (t.doneDate || null) };
+            if (typeof t === "string") return { text: t, done: false, doneDate: null, pri: null };
+            if (t && typeof t === "object") return { text: String(t.text == null ? "" : t.text), done: !!t.done, doneDate: (t.doneDate || null), pri: (typeof t.pri === "number" ? t.pri : null) };
             return null;
           })
           .filter(function (t) { return t !== null; });
@@ -2209,8 +2223,9 @@
         var html = "";
         visible.forEach(function (o) {
           var t = o.t, idx = o.idx, d = dn(t);
+          var p = (typeof t.pri === "number") ? t.pri : null;
           html +=
-            '<div class="nt-row' + (d ? " done" : "") + '">' +
+            '<div class="nt-row' + (d ? " done" : "") + (p !== null ? " pri-" + p : "") + '">' +
               '<span class="nt-check' + (d ? " on" : "") + '" role="checkbox" ' +
               'aria-checked="' + (d ? "true" : "false") + '" ' +
               'onclick="ntToggleTask(' + idx + ')"><i class="fa-solid fa-check"></i></span>' +
@@ -2218,6 +2233,9 @@
               'onblur="ntEditTask(' + idx + ', this.innerText)" ' +
               'onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}">' +
               esc(t.text) + '</span>' +
+              '<button type="button" class="nt-pri' + (p !== null ? " p" + p : "") + '" ' +
+              'title="الأهمية — اضغط للتبديل (عالية/متوسطة/منخفضة)" ' +
+              'onclick="ntCyclePriority(' + idx + ')"></button>' +
               '<button type="button" class="nt-del" title="Delete task" ' +
               'onclick="ntDeleteTask(' + idx + ')"><i class="fa-solid fa-xmark"></i></button>' +
             '</div>';
@@ -2383,7 +2401,8 @@
           var done = l.tasks.filter(function (t) { return l.daily ? (t.doneDate === today) : t.done; }).length;
           var rows = l.tasks.map(function (t) {
             var d = l.daily ? (t.doneDate === today) : !!t.done;
-            return '<div class="r' + (d ? " d" : "") + '"><span class="c">' + (d ? "✓" : "") + '</span><span>' + esc(t.text) + '</span></div>';
+            var pd = (typeof t.pri === "number") ? '<span class="pd p' + t.pri + '"></span>' : '';
+            return '<div class="r' + (d ? " d" : "") + '"><span class="c">' + (d ? "✓" : "") + '</span>' + pd + '<span>' + esc(t.text) + '</span></div>';
           }).join("") || '<div class="empty">— لا مهام —</div>';
           var badge = l.daily ? '<span class="badge">يومي</span>' : "";
           return '<section class="card"><h2>' + esc(l.title) + badge + '<small>' + done + "/" + total + '</small></h2>' + rows + '</section>';
@@ -2404,6 +2423,8 @@
           ".r.d .c{background:rgba(52,211,153,.15);border-color:#34d399}" +
           ".r.d span:last-child{text-decoration:line-through;color:#7f8aa3}" +
           ".empty{color:#5b6680;font-size:12px;padding:4px 0}" +
+          ".pd{flex:0 0 9px;width:9px;height:9px;border-radius:50%;margin-top:6px}" +
+          ".pd.p0{background:#ef4444}.pd.p1{background:#f97316}.pd.p2{background:#22c55e}" +
           "footer{margin-top:12px;font-size:11px;color:#5b6680;text-align:center;line-height:1.6}";
         var html =
           '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">' +
@@ -2476,6 +2497,18 @@
         save(model());
         renderStepper();
         renderHint();
+        renderTasks();
+      };
+
+      // Cycle task importance: none → high(red) → medium(orange) → low(green) → none
+      window.ntCyclePriority = function (idx) {
+        var l = activeList();
+        var t = l.tasks[idx];
+        if (!t) return;
+        var cur = (typeof t.pri === "number") ? t.pri : -1;
+        cur = cur + 1; if (cur > 2) cur = -1;
+        t.pri = (cur === -1) ? null : cur;
+        save(model());
         renderTasks();
       };
 
