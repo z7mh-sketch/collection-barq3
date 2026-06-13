@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132113" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132119" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -389,8 +389,8 @@
 <style id="notes-css">
 /* ===== Collection Barq — Notes & Tasks (SignVault-style) ===== */
 #view-notes .nt-shell{
-  display:flex; gap:24px; align-items:flex-start;
-  margin-top:6px; max-width:1180px;
+  display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;
+  margin-top:6px; max-width:1560px;
 }
 @media (max-width:860px){ #view-notes .nt-shell{ flex-direction:column; } }
 
@@ -495,6 +495,13 @@
   border-radius:18px;
   padding:24px 26px;
 }
+#view-notes .nt-side-card{
+  flex:0 0 360px; width:360px;
+  background:#0d0d0f; border:1px solid rgba(255,255,255,.06);
+  border-radius:18px; padding:18px;
+}
+#view-notes .nt-side-card .nt-daily{ margin-top:0; }
+@media (max-width:1080px){ #view-notes .nt-side-card{ flex:1 1 100%; width:100%; } }
 
 #view-notes .nt-main-head{ display:flex; align-items:center; gap:10px; flex-wrap:nowrap; }
 #view-notes .nt-title{
@@ -1038,7 +1045,10 @@
           </button>
         </div>
 
-        <div id="ntDaily" class="nt-daily" hidden></div>
+      </section>
+
+      <section class="nt-side-card" id="ntSide" hidden>
+        <div id="ntDaily" class="nt-daily"></div>
       </section>
     </div>
   </section>
@@ -1753,19 +1763,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132113"></script>
-  <script src="js/data.js?v=202606132113"></script>
-  <script src="js/i18n.js?v=202606132113"></script>
-  <script src="js/render.js?v=202606132113"></script>
-  <script src="js/search.js?v=202606132113"></script>
-  <script src="js/presence.js?v=202606132113"></script>
-  <script src="js/animations.js?v=202606132113"></script>
+  <script type="module" src="js/auth.js?v=202606132119"></script>
+  <script src="js/data.js?v=202606132119"></script>
+  <script src="js/i18n.js?v=202606132119"></script>
+  <script src="js/render.js?v=202606132119"></script>
+  <script src="js/search.js?v=202606132119"></script>
+  <script src="js/presence.js?v=202606132119"></script>
+  <script src="js/animations.js?v=202606132119"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132113"></script>
-  <script src="js/resign-forms.js?v=202606132113"></script>
-  <script src="js/leave-forms.js?v=202606132113"></script>
+  <script src="js/pdf-forms.js?v=202606132119"></script>
+  <script src="js/resign-forms.js?v=202606132119"></script>
+  <script src="js/leave-forms.js?v=202606132119"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2264,6 +2274,11 @@
         return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
       }
       function isDoneToday(t) { return !!t.doneDate && t.doneDate === dayStr(0); }
+      // Daily list = carry-over: undone tasks stay; tasks done on a PAST day are archived (hidden).
+      function activeDaily(l) {
+        var td = dayStr(0);
+        return l.tasks.filter(function (t) { return !(t.doneDate && t.doneDate < td); });
+      }
       function logAdd(l, date, text) {
         if (!l.log) l.log = {};
         if (!Array.isArray(l.log[date])) l.log[date] = [];
@@ -2282,8 +2297,9 @@
         var m = model();
         var html = "";
         m.lists.forEach(function (l, i) {
-          var total = l.tasks.length;
-          var done = l.tasks.filter(function (t) { return l.daily ? isDoneToday(t) : t.done; }).length;
+          var act = l.daily ? activeDaily(l) : l.tasks;
+          var total = act.length;
+          var done = act.filter(function (t) { return l.daily ? isDoneToday(t) : t.done; }).length;
           var allDone = total > 0 && done === total;
           var dot = allDone
             ? '<span class="nt-dot done"><i class="fa-solid fa-check"></i></span>'
@@ -2320,8 +2336,9 @@
         var el = document.getElementById("ntHint");
         if (!el) return;
         var l = activeList();
-        var total = l.tasks.length;
-        var done = l.tasks.filter(function (t) { return l.daily ? isDoneToday(t) : t.done; }).length;
+        var act = l.daily ? activeDaily(l) : l.tasks;
+        var total = act.length;
+        var done = act.filter(function (t) { return l.daily ? isDoneToday(t) : t.done; }).length;
         el.textContent = total
           ? (done + " of " + total + " complete. Click a task to edit it inline; everything is stored only in this browser.")
           : "Click a task to edit it inline, check it off when done. Everything is stored only in this browser.";
@@ -2334,9 +2351,11 @@
         var tasks = l.tasks;
         var dn = function (t) { return l.daily ? isDoneToday(t) : !!t.done; };
 
+        var todayS = dayStr(0);
         var visible = tasks
           .map(function (t, idx) { return { t: t, idx: idx }; })
           .filter(function (o) {
+            if (l.daily && o.t.doneDate && o.t.doneDate < todayS) return false;  // done on a previous day → archived, hidden
             if (filter === "active") return !dn(o.t);
             if (filter === "done") return dn(o.t);
             return true;
@@ -2421,18 +2440,21 @@
       function renderDaily() {
         var l = activeList();
         var box = document.getElementById("ntDaily");
+        var side = document.getElementById("ntSide");
         var btn = document.getElementById("ntDailyToggle");
         if (btn) btn.classList.toggle("on", !!l.daily);
+        if (side) side.hidden = !l.daily;
         if (!box) return;
         if (!l.daily) { box.hidden = true; box.innerHTML = ""; return; }
         box.hidden = false;
 
         var today = dayStr(0), yest = dayStr(-1);
-        var total = l.tasks.length;
+        var act = activeDaily(l);
+        var total = act.length;
         var doneToday = l.tasks.filter(function (t) { return t.doneDate === today; }).length;
-        var remToday = l.tasks.filter(function (t) { return t.doneDate !== today; });
+        var remToday = act.filter(function (t) { return t.doneDate !== today; });
         var ydone = (l.log && Array.isArray(l.log[yest])) ? l.log[yest] : [];
-        var remYest = l.tasks.filter(function (t) { return ydone.indexOf(t.text) === -1; });
+        var remYest = act.filter(function (t) { return ydone.indexOf(t.text) === -1; });
 
         // (the month calendar grid is rendered by renderCalGrid below)
 
