@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132210" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132220" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -252,7 +252,10 @@
     /* ===== arrange / resize notes panels ===== */
     #view-notes .nt-grip{ position:absolute; top:6px; inset-inline-start:6px; z-index:8; width:28px; height:28px; border-radius:8px; background:rgba(59,130,246,.20); border:1px solid rgba(96,165,250,.5); color:#bfdbfe; cursor:move; display:none; align-items:center; justify-content:center; font-size:13px; touch-action:none; }
     #view-notes.arrange .nt-grip{ display:inline-flex; }
-    #view-notes.arrange .nt-rail, #view-notes.arrange .nt-main, #view-notes.arrange .nt-side-card{ resize:both; overflow:auto; outline:2px dashed rgba(96,165,250,.5); outline-offset:3px; min-width:220px; min-height:150px; }
+    #view-notes.arrange .nt-rail, #view-notes.arrange .nt-main, #view-notes.arrange .nt-side-card{ outline:2px dashed rgba(96,165,250,.5); outline-offset:3px; }
+    .nt-rsz{ position:absolute; bottom:5px; inset-inline-start:5px; width:24px; height:24px; border-radius:6px; background:rgba(59,130,246,.2); border:1px solid rgba(96,165,250,.5); color:#bfdbfe; cursor:nwse-resize; display:none; align-items:center; justify-content:center; font-size:11px; z-index:9; touch-action:none; }
+    #view-notes.arrange .nt-rsz{ display:inline-flex; }
+    .nt-float .nt-rsz{ display:inline-flex; }
     .nt-arrange-bar{ display:flex; gap:8px; align-items:center; margin:0 0 14px; flex-wrap:wrap; }
     .nt-arrange-btn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:10px; background:rgba(59,130,246,.12); border:1px solid rgba(96,165,250,.4); color:#bfdbfe; font:inherit; font-size:13px; font-weight:700; cursor:pointer; transition:border-color .15s,color .15s,background .15s; }
     .nt-arrange-btn:hover{ border-color:#60a5fa; color:#fff; }
@@ -261,7 +264,7 @@
     html:not(.dark) .nt-arrange-btn{ color:#1d4ed8; }
     html:not(.dark) .nt-arrange-hint{ color:#2563eb; }
     /* free-floating extra task panels */
-    .nt-float{ position:absolute; background:#0d0d0f; border:1px solid rgba(96,165,250,.4); border-radius:16px; padding:12px; min-width:240px; min-height:170px; width:300px; resize:both; overflow:auto; box-shadow:0 14px 34px rgba(0,0,0,.55); z-index:6; display:flex; flex-direction:column; }
+    .nt-float{ position:absolute; background:#0d0d0f; border:1px solid rgba(96,165,250,.4); border-radius:16px; padding:12px; width:300px; box-shadow:0 14px 34px rgba(0,0,0,.55); z-index:6; display:flex; flex-direction:column; }
     .nf-head{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
     .nf-grip{ cursor:move; color:#bfdbfe; background:rgba(59,130,246,.18); border:1px solid rgba(96,165,250,.45); border-radius:7px; width:26px; height:26px; display:grid; place-items:center; flex:0 0 auto; touch-action:none; font-size:12px; }
     .nf-title{ flex:1; min-width:0; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-weight:800; font-size:15px; }
@@ -1792,19 +1795,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132210"></script>
-  <script src="js/data.js?v=202606132210"></script>
-  <script src="js/i18n.js?v=202606132210"></script>
-  <script src="js/render.js?v=202606132210"></script>
-  <script src="js/search.js?v=202606132210"></script>
-  <script src="js/presence.js?v=202606132210"></script>
-  <script src="js/animations.js?v=202606132210"></script>
+  <script type="module" src="js/auth.js?v=202606132220"></script>
+  <script src="js/data.js?v=202606132220"></script>
+  <script src="js/i18n.js?v=202606132220"></script>
+  <script src="js/render.js?v=202606132220"></script>
+  <script src="js/search.js?v=202606132220"></script>
+  <script src="js/presence.js?v=202606132220"></script>
+  <script src="js/animations.js?v=202606132220"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132210"></script>
-  <script src="js/resign-forms.js?v=202606132210"></script>
-  <script src="js/leave-forms.js?v=202606132210"></script>
+  <script src="js/pdf-forms.js?v=202606132220"></script>
+  <script src="js/resign-forms.js?v=202606132220"></script>
+  <script src="js/leave-forms.js?v=202606132220"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2993,23 +2996,24 @@
     function applyLayout(){
       var sh=shell(); if(!sh) return; var L=loadL();
       if(!Object.keys(L).length){
-        ["rail","main","side"].forEach(function(k){ var e=el(k); if(e){ e.style.position=""; e.style.left=e.style.top=e.style.width=e.style.height=""; } });
+        ["rail","main","side"].forEach(function(k){ var e=el(k); if(e){ e.style.position=""; e.style.left=e.style.top=e.style.width=e.style.height=e.style.transform=e.style.transformOrigin=""; } });
         sh.style.position=""; sh.style.minHeight=""; return;
       }
       sh.style.position="relative"; var maxB=0;
       ["rail","main","side"].forEach(function(k){
         var e=el(k), p=L[k]; if(!e||!p) return;
         e.style.position="absolute"; e.style.left=p.l+"px"; e.style.top=p.t+"px";
-        if(p.w) e.style.width=p.w+"px"; if(p.h) e.style.height=p.h+"px";
-        maxB=Math.max(maxB, p.t + (p.h||e.offsetHeight));
+        if(p.w) e.style.width=p.w+"px"; e.style.height="";
+        e.style.transformOrigin="top left"; e.style.transform="scale("+(p.s||1)+")";
+        maxB=Math.max(maxB, p.t + e.offsetHeight*(p.s||1));
       });
-      sh.style.minHeight=(maxB+24)+"px";
+      sh.style.minHeight=(maxB+30)+"px";
     }
     function snap(){
-      var sh=shell(); if(!sh) return; var sr=sh.getBoundingClientRect(); var L={};
+      var sh=shell(); if(!sh) return; var sr=sh.getBoundingClientRect(); var prev=loadL(); var L={};
       ["rail","main","side"].forEach(function(k){
         var e=el(k); if(!e||e.hidden||!e.offsetParent) return; var r=e.getBoundingClientRect();
-        L[k]={ l:Math.round(r.left-sr.left), t:Math.round(r.top-sr.top), w:Math.round(r.width), h:Math.round(r.height) };
+        L[k]={ l:Math.round(r.left-sr.left), t:Math.round(r.top-sr.top), w:Math.round(e.offsetWidth), s:(prev[k]&&prev[k].s)||1 };
       });
       saveL(L);
     }
@@ -3019,12 +3023,27 @@
     }
     function injectGrips(){
       ["rail","main","side"].forEach(function(k){
-        var e=el(k); if(!e || e.querySelector(":scope > .nt-grip")) return;
+        var e=el(k); if(!e) return;
         if(getComputedStyle(e).position==="static") e.style.position="relative";
-        var g=document.createElement("div"); g.className="nt-grip"; g.title="اسحب لتحريك"; g.innerHTML='<i class="fa-solid fa-up-down-left-right"></i>';
-        g.addEventListener("pointerdown", function(ev){ startDrag(ev,e); });
-        e.appendChild(g);
+        if(!e.querySelector(":scope > .nt-grip")){
+          var g=document.createElement("div"); g.className="nt-grip"; g.title="اسحب لتحريك"; g.innerHTML='<i class="fa-solid fa-up-down-left-right"></i>';
+          g.addEventListener("pointerdown", function(ev){ startDrag(ev,e); });
+          e.appendChild(g);
+        }
+        if(!e.querySelector(":scope > .nt-rsz")){
+          var rz=document.createElement("div"); rz.className="nt-rsz"; rz.title="كبّر / صغّر"; rz.innerHTML='<i class="fa-solid fa-up-right-and-down-left-from-center"></i>';
+          rz.addEventListener("pointerdown", function(ev){ startScale(ev,e,k); });
+          e.appendChild(rz);
+        }
       });
+    }
+    function startScale(ev,e,k){
+      ev.preventDefault(); ev.stopPropagation(); ensureAbsolute();
+      var r=e.getBoundingClientRect(), ox=r.left, oy=r.top;
+      var d0=Math.max(24, Math.hypot(ev.clientX-ox, ev.clientY-oy)), s0=(loadL()[k]&&loadL()[k].s)||1, lastS=s0;
+      function mv(e2){ var d=Math.hypot(e2.clientX-ox, e2.clientY-oy); lastS=Math.min(2,Math.max(0.4, s0*(d/d0))); e.style.transformOrigin="top left"; e.style.transform="scale("+lastS+")"; }
+      function up(){ window.removeEventListener("pointermove",mv); window.removeEventListener("pointerup",up); var L=loadL(); if(!L[k])L[k]={}; L[k].s=lastS; saveL(L); snap(); applyLayout(); }
+      window.addEventListener("pointermove",mv); window.addEventListener("pointerup",up);
     }
     var drag=null;
     function startDrag(ev,e){
@@ -3077,8 +3096,8 @@
       sh.style.position="relative"; var mb=0;
       D.forEach(function(p){
         var d=document.createElement("div"); d.className="nt-float"; d.setAttribute("data-fid",p.id);
-        d.style.left=(p.l||40)+"px"; d.style.top=(p.t||80)+"px"; d.style.width=(p.w||300)+"px"; if(p.h) d.style.height=p.h+"px";
-        mb=Math.max(mb,(p.t||80)+(p.h||300));
+        d.style.left=(p.l||40)+"px"; d.style.top=(p.t||80)+"px"; d.style.width=(p.w||300)+"px";
+        d.style.transformOrigin="top left"; if(p.scale) d.style.transform="scale("+p.scale+")";
         var rows=(p.tasks||[]).map(function(t,i){
           return '<div class="nts-row'+(t.done?" done":"")+'"><span class="nts-check'+(t.done?" on":"")+'" onclick="ntFloatToggle(\''+p.id+'\','+i+')">'+(t.done?"✓":"")+'</span>'+
             '<span class="nts-text" contenteditable="true" spellcheck="false" onblur="ntFloatEdit(\''+p.id+'\','+i+',this.innerText)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}">'+esc(t.text)+'</span>'+
@@ -3088,10 +3107,12 @@
           '<input class="nf-title" value="'+esc(p.title||"لوحة مهام")+'" onchange="ntFloatRename(\''+p.id+'\',this.value)">'+
           '<button class="nf-x" title="حذف اللوحة" onclick="ntFloatClose(\''+p.id+'\')">✕</button></div>'+
           '<div class="nf-list">'+rows+'</div>'+
-          '<div class="nf-add"><input type="text" maxlength="200" placeholder="أضف مهمة + Enter" onkeydown="if(event.key===\'Enter\'){event.preventDefault();ntFloatAdd(\''+p.id+'\',this);}"><button onclick="ntFloatAdd(\''+p.id+'\',this.previousElementSibling)">+</button></div>';
+          '<div class="nf-add"><input type="text" maxlength="200" placeholder="أضف مهمة + Enter" onkeydown="if(event.key===\'Enter\'){event.preventDefault();ntFloatAdd(\''+p.id+'\',this);}"><button onclick="ntFloatAdd(\''+p.id+'\',this.previousElementSibling)">+</button></div>'+
+          '<div class="nt-rsz" title="كبّر / صغّر"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>';
         sh.appendChild(d);
         d.querySelector(".nf-grip").addEventListener("pointerdown",function(ev){ startDrag(ev,d,p); });
-        d.addEventListener("pointerup",function(){ p.w=Math.round(d.offsetWidth); p.h=Math.round(d.offsetHeight); save(); });
+        d.querySelector(".nt-rsz").addEventListener("pointerdown",function(ev){ startFloatScale(ev,d,p); });
+        mb=Math.max(mb,(p.t||80)+d.getBoundingClientRect().height+20);
       });
       if(mb){ var cur=parseInt(sh.style.minHeight)||0; sh.style.minHeight=Math.max(cur,mb+24)+"px"; }
     };
@@ -3106,6 +3127,14 @@
     function startDrag(ev,d,p){ ev.preventDefault(); var sh=shell(); var sr=sh.getBoundingClientRect(); var r=d.getBoundingClientRect(); drag={d:d,p:p,sr:sr,offX:ev.clientX-r.left,offY:ev.clientY-r.top}; d.style.zIndex=40; window.addEventListener("pointermove",onMove); window.addEventListener("pointerup",end); }
     function onMove(ev){ if(!drag) return; var l=Math.max(0,ev.clientX-drag.sr.left-drag.offX); var t=Math.max(0,ev.clientY-drag.sr.top-drag.offY); drag.d.style.left=l+"px"; drag.d.style.top=t+"px"; drag.p.l=Math.round(l); drag.p.t=Math.round(t); }
     function end(){ if(!drag) return; drag.d.style.zIndex=""; save(); drag=null; window.removeEventListener("pointermove",onMove); window.removeEventListener("pointerup",end); }
+    function startFloatScale(ev,d,p){
+      ev.preventDefault(); ev.stopPropagation();
+      var r=d.getBoundingClientRect(), ox=r.left, oy=r.top;
+      var d0=Math.max(24, Math.hypot(ev.clientX-ox, ev.clientY-oy)), s0=p.scale||1;
+      function mv(e2){ var dd=Math.hypot(e2.clientX-ox, e2.clientY-oy); var s=Math.min(2,Math.max(0.4, s0*(dd/d0))); d.style.transformOrigin="top left"; d.style.transform="scale("+s+")"; p.scale=s; }
+      function up(){ window.removeEventListener("pointermove",mv); window.removeEventListener("pointerup",up); save(); }
+      window.addEventListener("pointermove",mv); window.addEventListener("pointerup",up);
+    }
     window.addEventListener("load", function(){ setTimeout(function(){ try{ ntRenderFloats(); }catch(e){} }, 500); });
   })();
   </script>
