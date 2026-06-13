@@ -24,7 +24,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132040" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132113" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
@@ -676,6 +676,29 @@
 .nts-add input:focus{ border-color:#60a5fa; }
 .nts-add button{ flex:0 0 auto; background:#2563eb; border:none; color:#fff; border-radius:10px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:13px; cursor:pointer; }
 .nts-add button:hover{ background:#1d4ed8; }
+/* month calendar grid (Windows-calendar style) */
+.cg{ background:#0b1018; border:1px solid rgba(96,165,250,.22); border-radius:16px; padding:14px; }
+.cg-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.cg-head b{ color:#fff; font-size:1.05rem; font-weight:800; }
+.cg-navs{ display:flex; gap:6px; }
+.cg-nav{ width:30px; height:30px; border-radius:8px; background:#0e1525; border:1px solid rgba(96,165,250,.3); color:#cbd5e1; cursor:pointer; font-size:1.1rem; line-height:1; }
+.cg-nav:hover{ border-color:#60a5fa; color:#fff; }
+.cg-dows{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:8px; }
+.cg-dows span{ text-align:center; font-size:11.5px; color:#7f8aa3; font-weight:700; }
+.cg-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.cg-cell{ position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#dbe3ee; font-size:13.5px; cursor:pointer; transition:background .12s, color .12s; }
+.cg-cell:hover{ background:rgba(255,255,255,.08); }
+.cg-cell.other{ color:#475569; }
+.cg-cell.today{ background:#2563eb; color:#fff; font-weight:800; }
+.cg-cell.sel{ box-shadow:0 0 0 2px #60a5fa inset; color:#fff; font-weight:800; }
+.cg-cell.today.sel{ box-shadow:0 0 0 2px #bfdbfe inset; }
+.cg-dot{ position:absolute; bottom:5px; left:50%; transform:translateX(-50%); width:5px; height:5px; border-radius:50%; background:#f59e0b; }
+.cg-dot.full{ background:#34d399; }
+/* selected-day inline panel */
+.cg-panel{ margin-top:14px; background:#0e1525; border:1px solid rgba(96,165,250,.3); border-radius:14px; padding:14px; }
+.cg-panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.cg-panel-head b{ color:#fff; font-size:1rem; }
+.cg-rem{ font-size:12px; font-weight:700; color:#93c5fd; background:rgba(59,130,246,.15); padding:3px 10px; border-radius:999px; }
 </style>
 
   <div id="welcomeModal" class="wm-overlay">
@@ -1730,19 +1753,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132040"></script>
-  <script src="js/data.js?v=202606132040"></script>
-  <script src="js/i18n.js?v=202606132040"></script>
-  <script src="js/render.js?v=202606132040"></script>
-  <script src="js/search.js?v=202606132040"></script>
-  <script src="js/presence.js?v=202606132040"></script>
-  <script src="js/animations.js?v=202606132040"></script>
+  <script type="module" src="js/auth.js?v=202606132113"></script>
+  <script src="js/data.js?v=202606132113"></script>
+  <script src="js/i18n.js?v=202606132113"></script>
+  <script src="js/render.js?v=202606132113"></script>
+  <script src="js/search.js?v=202606132113"></script>
+  <script src="js/presence.js?v=202606132113"></script>
+  <script src="js/animations.js?v=202606132113"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132040"></script>
-  <script src="js/resign-forms.js?v=202606132040"></script>
-  <script src="js/leave-forms.js?v=202606132040"></script>
+  <script src="js/pdf-forms.js?v=202606132113"></script>
+  <script src="js/resign-forms.js?v=202606132113"></script>
+  <script src="js/leave-forms.js?v=202606132113"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
@@ -2357,6 +2380,44 @@
         box.innerHTML = html;
       }
 
+      var _ntCalMonth = null;   // displayed month (Date)
+      var _ntSel = null;        // selected day "YYYY-MM-DD" (defaults to today)
+      function fmtDs(y, m, d) { return y + "-" + String(m + 1).padStart(2, "0") + "-" + String(d).padStart(2, "0"); }
+      function renderCalGrid(l) {
+        var base = _ntCalMonth || new Date();
+        var year = base.getFullYear(), month = base.getMonth();
+        var firstDow = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var prevDays = new Date(year, month, 0).getDate();
+        var tStr = dayStr(0), sel = _ntSel || tStr;
+        var dows = ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"];
+        function cell(ds, day, other) {
+          var arr = (l.sched && Array.isArray(l.sched[ds])) ? l.sched[ds] : [];
+          var n = arr.length, dn = arr.filter(function (s) { return s.done; }).length;
+          var dot = n ? ('<span class="cg-dot' + (dn >= n ? " full" : "") + '"></span>') : "";
+          var cls = "cg-cell" + (other ? " other" : "") + (ds === tStr ? " today" : "") + (ds === sel ? " sel" : "");
+          return '<div class="' + cls + '" onclick="ntSelectDay(\'' + ds + '\')"><span class="cg-d">' + day + '</span>' + dot + '</div>';
+        }
+        var head =
+          '<div class="cg-head"><b>' + _ntMonths[month] + ' ' + year + '</b>' +
+            '<span class="cg-navs">' +
+              '<button type="button" class="cg-nav" onclick="ntCalNav(-1)" aria-label="السابق">‹</button>' +
+              '<button type="button" class="cg-nav" onclick="ntCalNav(1)" aria-label="التالي">›</button>' +
+            '</span></div>';
+        var dowRow = '<div class="cg-dows">' + dows.map(function (n) { return '<span>' + n + '</span>'; }).join("") + '</div>';
+        var cells = "";
+        for (var b = firstDow - 1; b >= 0; b--) { var pd = prevDays - b; var pm = new Date(year, month - 1, pd); cells += cell(fmtDs(pm.getFullYear(), pm.getMonth(), pd), pd, true); }
+        for (var day = 1; day <= daysInMonth; day++) cells += cell(fmtDs(year, month, day), day, false);
+        var trail = (7 - ((firstDow + daysInMonth) % 7)) % 7;
+        for (var tn = 1; tn <= trail; tn++) { var nm = new Date(year, month + 1, tn); cells += cell(fmtDs(nm.getFullYear(), nm.getMonth(), tn), tn, true); }
+        return '<div class="cg">' + head + dowRow + '<div class="cg-grid">' + cells + '</div></div>';
+      }
+      window.ntCalNav = function (delta) {
+        var base = _ntCalMonth || new Date();
+        _ntCalMonth = new Date(base.getFullYear(), base.getMonth() + delta, 1);
+        renderDaily();
+      };
+
       function renderDaily() {
         var l = activeList();
         var box = document.getElementById("ntDaily");
@@ -2373,32 +2434,7 @@
         var ydone = (l.log && Array.isArray(l.log[yest])) ? l.log[yest] : [];
         var remYest = l.tasks.filter(function (t) { return ydone.indexOf(t.text) === -1; });
 
-        var dayNames = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-        var cal = "";
-        for (var k = -3; k <= 10; k++) {
-          var ds = dayStr(k);
-          var d = new Date(); d.setDate(d.getDate() + k);
-          var schedArr = (l.sched && Array.isArray(l.sched[ds])) ? l.sched[ds] : [];
-          var schedN = schedArr.length;
-          var schedDone = schedArr.filter(function (s) { return s.done; }).length;
-          var stat, cls;
-          if (schedN > 0) {
-            stat = "📌 " + schedDone + "/" + schedN;
-            cls = (schedDone >= schedN) ? "full" : "some";
-          } else if (k <= 0) {
-            var cnt = (k === 0) ? doneToday : ((l.log && Array.isArray(l.log[ds])) ? l.log[ds].length : 0);
-            stat = cnt + "/" + total;
-            cls = (total > 0 && cnt >= total) ? "full" : (cnt > 0 ? "some" : "none");
-          } else {
-            stat = "＋"; cls = "none";
-          }
-          cal +=
-            '<div class="nt-day' + (k === 0 ? " today" : "") + '" onclick="ntOpenDay(\'' + ds + '\')" title="اضغط لإضافة/عرض مهام هذا اليوم">' +
-              '<div class="d-name">' + dayNames[d.getDay()] + '</div>' +
-              '<div class="d-num">' + d.getDate() + '</div>' +
-              '<div class="d-stat ' + cls + '">' + stat + '</div>' +
-            '</div>';
-        }
+        // (the month calendar grid is rendered by renderCalGrid below)
 
         function remList(arr) {
           if (!arr.length) return '<span style="color:#34d399">لا شيء متبقّي 🎉</span>';
@@ -2418,21 +2454,20 @@
               '<div class="nt-rem"><b style="font-size:11px;color:#93c5fd">باقي من أمس:</b>' + remList(remYest) + '</div>' +
             '</div>' +
           '</div>' +
-          '<div class="nt-cal-title">خطّط أيامك — اضغط أي يوم لإضافة مهمة مستقبلية 📌</div>' +
-          '<div class="nt-cal">' + cal + '</div>';
+          '<div class="nt-cal-title">📅 التقويم — اختر يوماً لعرض/كتابة مهامه</div>' +
+          renderCalGrid(l) +
+          dayPanel(l);
       }
 
-      /* ---- per-day scheduled (future) tasks ---- */
-      var _ntDay = null;
+      /* ---- per-day scheduled tasks (inline panel under the calendar) ---- */
       var _ntDayNames = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
       var _ntMonths = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-      function renderDayModal() {
-        var old = document.getElementById("ntDayModal"); if (old) old.remove();
-        var ds = _ntDay; if (!ds) return;
-        var l = activeList(); if (!l.sched) l.sched = {};
-        var arr = Array.isArray(l.sched[ds]) ? l.sched[ds] : [];
-        var d = new Date(ds + "T00:00:00");
-        var title = _ntDayNames[d.getDay()] + " " + d.getDate() + " " + _ntMonths[d.getMonth()];
+      function dayPanel(l) {
+        var sel = _ntSel || dayStr(0);
+        var d = new Date(sel + "T00:00:00");
+        var title = _ntDayNames[d.getDay()] + "، " + d.getDate() + " " + _ntMonths[d.getMonth()];
+        var arr = (l.sched && Array.isArray(l.sched[sel])) ? l.sched[sel] : [];
+        var rem = arr.filter(function (s) { return !s.done; }).length;
         var rows = arr.length
           ? arr.map(function (s, i) {
               return '<div class="nts-row' + (s.done ? " done" : "") + '">' +
@@ -2440,41 +2475,40 @@
                 '<span class="nts-text">' + esc(s.text) + '</span>' +
                 '<button class="nts-del" onclick="ntDelSched(' + i + ')">✕</button></div>';
             }).join("")
-          : '<div class="nts-empty">لا مهام لهذا اليوم بعد — أضف أول مهمة 👇</div>';
-        var ov = document.createElement("div");
-        ov.id = "ntDayModal"; ov.className = "nt-day-modal";
-        ov.onclick = function (e) { if (e.target === ov) ntCloseDay(); };
-        ov.innerHTML =
-          '<div class="nt-day-box">' +
-            '<div class="nts-head"><b>📌 ' + esc(title) + '</b>' +
-              '<button class="nts-x" onclick="ntCloseDay()" aria-label="إغلاق">✕</button></div>' +
-            '<div class="nts-list">' + rows + '</div>' +
-            '<div class="nts-add">' +
-              '<input id="ntSchedInput" type="text" maxlength="200" placeholder="أضف مهمة لهذا اليوم…" ' +
-              'onkeydown="if(event.key===\'Enter\'){event.preventDefault();ntAddSched();}">' +
-              '<button onclick="ntAddSched()">إضافة</button>' +
-            '</div>' +
-          '</div>';
-        document.body.appendChild(ov);
-        var inp = document.getElementById("ntSchedInput"); if (inp) inp.focus();
+          : '<div class="nts-empty">لا مهام لهذا اليوم — اكتب أول مهمة 👇</div>';
+        return '<div class="cg-panel">' +
+          '<div class="cg-panel-head"><b>📌 ' + esc(title) + '</b>' + (arr.length ? '<span class="cg-rem">باقي ' + rem + '</span>' : "") + '</div>' +
+          '<div class="nts-list">' + rows + '</div>' +
+          '<div class="nts-add">' +
+            '<input id="ntSchedInput" type="text" maxlength="200" placeholder="أضف مهمة لهذا اليوم…" ' +
+            'onkeydown="if(event.key===\'Enter\'){event.preventDefault();ntAddSched();}">' +
+            '<button onclick="ntAddSched()">إضافة</button>' +
+          '</div>' +
+        '</div>';
       }
-      window.ntOpenDay = function (ds) { _ntDay = ds; renderDayModal(); };
-      window.ntCloseDay = function () { var m = document.getElementById("ntDayModal"); if (m) m.remove(); _ntDay = null; };
+      window.ntSelectDay = function (ds) {
+        _ntSel = ds;
+        var d = new Date(ds + "T00:00:00");
+        _ntCalMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+        renderDaily();
+      };
       window.ntAddSched = function () {
         var inp = document.getElementById("ntSchedInput"); if (!inp) return;
         var v = inp.value.trim(); if (!v) { inp.focus(); return; }
         var l = activeList(); if (!l.sched) l.sched = {};
-        if (!Array.isArray(l.sched[_ntDay])) l.sched[_ntDay] = [];
-        l.sched[_ntDay].push({ text: v, done: false });
-        save(model()); renderDayModal(); renderDaily();
+        var ds = _ntSel || dayStr(0);
+        if (!Array.isArray(l.sched[ds])) l.sched[ds] = [];
+        l.sched[ds].push({ text: v, done: false });
+        save(model()); renderDaily();
+        var ni = document.getElementById("ntSchedInput"); if (ni) ni.focus();
       };
       window.ntToggleSched = function (i) {
-        var l = activeList(); var a = l.sched && l.sched[_ntDay];
-        if (a && a[i]) { a[i].done = !a[i].done; save(model()); renderDayModal(); renderDaily(); }
+        var l = activeList(); var ds = _ntSel || dayStr(0); var a = l.sched && l.sched[ds];
+        if (a && a[i]) { a[i].done = !a[i].done; save(model()); renderDaily(); }
       };
       window.ntDelSched = function (i) {
-        var l = activeList(); var a = l.sched && l.sched[_ntDay];
-        if (a && a[i]) { a.splice(i, 1); if (!a.length) delete l.sched[_ntDay]; save(model()); renderDayModal(); renderDaily(); }
+        var l = activeList(); var ds = _ntSel || dayStr(0); var a = l.sched && l.sched[ds];
+        if (a && a[i]) { a.splice(i, 1); if (!a.length) delete l.sched[ds]; save(model()); renderDaily(); }
       };
 
       function renderAll() {
