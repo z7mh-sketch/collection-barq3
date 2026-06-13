@@ -24,11 +24,11 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css?v=202606132018" />
+  <link rel="stylesheet" href="css/styles.css?v=202606132022" />
   <style id="flux-dashboard">
     :root{
       --fx-bg:#000; --fx-panel:#000; --fx-card:#0d0d0f;
-      --fx-border:rgba(255,255,255,.06); --fx-text:#e7e9ee; --fx-muted:#9ca3af; --fx-active:#15171b;
+      --fx-border:rgba(255,255,255,.10); --fx-text:#f1f4f9; --fx-muted:#aeb6c4; --fx-active:#15171b;
       --fx-blue:#3b82f6;
     }
     html,body{ background:var(--fx-bg) !important; }
@@ -47,15 +47,15 @@
     .dash-brand{ display:flex; align-items:center; gap:10px; padding:4px 8px 16px; }
     .dash-brand img{ width:26px; height:26px; }
     .dash-brand b{ font-size:1.05rem; color:#fff; font-weight:800; }
-    .dash-menu-label{ font-size:.64rem; font-weight:700; letter-spacing:.14em; color:#565b65; padding:10px 10px 6px; }
+    .dash-menu-label{ font-size:.66rem; font-weight:700; letter-spacing:.14em; color:#9aa3b3; padding:10px 10px 6px; }
     .dash-nav{ display:flex; flex-direction:column; gap:5px; }
     .dash-nav-item{
       display:flex; align-items:center; gap:13px; padding:11px 13px; border-radius:11px;
-      color:#9ca3af; font-size:.94rem; font-weight:500; font-family:inherit;
+      color:#d6dce6; font-size:.94rem; font-weight:600; font-family:inherit;
       background:transparent; border:1px solid transparent; cursor:pointer; text-align:start; width:100%; text-decoration:none;
       transition:background .15s ease, color .15s ease, border-color .15s ease;
     }
-    .dash-nav-item svg.ni{ width:19px; height:19px; flex-shrink:0; opacity:.85; }
+    .dash-nav-item svg.ni{ width:20px; height:20px; flex-shrink:0; opacity:1; stroke-width:2; }
     .dash-nav-item:hover{ background:rgba(255,255,255,.03); color:#e7e9ee; }
     .dash-nav-item.active{ background:#181a1f; color:#fff; border-color:rgba(255,255,255,.08); box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 2px 6px rgba(0,0,0,.45); }
     .dash-nav-item.active svg.ni{ opacity:1; }
@@ -65,7 +65,7 @@
     /* ===== rich sidebar (Intelinvest-style) ===== */
     .dash-sidebar{ gap:0; padding:16px 12px; }
     .sb-head{ display:flex; align-items:center; justify-content:space-between; padding:4px 6px 14px; }
-    .sb-collapse{ width:30px; height:30px; border-radius:8px; background:transparent; border:1px solid var(--fx-border); color:#9ca3af; display:grid; place-items:center; cursor:pointer; flex-shrink:0; transition:background .15s, color .15s; }
+    .sb-collapse{ width:30px; height:30px; border-radius:8px; background:transparent; border:1px solid var(--fx-border); color:#cbd5e1; display:grid; place-items:center; cursor:pointer; flex-shrink:0; transition:background .15s, color .15s; }
     .sb-collapse:hover{ color:#fff; background:rgba(255,255,255,.04); }
     .sb-collapse svg{ width:16px; height:16px; }
 
@@ -1642,19 +1642,19 @@
       return false;
     };
   </script>
-  <script type="module" src="js/auth.js?v=202606132018"></script>
-  <script src="js/data.js?v=202606132018"></script>
-  <script src="js/i18n.js?v=202606132018"></script>
-  <script src="js/render.js?v=202606132018"></script>
-  <script src="js/search.js?v=202606132018"></script>
-  <script src="js/presence.js?v=202606132018"></script>
-  <script src="js/animations.js?v=202606132018"></script>
+  <script type="module" src="js/auth.js?v=202606132022"></script>
+  <script src="js/data.js?v=202606132022"></script>
+  <script src="js/i18n.js?v=202606132022"></script>
+  <script src="js/render.js?v=202606132022"></script>
+  <script src="js/search.js?v=202606132022"></script>
+  <script src="js/presence.js?v=202606132022"></script>
+  <script src="js/animations.js?v=202606132022"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-  <script src="js/pdf-forms.js?v=202606132018"></script>
-  <script src="js/resign-forms.js?v=202606132018"></script>
-  <script src="js/leave-forms.js?v=202606132018"></script>
+  <script src="js/pdf-forms.js?v=202606132022"></script>
+  <script src="js/resign-forms.js?v=202606132022"></script>
+  <script src="js/leave-forms.js?v=202606132022"></script>
 
   <!-- ============ TASKS WIDGET ============ -->
   <div id="tasksPanel">
