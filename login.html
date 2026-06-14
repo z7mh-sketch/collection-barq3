@@ -798,7 +798,7 @@
                   <div class="fld"><i class="fa-solid fa-envelope"></i><input type="email" id="siEmail" placeholder="name@barq.com" autocomplete="email" required></div>
                   <label class="fld-label" for="siPassword">كلمة المرور</label>
                   <div class="fld"><i class="fa-solid fa-lock"></i><input type="password" id="siPassword" placeholder="••••••••" autocomplete="current-password" required></div>
-                  <a href="#" class="forgot" onclick="handleForgot();return false;">Forgot password?</a>
+                  <a href="#" class="forgot" onclick="handleForgot();return false;">نسيت كلمة المرور؟</a>
                   <button type="submit" class="btn-signin" id="btnSignIn">تسجيل الدخول</button>
                 </form>
                 <p class="switch-link">ما عندك حساب؟ <a href="#" onclick="switchTab('request');return false;">أنشئ طلب وصول جديد</a></p>
@@ -1024,14 +1024,20 @@
       clearMsg();
       const email = (document.getElementById('siEmail').value || '').trim().toLowerCase();
       if (!email.endsWith('@barq.com')) {
-        showMsg('Enter your @barq.com email in the field above, then click "Forgot password".', 'info');
+        showMsg('اكتب بريدك @barq.com في الخانة أعلاه، ثم اضغط "نسيت كلمة المرور؟".', 'info');
         return;
       }
       try {
         await sendPasswordResetEmail(auth, email);
-        showMsg('We sent a password reset link to your email ✓', 'success');
+        showMsg('أرسلنا رابط إعادة تعيين كلمة المرور إلى بريدك ✓ افتح الإيميل واتبع الرابط، ثم سجّل الدخول بكلمة المرور الجديدة.', 'success');
       } catch (err) {
-        showMsg('Could not send the link — check the email and try again.', 'error');
+        const msg = {
+          'auth/user-not-found': 'لا يوجد حساب بهذا البريد الإلكتروني',
+          'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة',
+          'auth/too-many-requests': 'تم تجاوز عدد المحاولات، حاول لاحقاً',
+          'auth/network-request-failed': 'تعذر الاتصال، تحقق من الإنترنت',
+        }[err.code] || 'تعذّر إرسال الرابط — تأكد من البريد وحاول مرة أخرى.';
+        showMsg(msg, 'error');
       }
     };
     document.addEventListener('keydown', (e) => {
